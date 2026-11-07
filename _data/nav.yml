@@ -4,13 +4,17 @@
   url: /documenti/
 - title: Siti
   url: /siti/
+- title: Gabriel Jones
+  url: https://gabrieljones.it
+- title: Zoho Mail
+  url: https://mail.zoho.eu
 - title: Raccolte
   children:
     - { title: Libri, url: /libri/ }
     - { title: Giochi, url: /giochi/ }
     - { title: Link, url: /link/ }
     - { title: Accessi rapidi, url: /accessi/ }
-- title: Didattica
+- title: FI23
   children:
     - { title: Calendario, url: /calendario/ }
     - { title: Registro, url: /registro/ }
