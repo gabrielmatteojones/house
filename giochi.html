@@ -1,0 +1,18 @@
+---
+layout: default
+title: Giochi
+kicker: Raccolte
+lead: Giochi e attività da portare a lezione.
+permalink: /giochi/
+script: giochi
+---
+<div class="toolbar">
+  <button class="btn" id="add">Aggiungi gioco</button>
+  <input type="search" id="q" placeholder="Cerca un gioco" aria-label="Cerca nei giochi">
+  <select id="fcat" aria-label="Categoria"></select>
+  <button class="chip-btn" id="ffav">Preferiti</button>
+  <span class="sp"></span>
+  <span class="muted" id="count"></span>
+</div>
+<div class="grid g-cards" id="grid"></div>
+<div class="empty" id="none" hidden><h3>Nessun gioco</h3>Aggiungi il primo gioco: nome, età, durata, materiali e come si gioca.</div>

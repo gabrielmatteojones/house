@@ -1,0 +1,47 @@
+---
+layout: default
+title: Documenti
+kicker: Strumenti
+lead: Scrivi, salva e stampa i tuoi documenti. Si salvano da soli mentre scrivi.
+permalink: /documenti/
+script: documenti
+---
+<div class="split">
+  <aside class="panel">
+    <button class="btn" id="new" style="width:100%">Nuovo documento</button>
+    <input type="search" id="q" placeholder="Cerca nei documenti" style="margin-top:12px" aria-label="Cerca nei documenti">
+    <ul class="doclist" id="docs"></ul>
+  </aside>
+  <section>
+    <div class="empty" id="empty"><h3>Nessun documento aperto</h3>Scegline uno dall'elenco o creane uno nuovo.</div>
+    <div id="editor" hidden>
+      <input id="title" class="doc-title" placeholder="Titolo del documento" aria-label="Titolo">
+      <div class="rte-bar" role="toolbar" aria-label="Formattazione">
+        <button data-cmd="bold" title="Grassetto"><b>B</b></button>
+        <button data-cmd="italic" title="Corsivo"><i>I</i></button>
+        <button data-cmd="underline" title="Sottolineato"><u>S</u></button>
+        <span class="sep"></span>
+        <button data-cmd="formatBlock" data-val="h2" title="Titolo">Titolo</button>
+        <button data-cmd="formatBlock" data-val="h3" title="Sottotitolo">Sottotitolo</button>
+        <button data-cmd="formatBlock" data-val="p" title="Paragrafo">Testo</button>
+        <button data-cmd="formatBlock" data-val="blockquote" title="Citazione">Citazione</button>
+        <span class="sep"></span>
+        <button data-cmd="insertUnorderedList">Elenco</button>
+        <button data-cmd="insertOrderedList">Numerato</button>
+        <button data-cmd="createLink">Link</button>
+        <button data-cmd="removeFormat">Pulisci</button>
+        <span class="sp"></span>
+        <span id="count" class="muted"></span>
+      </div>
+      <div id="body" class="paper" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Testo del documento"></div>
+      <div class="doc-actions">
+        <button class="btn navy" id="print">Stampa o salva PDF</button>
+        <button class="btn ghost" id="word">Scarica per Word</button>
+        <button class="btn ghost" id="dup">Duplica</button>
+        <button class="btn danger" id="del">Elimina</button>
+        <span class="sp"></span>
+        <span id="state" class="muted"></span>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,35 @@
+---
+layout: default
+title: Bentornato, Gabriel
+kicker: Il tuo spazio di lavoro
+lead: Documenti, siti, libri, giochi e lezioni in un unico posto, solo tuo.
+permalink: /
+script: home
+---
+<div class="stats" id="stats"></div>
+
+<div class="two">
+  <section class="panel">
+    <h2>Prossime lezioni</h2>
+    <ul class="list" id="next"></ul>
+  </section>
+  <section class="panel">
+    <h2>Ultime lezioni registrate</h2>
+    <ul class="list" id="recent"></ul>
+  </section>
+</div>
+
+<section class="panel" style="margin-top:20px">
+  <h2>Accessi rapidi</h2>
+  <div class="tiles" id="quick"></div>
+</section>
+
+<section class="panel" style="margin-top:20px">
+  <h2>Copia di sicurezza</h2>
+  <p class="muted" style="margin-top:0">Scarica tutti i tuoi dati in un unico file, oppure ripristinali da un file scaricato in precedenza.</p>
+  <div class="backup">
+    <button class="btn navy" id="export">Scarica il backup</button>
+    <button class="btn ghost" id="import">Ripristina da file</button>
+    <input type="file" id="file" accept="application/json" hidden>
+  </div>
+</section>

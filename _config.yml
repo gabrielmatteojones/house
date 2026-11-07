@@ -1,0 +1,15 @@
+title: Gabriel Jones · Portale
+description: Portale privato personale
+lang: it
+timezone: Europe/Rome
+markdown: kramdown
+exclude:
+  - README.md
+  - netlify
+  - netlify.toml
+  - package.json
+  - package-lock.json
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - vendor

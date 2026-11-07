@@ -1,0 +1,21 @@
+---
+layout: default
+title: Calendario
+kicker: Didattica
+lead: Programma le lezioni e avviale con un clic.
+permalink: /calendario/
+script: calendario
+---
+<div class="cal-head">
+  <h2 id="month"></h2>
+  <button class="btn ghost" id="prev" aria-label="Mese precedente">←</button>
+  <button class="btn ghost" id="today-btn">Oggi</button>
+  <button class="btn ghost" id="next" aria-label="Mese successivo">→</button>
+  <span class="sp"></span>
+  <button class="btn" id="add">Nuova lezione</button>
+</div>
+<div class="cal" id="cal"></div>
+<section class="panel" style="margin-top:24px">
+  <h2>Prossimi appuntamenti</h2>
+  <ul class="list" id="upcoming"></ul>
+</section>

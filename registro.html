@@ -1,0 +1,42 @@
+---
+layout: default
+title: Registro
+kicker: Didattica
+lead: Il tuo diario di lezione. Nessun nome di studenti, solo il numero dei presenti.
+permalink: /registro/
+script: registro
+---
+<div class="startbar" id="startbar">
+  <button class="btn" id="start">Avvia lezione</button>
+  <button class="btn ghost" id="manual">Aggiungi una lezione già svolta</button>
+</div>
+
+<section class="panel live" id="live" hidden>
+  <div class="live-head">
+    <span class="live-dot" aria-hidden="true"></span>
+    <strong>Lezione in corso</strong>
+    <span class="timer" id="timer" aria-live="off">00:00:00</span>
+    <span class="sp"></span>
+    <button class="btn" id="end">Termina e salva</button>
+    <button class="btn ghost" id="discard">Annulla lezione</button>
+  </div>
+  <div class="fields">
+    <div class="field"><label for="l_titolo">Titolo</label><input id="l_titolo" placeholder="Di cosa parli oggi?"></div>
+    <div class="field"><label for="l_desc">Descrizione</label><textarea id="l_desc" rows="3"></textarea></div>
+    <div class="field">
+      <label for="l_game">Gioco o attività</label>
+      <div class="chipsinput" id="l_giochi"><span class="chips"></span><input id="l_game" list="gameslist" placeholder="Scegli o scrivi, poi premi Invio"></div>
+      <datalist id="gameslist"></datalist>
+    </div>
+    <div class="field half">
+      <label for="l_pres">Presenti</label>
+      <div class="stepper"><button type="button" id="minus" aria-label="Uno in meno">−</button><input id="l_pres" type="number" min="0" value="0"><button type="button" id="plus" aria-label="Uno in più">+</button></div>
+    </div>
+    <div class="field"><label for="l_note">Note</label><textarea id="l_note" rows="4"></textarea></div>
+  </div>
+</section>
+
+<div class="stats" id="stats"></div>
+<div class="toolbar"><input type="search" id="q" placeholder="Cerca nel registro" aria-label="Cerca nel registro"></div>
+<div id="list"></div>
+<div class="empty" id="none" hidden><h3>Il registro è vuoto</h3>Premi «Avvia lezione» quando inizi: alla fine la trovi qui.</div>

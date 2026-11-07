@@ -1,0 +1,23 @@
+---
+layout: default
+title: Libri
+kicker: Raccolte
+lead: Il catalogo unico di tutti i libri, con copertina e dati presi dal link.
+permalink: /libri/
+script: libri
+---
+<div class="toolbar">
+  <form class="quick" id="quick">
+    <input type="text" id="qin" placeholder="Incolla il link del libro (o il suo ISBN)" aria-label="Link o ISBN del libro" required>
+    <button class="btn" type="submit">Aggiungi libro</button>
+  </form>
+</div>
+<div class="toolbar">
+  <input type="search" id="q" placeholder="Cerca per titolo, autore o ISBN" aria-label="Cerca nei libri">
+  <select id="fbib" aria-label="Biblioteca"></select>
+  <select id="fst" aria-label="Stato"></select>
+  <span class="sp"></span>
+  <span class="muted" id="count"></span>
+</div>
+<div class="grid g-books" id="grid"></div>
+<div class="empty" id="none" hidden><h3>Nessun libro</h3>Incolla il link di un libro (negozio online, catalogo, ISBN) per aggiungerlo.</div>

@@ -1,0 +1,16 @@
+- title: Home
+  url: /
+- title: Documenti
+  url: /documenti/
+- title: Siti
+  url: /siti/
+- title: Raccolte
+  children:
+    - { title: Libri, url: /libri/ }
+    - { title: Giochi, url: /giochi/ }
+    - { title: Link, url: /link/ }
+    - { title: Accessi rapidi, url: /accessi/ }
+- title: Didattica
+  children:
+    - { title: Calendario, url: /calendario/ }
+    - { title: Registro, url: /registro/ }

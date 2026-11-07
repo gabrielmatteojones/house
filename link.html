@@ -1,0 +1,18 @@
+---
+layout: default
+title: Link
+kicker: Raccolte
+lead: Salva un indirizzo e il portale legge titolo, descrizione e immagine.
+permalink: /link/
+script: link
+---
+<div class="toolbar">
+  <form class="quick" id="quick">
+    <input type="text" id="qin" placeholder="Incolla qui un link" aria-label="Link da salvare" required>
+    <button class="btn" type="submit">Salva link</button>
+  </form>
+  <input type="search" id="q" placeholder="Cerca nei link" aria-label="Cerca nei link">
+</div>
+<div class="chips-row" id="tags"></div>
+<div class="grid g-cards" id="grid"></div>
+<div class="empty" id="none" hidden><h3>Nessun link</h3>Incolla un indirizzo qui sopra per salvare il primo.</div>
