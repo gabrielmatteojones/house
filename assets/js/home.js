@@ -1,7 +1,7 @@
 (async () => {
-  const [libri, giochi, docs, link, siti, lez, reg, utili] = await Promise.all([
+  const [libri, giochi, docs, link, siti, lez, reg, utili, drive] = await Promise.all([
     Portal.load("libri"), Portal.load("giochi"), Portal.load("documenti"), Portal.load("link"),
-    Portal.load("siti"), Portal.load("lezioni"), Portal.load("registro"), Portal.load("utili", Portal.SEED_UTILI)
+    Portal.load("siti"), Portal.load("lezioni"), Portal.load("registro"), Portal.load("utili", Portal.SEED_UTILI), Portal.load("file")
   ]);
 
   const h = new Date().getHours();
@@ -11,7 +11,7 @@
   const next = lez.filter(l => l.data >= today).sort((a, b) => (a.data + (a.inizio || "")).localeCompare(b.data + (b.inizio || "")));
 
   const stats = [
-    ["Documenti", docs.length, "/documenti/", "salvati"],
+    ["Drive", docs.filter(d => !d.cestino).length + drive.filter(f => !f.cestino).length, "/drive/", "documenti e file"],
     ["Siti", siti.length, "/siti/", "collegati"],
     ["Libri", libri.length, "/libri/", "in catalogo"],
     ["Giochi", giochi.length, "/giochi/", "nella raccolta"],

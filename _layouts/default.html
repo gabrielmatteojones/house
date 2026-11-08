@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
   <title>{% if page.url != "/" %}{{ page.title }} · {% endif %}{{ site.title }}</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23101c4d'/%3E%3Crect x='6' y='22' width='20' height='4' fill='%23d3121b'/%3E%3Ctext x='16' y='19' font-family='Arial Narrow,Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%23fdf5ee'%3EGJ%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23101c4d'/%3E%3Crect x='6' y='22' width='20' height='4' fill='%23d3121b'/%3E%3Ctext x='16' y='19' font-family='Arial Narrow,Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%23fdf5ee'%3EJH%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,24 +13,25 @@
 </head>
 <body>
   {% include header.html %}
-  <section class="hero">
+  <section class="hero{% if page.compact %} compact{% endif %}">
     <div class="wrap">
       {% if page.kicker %}<p class="kicker">{{ page.kicker }}</p>{% endif %}
       <h1 id="page-title">{{ page.title }}</h1>
       {% if page.lead %}<p class="lead">{{ page.lead }}</p>{% endif %}
     </div>
   </section>
-  <main class="wrap">
+  <main class="wrap{% if page.wide %} wide{% endif %}">
     {{ content }}
   </main>
   <footer class="site-footer">
     <div class="wrap">
-      <span>Portale privato di Gabriel Jones</span>
+      <span>Jones House · portale privato di Gabriel Jones</span>
       <span class="sp"></span>
-      <span class="muted-light">Portale appartenente al circolo 18F</span>
+      <span class="muted-light">I dati sono salvati nel tuo spazio Netlify</span>
     </div>
   </footer>
   <script src="/assets/js/core.js"></script>
+  {% for s in page.scripts %}<script src="/assets/js/{{ s }}.js"></script>{% endfor %}
   {% if page.script %}<script src="/assets/js/{{ page.script }}.js"></script>{% endif %}
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* Portale · Gabriel Jones — funzioni comuni */
+/* Jones House · portale di Gabriel Jones — funzioni comuni */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s = "") => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -12,7 +12,7 @@ const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
 
 const Portal = (() => {
   const LS = "gj-portale:";
-  const COLLECTIONS = ["documenti", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro"];
+  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro"];
   const SEED_UTILI = [
     { id: "seed-zoho", nome: "Zoho Mail", url: "https://mail.zoho.eu", categoria: "Posta" },
     { id: "seed-outlook", nome: "Outlook", url: "https://outlook.office.com", categoria: "Posta" },
@@ -199,10 +199,106 @@ const Portal = (() => {
     };
   }
 
+
+  /* ---------- Strumenti per il Drive ---------- */
+
+  // Carica uno script una sola volta (librerie pesanti: PDF, PowerPoint, Word)
+  const scripts = {};
+  const script = src => scripts[src] ||= new Promise((res, rej) => {
+    const el = document.createElement("script");
+    el.src = src;
+    el.onload = () => res();
+    el.onerror = () => { delete scripts[src]; rej(new Error("Impossibile caricare " + src)); };
+    document.head.append(el);
+  });
+
+  // Toglie dal testo HTML tutto ciò che potrebbe eseguire codice
+  const sanitize = html => {
+    const d = new DOMParser().parseFromString(html || "", "text/html");
+    d.querySelectorAll("script,style,iframe,object,embed,link,meta,form,input,button,textarea,select").forEach(n => n.remove());
+    d.querySelectorAll("*").forEach(n => [...n.attributes].forEach(a => {
+      if (/^on/i.test(a.name) || (/^(href|src|xlink:href|action|formaction)$/i.test(a.name) && /^\s*(javascript|data:text\/html|vbscript):/i.test(a.value))) n.removeAttribute(a.name);
+    }));
+    return d.body.innerHTML;
+  };
+
+  const download = (name, blob) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  };
+
+  const fmtSize = n => {
+    n = Number(n) || 0;
+    if (n < 1024) return n + " B";
+    if (n < 1048576) return (n / 1024).toFixed(n < 10240 ? 1 : 0).replace(".", ",") + " KB";
+    if (n < 1073741824) return (n / 1048576).toFixed(n < 10485760 ? 1 : 0).replace(".", ",") + " MB";
+    return (n / 1073741824).toFixed(2).replace(".", ",") + " GB";
+  };
+
+  const slug = s => (s || "documento").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "documento";
+
+  /* File veri e propri: su Netlify Blobs (a pezzi) oppure, in locale, in IndexedDB del browser */
+  const CHUNK = 4 * 1024 * 1024;
+  const idb = () => new Promise((res, rej) => {
+    const r = indexedDB.open("gj-portale-files", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("b");
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  const idbDo = async (mode, fn) => {
+    const db = await idb();
+    return new Promise((res, rej) => {
+      const tx = db.transaction("b", mode);
+      const req = fn(tx.objectStore("b"));
+      tx.oncomplete = () => { db.close(); res(req && "result" in req ? req.result : undefined); };
+      tx.onerror = () => { db.close(); rej(tx.error); };
+    });
+  };
+  const blobs = {
+    async put(id, blob, onProgress) {
+      if (remote) {
+        const n = Math.max(1, Math.ceil(blob.size / CHUNK));
+        for (let i = 0; i < n; i++) {
+          const r = await fetch(`/api/files/${id}/${i}`, { method: "PUT", headers: { "content-type": "application/octet-stream" }, body: blob.slice(i * CHUNK, (i + 1) * CHUNK) });
+          if (!r.ok) throw new Error("Caricamento non riuscito");
+          if (onProgress) onProgress((i + 1) / n);
+        }
+        return { chunks: n, remote: true };
+      }
+      await idbDo("readwrite", s => s.put(blob, id));
+      if (onProgress) onProgress(1);
+      return { chunks: 1, remote: false };
+    },
+    async get(meta) {
+      if (meta.remote) {
+        const parts = [];
+        for (let i = 0; i < (meta.chunks || 1); i++) {
+          const r = await fetch(`/api/files/${meta.id}/${i}`, { cache: "no-store" });
+          if (!r.ok) throw new Error("File non trovato");
+          parts.push(await r.arrayBuffer());
+        }
+        return new Blob(parts, { type: meta.tipo || "application/octet-stream" });
+      }
+      const b = await idbDo("readonly", s => s.get(meta.id));
+      if (!b) throw new Error("Questo file non è presente in questo browser");
+      return b;
+    },
+    async del(meta) {
+      if (meta.remote) { try { await fetch(`/api/files/${meta.id}`, { method: "DELETE" }); } catch { /* resta orfano, nessun danno */ } }
+      else { try { await idbDo("readwrite", s => s.delete(meta.id)); } catch { /* già assente */ } }
+    },
+    isRemote: () => remote === true
+  };
+
   /* Backup completo */
   async function exportAll() {
     const out = { versione: 1, esportato: new Date().toISOString(), dati: {} };
-    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : []);
+    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : n === "impostazioni" ? {} : []);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
     a.download = `portale-backup-${isoDate(new Date())}.json`;
@@ -213,10 +309,10 @@ const Portal = (() => {
   async function importAll(file) {
     const json = JSON.parse(await file.text());
     if (!json.dati) throw new Error("File di backup non riconosciuto");
-    for (const n of COLLECTIONS) if (Array.isArray(json.dati[n])) { await load(n); await save(n, json.dati[n]); }
+    for (const n of COLLECTIONS) if (json.dati[n] != null) { await load(n); await save(n, json.dati[n]); }
   }
 
-  return { load, save, upsert, remove, meta, form, chips, toast, uid, exportAll, importAll, SEED_UTILI, COLLECTIONS };
+  return { load, save, upsert, remove, meta, form, chips, toast, uid, exportAll, importAll, SEED_UTILI, COLLECTIONS, script, sanitize, download, fmtSize, slug, blobs };
 })();
 
 /* Intestazione: data, menu mobile, menu a tendina */

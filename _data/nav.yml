@@ -1,18 +1,16 @@
 - title: Home
   url: /
-- title: Documenti
-  url: /documenti/
+- title: Drive
+  url: /drive/
 - title: Siti
   url: /siti/
-- title: Zoho Mail
-  url: https://mail.zoho.eu
 - title: Raccolte
   children:
     - { title: Libri, url: /libri/ }
     - { title: Giochi, url: /giochi/ }
     - { title: Link, url: /link/ }
     - { title: Accessi rapidi, url: /accessi/ }
-- title: FI23
+- title: Didattica
   children:
     - { title: Calendario, url: /calendario/ }
     - { title: Registro, url: /registro/ }

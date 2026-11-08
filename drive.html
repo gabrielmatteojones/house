@@ -1,0 +1,59 @@
+---
+layout: default
+title: Drive
+kicker: Jones House
+lead: Tutti i tuoi file e documenti in un posto solo, in privato. Nessuna condivisione.
+permalink: /drive/
+compact: true
+wide: true
+scripts: [letterhead, docx-export, viewers, editor]
+script: drive
+---
+<div class="drive" id="drive">
+  <aside class="d-side">
+    <div class="new-wrap">
+      <button class="btn new-btn" id="newBtn" aria-haspopup="true" aria-expanded="false"><span aria-hidden="true">+</span> Nuovo</button>
+      <div class="menu" id="newMenu" role="menu" hidden>
+        <button role="menuitem" data-new="doc">Documento</button>
+        <button role="menuitem" data-new="folder">Cartella</button>
+        <hr>
+        <button role="menuitem" data-new="upload">Carica file…</button>
+        <button role="menuitem" data-new="uploaddir">Carica cartella…</button>
+      </div>
+    </div>
+    <nav class="side-nav" id="sideNav" aria-label="Drive">
+      <button data-view="mio"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H10l2 2.5h7.5A1.5 1.5 0 0 1 21 9v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Il mio Drive</button>
+      <button data-view="recenti"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Recenti</button>
+      <button data-view="preferiti"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m12 4 2.4 5 5.4.7-4 3.7 1 5.4L12 16.3 7.2 18.8l1-5.4-4-3.7 5.4-.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Preferiti</button>
+      <button data-view="cestino"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 7h14M9 7V5h6v2m-8 0 1 12h8l1-12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Cestino<i class="count" id="trashCount" hidden></i></button>
+    </nav>
+    <div class="storage">
+      <b id="usedTxt">0 B</b><small id="usedSub"></small>
+    </div>
+    <button class="btn ghost sm side-lh" id="lhBtn">Carta intestata</button>
+  </aside>
+
+  <section class="d-main" id="dropzone">
+    <div class="d-bar">
+      <nav class="crumbs" id="crumbs" aria-label="Percorso"></nav>
+      <span class="sp"></span>
+      <button class="btn danger sm" id="emptyTrash" hidden>Svuota il cestino</button>
+      <input type="search" id="q" placeholder="Cerca nel Drive" aria-label="Cerca nel Drive">
+      <select id="sort" aria-label="Ordina per">
+        <option value="nome">Nome</option>
+        <option value="mod">Più recenti</option>
+        <option value="size">Dimensione</option>
+      </select>
+      <div class="seg" role="group" aria-label="Vista">
+        <button data-mode="grid" aria-label="Griglia" title="Griglia"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="currentColor"/></svg></button>
+        <button data-mode="list" aria-label="Elenco" title="Elenco"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="chips-row" id="types"></div>
+    <div id="items"></div>
+    <div class="empty" id="none" hidden></div>
+    <div class="drop-hint" id="dropHint" hidden><b>Rilascia qui per caricare</b><span id="dropWhere"></span></div>
+  </section>
+</div>
+<input type="file" id="pick" multiple hidden>
+<input type="file" id="pickdir" webkitdirectory hidden>
