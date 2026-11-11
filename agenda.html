@@ -1,0 +1,35 @@
+---
+layout: default
+title: Agenda
+kicker: Personale
+lead: Il tuo calendario privato: impegni, scadenze e ricorrenze.
+permalink: /agenda/
+script: agenda
+---
+<style>
+  /* Colori per categoria: solo per questa pagina */
+  .ev.p{background:var(--c,var(--navy))}
+  .ev.p:hover{background:var(--c,var(--navy));filter:brightness(.82)}
+  .ev.rep::after{content:" ↻";opacity:.8}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c,var(--navy));margin-right:6px;vertical-align:baseline}
+  .chip-btn .dot{margin-right:5px}
+  .chip-btn.on .dot,.chip-btn:hover .dot{box-shadow:0 0 0 2px #fff}
+</style>
+
+<div class="cal-head">
+  <h2 id="month"></h2>
+  <button class="btn ghost" id="prev" aria-label="Mese precedente">←</button>
+  <button class="btn ghost" id="today-btn">Oggi</button>
+  <button class="btn ghost" id="next" aria-label="Mese successivo">→</button>
+  <span class="sp"></span>
+  <button class="btn" id="add">Nuovo impegno</button>
+</div>
+
+<div class="chips-row" id="cats" role="group" aria-label="Filtra per categoria"></div>
+
+<div class="cal" id="cal"></div>
+
+<section class="panel" style="margin-top:24px">
+  <h2>Prossimi impegni</h2>
+  <ul class="list" id="upcoming"></ul>
+</section>
