@@ -464,3 +464,32 @@ main.wrap.wide{max-width:1500px}
   .lh-name b{font-size:28px}
   .ed-title{font-size:24px}
 }
+
+/* Note e mappe */
+.nt-side input{margin:12px 0}
+.nt-list{list-style:none;margin:0;padding:0;max-height:62vh;overflow:auto}
+.nt-list button{display:block;width:100%;text-align:left;font:600 15px var(--body);background:none;border:0;border-left:3px solid transparent;padding:8px 10px;cursor:pointer;color:var(--navy)}
+.nt-list button:hover,.nt-list button.on{background:var(--cream)}
+.nt-list button.on{border-left-color:var(--red)}
+.nt-main #ntitle{flex:1;min-width:200px;font:700 32px var(--head);border:0;border-bottom:2px solid var(--line);border-radius:0;padding:4px 2px;background:transparent}
+.nt-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.nt-cols textarea{min-height:60vh;font:14px/1.6 ui-monospace,Menlo,monospace}
+.nt-prev{min-height:60vh;overflow:auto;padding:4px 8px}
+.nt-prev h1,.nt-prev h2,.nt-prev h3{margin:1em 0 .4em}
+.nt-prev h1{font-size:42px}.nt-prev h2{font-size:32px}.nt-prev h3{font-size:25px}
+.nt-prev a.no{color:var(--red)}
+.nt-prev code{background:var(--cream);padding:1px 5px;border-radius:3px}
+.nt-prev pre{background:var(--navy);color:var(--cream);padding:12px;border-radius:var(--r);overflow:auto}
+.nt-prev pre code{background:none}
+.nt-prev blockquote{margin:1em 0;padding-left:14px;border-left:3px solid var(--red);color:var(--muted)}
+.nt-svg{display:block;width:100%;height:62vh;background-color:#fff;background-image:radial-gradient(var(--line) 1.2px,transparent 1.5px);background-size:20px 20px;border:1.5px solid var(--line);border-radius:var(--r);touch-action:none;user-select:none}
+.nt-svg line{stroke:var(--navy);stroke-width:2.5;cursor:pointer}
+.nt-svg line.sel{stroke:var(--red);stroke-width:4}
+.nt-svg .n{cursor:grab}
+.nt-svg .n rect{fill:var(--cream);stroke:var(--navy);stroke-width:2}
+.nt-svg .n text{fill:var(--navy);font:700 15px var(--body)}
+.nt-svg .n.sel rect{fill:var(--navy)}
+.nt-svg .n.sel text{fill:var(--cream)}
+.nt-svg .n.from rect{stroke:var(--red);stroke-width:4}
+.btn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+@media(max-width:800px){.nt-cols{grid-template-columns:1fr}}

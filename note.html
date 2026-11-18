@@ -1,0 +1,37 @@
+---
+layout: default
+title: Note e mappe
+kicker: Raccolte
+lead: Appunti in Markdown e mappe concettuali, collegati tra loro con [[doppie parentesi]].
+permalink: /note/
+script: note
+compact: true
+---
+<div class="split">
+  <aside class="panel nt-side">
+    <button class="btn sm" id="nnew" type="button">Nuova nota</button>
+    <input type="search" id="q" placeholder="Cerca nelle note" aria-label="Cerca nelle note">
+    <ul class="nt-list" id="nlist"></ul>
+  </aside>
+  <div>
+    <div class="empty" id="nnone" hidden><h3>Nessuna nota</h3>Crea la prima nota con il pulsante a sinistra.</div>
+    <section class="panel nt-main" id="nmain" hidden>
+      <div class="toolbar">
+        <input type="text" id="ntitle" aria-label="Titolo della nota">
+        <div class="chips-row" style="margin:0"><button class="chip-btn on" data-v="testo" type="button">Testo</button><button class="chip-btn" data-v="mappa" type="button">Mappa</button></div>
+        <button class="btn ghost sm" id="ndl" type="button">Scarica .md</button>
+        <button class="btn danger sm" id="ndel" type="button">Elimina</button>
+      </div>
+      <div class="nt-cols" id="vtesto"><textarea id="ned" aria-label="Testo in Markdown" placeholder="Scrivi in Markdown. Collega un’altra nota con [[Titolo]]."></textarea><div class="nt-prev" id="nprev"></div></div>
+      <div id="vmappa" hidden>
+        <div class="toolbar">
+          <button class="btn ghost sm" id="mnode" type="button">+ Nodo</button>
+          <button class="btn ghost sm" id="mlink" type="button">Collega due nodi</button>
+          <button class="btn ghost sm" id="mdel" type="button">Elimina selezione</button>
+          <span class="muted">Trascina per spostare, doppio clic su un nodo per rinominarlo, doppio clic sul vuoto per crearne uno.</span>
+        </div>
+        <svg class="nt-svg" id="msvg" viewBox="0 0 1000 600" tabindex="0" aria-label="Mappa della nota"></svg>
+      </div>
+    </section>
+  </div>
+</div>

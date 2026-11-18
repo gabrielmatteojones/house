@@ -12,7 +12,7 @@ const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
 
 const Portal = (() => {
   const LS = "gj-portale:";
-  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro"];
+  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro", "note"];
   const SEED_UTILI = [
     { id: "seed-zoho", nome: "Zoho Mail", url: "https://mail.zoho.eu", categoria: "Posta" },
     { id: "seed-outlook", nome: "Outlook", url: "https://outlook.office.com", categoria: "Posta" },
