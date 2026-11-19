@@ -1,0 +1,80 @@
+---
+layout: default
+title: Documenti
+kicker: Lavoro
+lead: Scrivi lettere, relazioni e verbali sulla tua carta intestata, poi scaricali in Word o in PDF.
+permalink: /documenti/
+wide: true
+---
+<link rel="stylesheet" href="/documenti/documenti.css">
+
+<div class="dc-app">
+  <aside>
+    <section class="panel">
+      <h2>Intestazione</h2>
+      <div class="field"><label for="dc-nome">Titolo del documento</label><input id="dc-nome" value="Documento senza titolo"></div>
+      <div class="field"><label for="dc-dest">Destinatario</label><input id="dc-dest" value="Dirigente scolastico"></div>
+      <div class="field"><label for="dc-ogg">Oggetto</label><input id="dc-ogg" value="Oggetto del documento"></div>
+    </section>
+    <section class="panel" style="margin-top:16px">
+      <h2>Modelli</h2>
+      <div class="dc-mod">
+        <button class="btn ghost" type="button" data-mod="l">Lettera formale</button>
+        <button class="btn ghost" type="button" data-mod="r">Relazione</button>
+        <button class="btn ghost" type="button" data-mod="v">Verbale</button>
+        <button class="btn ghost" type="button" data-mod="c">Comunicazione</button>
+      </div>
+    </section>
+    <div class="stats dc-stats" style="margin-top:16px">
+      <div><b id="dc-nw">0</b><span>parole</span></div>
+      <div><b id="dc-nc">0</b><span>caratteri</span></div>
+      <div><b id="dc-np">1</b><span>pagine</span></div>
+    </div>
+  </aside>
+
+  <section>
+    <div class="panel dc-tb" role="toolbar" aria-label="Formattazione">
+      <div class="gr"><button class="btn ghost sm" type="button" data-cmd="undo" title="Annulla">↶</button><button class="btn ghost sm" type="button" data-cmd="redo" title="Ripeti">↷</button></div>
+      <div class="gr">
+        <select id="dc-blk" aria-label="Stile"><option value="p">Normale</option><option value="h1">Titolo 1</option><option value="h2">Titolo 2</option><option value="h3">Titolo 3</option><option value="blockquote">Citazione</option></select>
+        <select id="dc-font" aria-label="Carattere"><option>Arial</option><option>Times New Roman</option><option>Georgia</option><option>Verdana</option><option>Courier New</option></select>
+        <select id="dc-size" aria-label="Dimensione"></select>
+      </div>
+      <div class="gr">
+        <button class="btn ghost sm" type="button" data-cmd="bold" title="Grassetto"><b>G</b></button>
+        <button class="btn ghost sm" type="button" data-cmd="italic" title="Corsivo"><i>C</i></button>
+        <button class="btn ghost sm" type="button" data-cmd="underline" title="Sottolineato"><u>S</u></button>
+        <button class="btn ghost sm" type="button" data-cmd="strikeThrough" title="Barrato"><s>ab</s></button>
+        <label class="dc-col" title="Colore testo">A<input type="color" value="#000000" data-color="foreColor"></label>
+        <label class="dc-col" title="Evidenzia">▰<input type="color" value="#ffff00" data-color="hiliteColor"></label>
+      </div>
+      <div class="gr">
+        <button class="btn ghost sm" type="button" data-cmd="justifyLeft" title="Sinistra">⇤</button><button class="btn ghost sm" type="button" data-cmd="justifyCenter" title="Centra">↔</button>
+        <button class="btn ghost sm" type="button" data-cmd="justifyRight" title="Destra">⇥</button><button class="btn ghost sm" type="button" data-cmd="justifyFull" title="Giustifica">☰</button>
+      </div>
+      <div class="gr">
+        <button class="btn ghost sm" type="button" data-cmd="insertUnorderedList" title="Elenco puntato">• ≡</button><button class="btn ghost sm" type="button" data-cmd="insertOrderedList" title="Elenco numerato">1. ≡</button>
+        <button class="btn ghost sm" type="button" data-cmd="outdent">«</button><button class="btn ghost sm" type="button" data-cmd="indent">»</button>
+      </div>
+      <div class="gr">
+        <button class="btn ghost sm" type="button" id="dc-tbl">Tabella</button><button class="btn ghost sm" type="button" id="dc-link">Link</button>
+        <button class="btn ghost sm" type="button" data-cmd="insertHorizontalRule">Linea</button><button class="btn ghost sm" type="button" id="dc-pb">Nuova pagina</button><button class="btn ghost sm" type="button" id="dc-date">Data</button>
+      </div>
+      <span class="sp"></span>
+      <button class="btn ghost" type="button" id="dc-new">Nuovo</button>
+      <button class="btn navy" type="button" id="dc-word">Scarica Word</button>
+      <button class="btn" type="button" id="dc-pdf">Scarica PDF</button>
+    </div>
+
+    <div class="dc-can"><div class="dc-page">
+      <div class="dc-vl"></div><div class="dc-fx"></div>
+      <table class="dc-t">
+        <thead><tr><th class="dc-hd"><div class="dc-lh"><img id="dc-logo" alt="" hidden><div><b>GABRIEL JONES</b><br>Fontanafredda (PN)<br>Tel. 0434 733808<br>Email: -@joneshouse.it</div></div></th></tr></thead>
+        <tbody><tr><td class="dc-bd"><div id="dc-ed" contenteditable="true" spellcheck="true"></div></td></tr></tbody>
+        <tfoot><tr><td class="dc-fd">Documento realizzato dall’ufficio di Gabriel Jones destinato a <span id="dc-fd">Dirigente scolastico</span> con l’oggetto <span id="dc-fo">Oggetto del documento</span></td></tr></tfoot>
+      </table>
+    </div></div>
+  </section>
+</div>
+
+<script defer src="/documenti/documenti.js"></script>

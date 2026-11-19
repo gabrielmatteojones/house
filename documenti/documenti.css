@@ -1,0 +1,28 @@
+/* Documenti · pagina del portale. Usa le classi del portale (panel, btn, field, stats) e solo poche regole proprie. */
+.dc-app{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;align-items:start}
+@media(max-width:900px){.dc-app{grid-template-columns:1fr}}
+.dc-mod{display:grid;gap:8px}.dc-mod .btn{text-align:left;border-left:4px solid #D8141E}
+.dc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.dc-stats div{text-align:center}.dc-stats b{display:block;font-size:2rem;line-height:1.1}.dc-stats span{font-size:.8rem;opacity:.7}
+.dc-tb{position:sticky;top:8px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin-bottom:16px}
+.dc-tb .gr{display:flex;align-items:center;gap:2px;padding-right:8px;border-right:1px solid rgba(15,27,77,.15)}
+.dc-tb .gr:last-of-type{border:0}.dc-tb .btn.on{background:#0F1B4D;color:#fff}
+.dc-tb select{height:32px;border:1px solid rgba(15,27,77,.2);border-radius:4px;background:#fff;color:inherit;font:inherit;padding:0 6px}
+.dc-col{display:inline-flex;align-items:center;gap:3px;font-weight:700;padding:0 6px;cursor:pointer}
+.dc-col input{width:22px;height:22px;padding:0;border:1px solid rgba(15,27,77,.25);background:#fff}
+.dc-can{background:#e8dfd6 radial-gradient(rgba(15,27,77,.09) 1px,transparent 1.2px) 0 0/8px 8px;border-radius:8px;padding:26px 10px;overflow:auto}
+/* Foglio A4 con la carta intestata */
+.dc-page{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#000;box-shadow:0 8px 24px rgba(15,27,77,.25);position:relative;font:11pt Arial,sans-serif}
+table.dc-t{width:100%;border-collapse:collapse;height:297mm}.dc-t td,.dc-t th{padding:0;font-weight:400;text-align:left}
+.dc-hd{height:45mm;position:relative}.dc-lh img{position:absolute;left:6mm;top:8mm;width:42mm}
+.dc-lh div{position:absolute;left:62mm;top:12mm;font-size:9.5pt;line-height:1.35}.dc-lh b{font-size:11pt}
+.dc-vl{position:absolute;left:58mm;top:42mm;bottom:12mm;border-left:.3mm solid #3D6E99;pointer-events:none}
+.dc-fx{display:none;position:fixed;left:62mm;right:15mm;bottom:9mm;font-size:8pt;font-style:italic;color:#555}
+td.dc-bd{vertical-align:top;padding:0 15mm 0 62mm}td.dc-fd{height:28mm;vertical-align:bottom;padding:0 15mm 9mm 62mm;font-size:8pt;font-style:italic;color:#555}
+#dc-ed{outline:0;min-height:150mm;line-height:1.4}#dc-ed:empty:before{content:"Scrivi qui il tuo documento…";color:#aaa}
+#dc-ed table{border-collapse:collapse;width:100%}#dc-ed td,#dc-ed th{border:1px solid #888;padding:4px 6px;min-width:30px}
+#dc-ed h1{font-size:20pt;color:#3D6E99;margin:.5em 0 .3em}#dc-ed h2{font-size:15pt;color:#3D6E99;margin:.5em 0 .3em}#dc-ed h3{font-size:12pt;color:#3D6E99}#dc-ed p{margin:0 0 .6em}
+/* Stampa / PDF: la pagina è stampata da un iframe pulito, con la carta intestata su ogni pagina */
+@media print{@page{size:A4;margin:0}
+.dc-iframe{margin:0}.dc-iframe .dc-page{width:auto;min-height:0;box-shadow:none}.dc-iframe table.dc-t{height:auto}
+.dc-iframe thead{display:table-header-group}.dc-iframe tfoot{display:table-footer-group}
+.dc-iframe .dc-vl{position:fixed;top:42mm;bottom:12mm}.dc-iframe #dc-ed{min-height:0}.dc-iframe .dc-fd{visibility:hidden}.dc-iframe .dc-fx{display:block}}
