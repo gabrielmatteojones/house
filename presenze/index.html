@@ -1,0 +1,80 @@
+---
+layout: default
+title: Presenze in rete
+kicker: Lavoro
+lead: Il tuo badge. Entrate e uscite da scuola, oratorio e attività extra, anche quando la rete non c'è.
+permalink: /presenze/
+wide: true
+---
+<link rel="stylesheet" href="/presenze/presenze.css">
+
+<!-- Badge -->
+<section class="panel pr-badge" id="pr-badge" aria-live="polite">
+  <div id="pr-idle">
+    <h2>Dove sei?</h2>
+    <div class="chips-row" id="pr-luoghi" role="radiogroup" aria-label="Luogo"></div>
+    <div class="startbar" style="margin:0">
+      <button class="btn pr-big" id="pr-in" type="button">Entra</button>
+      <button class="btn ghost" id="pr-edit-luoghi" type="button">Modifica luoghi</button>
+    </div>
+  </div>
+
+  <div id="pr-live" hidden>
+    <div class="live-head">
+      <span class="live-dot" aria-hidden="true"></span>
+      <strong id="pr-live-luogo">In servizio</strong>
+      <span class="timer" id="pr-timer">00:00:00</span>
+      <span class="sp"></span>
+      <button class="btn pr-big" id="pr-out" type="button">Esci</button>
+    </div>
+    <p class="muted" id="pr-live-since" style="margin:0 0 12px"></p>
+    <div class="field"><label for="pr-note">Nota (facoltativa)</label><input id="pr-note" placeholder="Es. sostituzione, uscita anticipata…"></div>
+  </div>
+</section>
+
+<div class="stats" id="pr-stats"></div>
+
+<!-- Elenco -->
+<div class="toolbar">
+  <button class="btn ghost sm" id="pr-prev" type="button" aria-label="Mese precedente">‹</button>
+  <strong class="pr-month" id="pr-month"></strong>
+  <button class="btn ghost sm" id="pr-next" type="button" aria-label="Mese successivo">›</button>
+  <select id="pr-filter" aria-label="Filtra per luogo"><option value="">Tutti i luoghi</option></select>
+  <span class="sp"></span>
+  <button class="btn ghost" id="pr-add" type="button">Aggiungi a mano</button>
+  <button class="btn ghost" id="pr-csv" type="button">Esporta CSV</button>
+</div>
+
+<div class="empty" id="pr-none" hidden>
+  <h3>Nessuna presenza</h3>
+  <p>Per questo mese non c'è ancora nessuna entrata registrata.</p>
+</div>
+
+<div class="pr-tablewrap" id="pr-tablewrap">
+  <table class="pr-table">
+    <thead><tr><th>Luogo</th><th>Entrata</th><th>Uscita</th><th>Durata</th><th class="pr-col-note">Nota</th><th><span class="sr-only">Azioni</span></th></tr></thead>
+    <tbody id="pr-rows"></tbody>
+  </table>
+</div>
+
+<section class="panel" id="pr-totals-panel" style="margin-top:20px" hidden>
+  <h2>Ore per luogo</h2>
+  <ul class="list pr-totals" id="pr-totals"></ul>
+</section>
+
+<!-- Badge offline -->
+<section class="panel" style="margin-top:20px">
+  <h2>Badge offline</h2>
+  <p class="muted" style="margin-top:0">Un file HTML da tenere sul computer. Funziona senza rete: registra entrate e uscite e, appena torna la connessione, le invia qui. Le presenze compaiono in questa pagina.</p>
+  <ol class="pr-steps">
+    <li>Su Netlify, in <b>Site configuration → Environment variables</b>, crea la variabile <code>PRESENZE_TOKEN</code> (ambito <b>Functions</b>) con una stringa lunga e casuale. Poi rilancia il deploy.</li>
+    <li>Scarica il file e salvalo in una cartella fissa del computer: non spostarlo e non rinominarlo, perché le registrazioni in attesa sono legate al suo percorso.</li>
+    <li>Aprilo nel browser, tocca <b>Impostazioni</b> e incolla lo stesso token. L'indirizzo del portale è già compilato.</li>
+  </ol>
+  <div class="backup">
+    <button class="btn navy" id="pr-download" type="button">Scarica il badge offline</button>
+    <span class="muted" id="pr-queue"></span>
+  </div>
+</section>
+
+<script defer src="/presenze/presenze.js"></script>

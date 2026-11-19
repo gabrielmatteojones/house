@@ -1,0 +1,40 @@
+/* Presenze in rete · stili della pagina (si appoggiano alle variabili di portal.css) */
+.pr-badge{margin-bottom:26px;border-width:2px}
+.pr-badge.on{border-color:var(--red)}
+.pr-badge h2{margin-bottom:12px}
+.pr-big{font-size:20px;padding:14px 34px;letter-spacing:.01em}
+.pr-month{font:700 30px/1 var(--head);text-transform:capitalize;min-width:170px;text-align:center}
+
+.chip-btn[role=radio]{display:inline-flex;align-items:center;gap:8px}
+.chip-btn[aria-checked=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.pr-tablewrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+.pr-table{width:100%;border-collapse:collapse;font-size:15px}
+.pr-table th{text-align:left;font:700 13px var(--body);color:var(--muted);padding:12px 14px;background:var(--cream);border-bottom:1px solid var(--line);white-space:nowrap}
+.pr-table td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:middle}
+.pr-table tbody tr:first-child td{border-top:0}
+.pr-table tr.pr-day td{background:var(--cream);font:700 13px var(--body);text-transform:capitalize;color:var(--muted);padding:8px 14px}
+.pr-table tr.pr-day td span{float:right;text-transform:none}
+.pr-table .num{font:700 20px/1 var(--head);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pr-table .luogo{font-weight:700}
+.pr-table .nota{color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-table .act{text-align:right;white-space:nowrap}
+.pr-tag{display:inline-block;margin-left:6px;font:700 11px var(--body);padding:2px 7px;border-radius:3px;background:var(--cream);border:1px solid var(--line);color:var(--muted);vertical-align:middle}
+.pr-tag.warn{background:var(--red);border-color:var(--red);color:#fff}
+.pr-tag.wait{background:#fff3d6;border-color:#f0c25a;color:#7a5200}
+
+.pr-totals time{min-width:120px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.pr-steps{margin:0 0 18px;padding-left:20px}
+.pr-steps li{margin-bottom:8px}
+.pr-steps code{background:var(--cream);border:1px solid var(--line);border-radius:3px;padding:1px 6px;font-size:14px}
+
+@media (max-width:640px){
+  .pr-col-note,.pr-table td.nota{display:none}
+  .pr-big{width:100%}
+  .pr-badge .startbar .btn{flex:1 1 100%}
+  .pr-month{min-width:0;flex:1;font-size:24px}
+  .toolbar select{flex:1 1 100%;max-width:none}
+  .pr-table th,.pr-table td{padding:10px}
+}

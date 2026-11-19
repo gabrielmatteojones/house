@@ -11,6 +11,10 @@ const same = (a, b) => {
 };
 
 export default async (request, context) => {
+  // Il file offline «Presenze in rete» sta sul computer e non conosce la password del portale:
+  // usa un token proprio (PRESENZE_TOKEN), che controlla la funzione stessa (fail closed).
+  if (new URL(request.url).pathname === "/api/presenze-ingest") return context.next();
+
   const user = Deno.env.get("PORTAL_USER");
   const pass = Deno.env.get("PORTAL_PASSWORD");
 
@@ -32,7 +36,7 @@ export default async (request, context) => {
     } catch (_) { /* credenziali malformate */ }
   }
 
-  return new Response("Accesso riservato", {
+  return new Response("Accesso riservato al personale interno, accedi con le credenziali 18F", {
     status: 401,
     headers: {
       "www-authenticate": 'Basic realm="Portale privato", charset="UTF-8"',
