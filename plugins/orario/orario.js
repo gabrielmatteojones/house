@@ -1,10 +1,9 @@
 /* Plugin Orario scolastico: pagina /orario/
-   Dati: collezione "orario" (una voce per lezione settimanale); le classi sono quelle del plugin Materiali ("classi"). */
+   Dati: collezione "orario" (una voce per lezione settimanale). Plugin indipendente, non usa dati di altri plugin. */
 (async () => {
   if (document.body.dataset.page !== "/orario/") return;
-  ["orario", "classi"].forEach(n => { if (!Portal.COLLECTIONS.includes(n)) Portal.COLLECTIONS.push(n); });
+  ["orario"].forEach(n => { if (!Portal.COLLECTIONS.includes(n)) Portal.COLLECTIONS.push(n); });
   const lez = await Portal.load("orario", []);
-  const classi = await Portal.load("classi", []);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const GG = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"], PX = 64;
   const PAL = ["var(--navy)", "var(--red)", "color-mix(in srgb,var(--navy) 60%,#fff)", "color-mix(in srgb,var(--red) 65%,#fff)", "#1f7a4d", "#b7791f", "#6b4fa3", "#2b7a9b"];
@@ -21,7 +20,8 @@
   const dateOf = g => { const d = new Date(); d.setDate(d.getDate() - todayIdx() + g); return isoDate(d); };
   const dur = m => m < 60 ? m + " min" : (Math.floor(m / 60) + " h" + (m % 60 ? " " + m % 60 + " min" : ""));
   const col = l => PAL[l.col !== "" && l.col != null ? +l.col : [...l.materia].reduce((a, c) => a + c.charCodeAt(0), 0) % PAL.length];
-  const cname = id => (classi.find(c => c.id === id) || {}).nome || "";
+  const cname = c => c || "";
+  const classList = () => [...new Set(lez.map(l => l.classe).filter(Boolean))].sort((a, b) => a.localeCompare(b, "it", { numeric: true }));
   const vis = () => lez.filter(l => !st.cl || l.classe === st.cl);
   const skipped = (l, g) => !!(l.skip || {})[dateOf(g)];
   const sub = l => [l.aula && "Aula " + l.aula, cname(l.classe)].filter(Boolean).join(" · ");
@@ -90,7 +90,7 @@
     const fields = [
       { name: "materia", label: "Materia", required: true, list: subjects },
       { name: "g", label: "Giorno", type: "select", half: true, options: GG.slice(0, 6).map((n, i) => [String(i), n]) },
-      { name: "classe", label: "Classe", type: "select", half: true, options: [["", "— Nessuna —"], ...[...classi].sort((a, b) => a.nome.localeCompare(b.nome, "it", { numeric: true })).map(c => [c.id, c.nome])] },
+      { name: "classe", label: "Classe", half: true, list: classList(), placeholder: "es. 2A (facoltativo)" },
       { name: "i", label: "Inizio", half: true, placeholder: "08:00" }, { name: "f", label: "Fine", half: true, placeholder: "08:55" },
       { name: "aula", label: "Aula", half: true }, { name: "col", label: "Colore", type: "select", half: true, options: [["", "Automatico"], ...PALN.map((n, i) => [String(i), n])] },
       ...GG.slice(0, 6).map((n, g) => ({ name: "d" + g, label: n, type: "checkbox", checkLabel: "Copia anche su " + n })),
@@ -123,8 +123,9 @@
   /* ---------- Disegno ed eventi ---------- */
   function render() {
     $("#or-views").innerHTML = [["sett", "Settimana"], ["oggi", "Oggi"], ["stat", "Statistiche"]].map(([v, l]) => `<button class="chip-btn${st.v === v ? " on" : ""}" data-v="${v}" type="button">${l}</button>`).join("");
-    const box = $("#or-classes"); box.hidden = !classi.length;
-    box.innerHTML = classi.length ? [["", "Tutte le classi"], ...[...classi].sort((a, b) => a.nome.localeCompare(b.nome, "it", { numeric: true })).map(c => [c.id, c.nome])].map(([v, l]) => `<button class="chip-btn${st.cl === v ? " on" : ""}" data-c="${esc(v)}" type="button">${esc(l)}</button>`).join("") : "";
+    const cls = classList(), box = $("#or-classes"); if (st.cl && !cls.includes(st.cl)) st.cl = "";
+    box.hidden = !cls.length;
+    box.innerHTML = cls.length ? [["", "Tutte le classi"], ...cls.map(c => [c, c])].map(([v, l]) => `<button class="chip-btn${st.cl === v ? " on" : ""}" data-c="${esc(v)}" type="button">${esc(l)}</button>`).join("") : "";
     ({ sett: drawWeek, oggi: drawToday, stat: drawStats })[st.v]();
   }
   $("#or-views").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { st.v = ui.v = b.dataset.v; saveUi(); render(); } });
