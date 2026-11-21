@@ -25,6 +25,20 @@
           <a href="{{ item.url }}" class="{% if page.url == item.url %}active{% endif %}">{{ item.title }}</a>
         {% endif %}
       {% endfor %}
+      {%- comment -%} Menu «Funzioni»: una voce per ogni pagina dentro plugins/ (esclude con "menu: false" nell'intestazione della pagina). {%- endcomment -%}
+      {% assign funz = site.pages | where_exp: "p", "p.path contains 'plugins/'" | where_exp: "p", "p.menu != false" | sort: "title" %}
+      {% if funz.size > 0 %}
+        {% assign on = "" %}
+        {% for p in funz %}{% if page.url == p.url %}{% assign on = "active" %}{% endif %}{% endfor %}
+        <div class="dd {{ on }}">
+          <button class="dd-btn" type="button" aria-haspopup="true">Funzioni
+            <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+          <div class="dd-menu">
+            {% for p in funz %}<a href="{{ p.url }}" class="{% if page.url == p.url %}on{% endif %}">{{ p.menu_title | default: p.title }}</a>{% endfor %}
+          </div>
+        </div>
+      {% endif %}
     </nav>
     <a class="btn go" href="/registro/?avvia=1">Avvia lezione</a>
     <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
