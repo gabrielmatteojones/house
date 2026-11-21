@@ -1,0 +1,30 @@
+/* Plugin Orario scolastico: solo variabili colore del portale */
+.or-week{background:#fff;border:1px solid var(--line);border-radius:6px;overflow-x:auto;margin-top:10px}
+.or-head,.or-body{display:grid;grid-template-columns:48px repeat(var(--nd),minmax(120px,1fr));min-width:640px}
+.or-head{border-bottom:2px solid var(--line);position:sticky;top:0;z-index:5;background:#fff}
+.or-head span{padding:9px 6px;text-align:center;font:700 13px var(--body);color:var(--navy)}
+.or-head span.td{background:var(--navy);color:#fff}.or-head small{display:block;font-weight:500;opacity:.75}
+.or-gut{position:relative}.or-gut i{position:absolute;right:6px;font:600 11px var(--body);color:var(--muted);font-style:normal}
+.or-col{position:relative;border-left:1px solid var(--line);cursor:copy;background:repeating-linear-gradient(to bottom,transparent 0,transparent 63px,var(--line) 63px,var(--line) 64px)}
+.or-col.td{background-color:color-mix(in srgb,var(--cream) 65%,#fff)}
+.or-l{position:absolute;box-sizing:border-box;border-radius:5px;color:#fff;padding:4px 6px;font-size:12px;line-height:1.25;overflow:hidden;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.or-l b{display:block;font-size:13px}.or-l span{display:block;opacity:.9}
+.or-l.cur{outline:3px solid var(--red);outline-offset:1px;z-index:2}.or-l.sk{opacity:.4;text-decoration:line-through}
+.or-l.cf{border:2px dashed var(--red)}
+.or-now{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:4;pointer-events:none}
+.or-now:before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.or-hero{background:var(--navy);color:#fff;border-radius:6px;padding:18px 20px;margin:10px 0 14px}
+.or-hero small{opacity:.75;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.or-hero h2{font-size:34px;margin:4px 0;color:#fff}
+.or-pg{height:8px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden;margin-top:10px}.or-pg div{height:100%;background:var(--red)}
+.or-row{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-left:6px solid var(--navy);border-radius:6px;padding:10px 14px;margin-bottom:8px;cursor:pointer}
+.or-row:hover{background:var(--cream)}.or-row.sk{opacity:.5}.or-row.sk b{text-decoration:line-through}
+.or-row .tm{font:700 14px var(--body);color:var(--navy);min-width:98px}.or-row .m{flex:1}.or-row .m span{display:block;color:var(--muted);font-size:13px}
+.or-badge{font:700 11px var(--body);text-transform:uppercase;border-radius:99px;padding:3px 9px;background:var(--cream);color:var(--navy);border:1px solid var(--line)}
+.or-badge.now{background:var(--red);color:#fff;border-color:var(--red)}
+.or-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.or-stat{background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:10px 14px;color:var(--muted);font-size:13px}.or-stat b{display:block;font-size:26px;color:var(--navy)}
+.or-bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:14px}.or-bar>span:first-child{width:130px;font-weight:600;color:var(--navy)}
+.or-bar div{height:16px;border-radius:99px;min-width:4px}.or-bar em{font-style:normal;color:var(--muted);font-size:13px}
+.or-sec{font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:20px 0 6px}
+@media print{.toolbar,.chips-row,.or-hero,.site-header,header,footer{display:none!important}.or-week{border:0;overflow:visible}.or-l{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
