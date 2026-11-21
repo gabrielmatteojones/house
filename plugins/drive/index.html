@@ -1,0 +1,78 @@
+---
+title: Drive
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>{{ page.title }} · {{ site.title | default: "Jones House" }}</title>
+  <link rel="stylesheet" href="css/drive.css">
+</head>
+<body>
+  <header id="topbar">
+    <a class="brand" href="{{ '/' | relative_url }}" title="Torna al sito">◧ Drive</a>
+    <div class="actions">
+      <button id="btn-upload" class="primary">Carica file</button>
+      <button id="btn-frame">Nuova cartella</button>
+      <span class="sep"></span>
+      <button id="btn-open" disabled>Apri</button>
+      <button id="btn-rename" disabled>Rinomina</button>
+      <button id="btn-download" disabled>Scarica</button>
+      <button id="btn-delete" class="danger" disabled>Elimina</button>
+    </div>
+    <input id="file-input" type="file" multiple hidden>
+  </header>
+
+  <main id="viewport" tabindex="0" aria-label="Lavagna del drive">
+    <div id="world"></div>
+    <div id="empty-hint">
+      <strong>Il tuo drive è vuoto</strong>
+      Trascina qui i file oppure usa “Carica file”.<br>
+      Tieni premuto sullo sfondo per spostarti, Ctrl + rotellina per lo zoom.
+    </div>
+  </main>
+
+  <aside id="storage" aria-live="polite">
+    <div class="s-head">
+      <span class="s-title">Spazio</span>
+      <span class="s-pct" id="s-pct">–</span>
+    </div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <span class="seg mine" id="seg-mine"></span>
+      <span class="seg other" id="seg-other"></span>
+    </div>
+    <div class="s-main" id="s-main">–</div>
+    <ul class="legend">
+      <li><i class="dot mine"></i>Drive <b id="l-mine">–</b></li>
+      <li><i class="dot other"></i>Altri dati del sito <b id="l-other">–</b></li>
+      <li><i class="dot free"></i>Disponibile <b id="l-free">–</b></li>
+    </ul>
+  </aside>
+
+  <div id="zoombar">
+    <button id="z-out" title="Riduci">−</button>
+    <button id="z-level" title="Riporta al 100%">100%</button>
+    <button id="z-in" title="Ingrandisci">+</button>
+    <button id="z-fit" title="Mostra tutto">Adatta</button>
+  </div>
+
+  <div id="modal" hidden>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span id="modal-title"></span>
+        <span>
+          <button id="modal-dl">Scarica</button>
+          <button id="modal-close" aria-label="Chiudi">✕</button>
+        </span>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" role="status"></div>
+  <div id="dropmask">Rilascia per caricare</div>
+
+  <script src="js/drive.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+DRIVE A CANVAS - Jones House
+
+Installazione: copia la cartella "drive" nella radice del sito Jekyll (accanto a "presenze").
+La pagina sarà su /drive/.
+
+Uso
+- Carica file con il pulsante o trascinandoli sulla lavagna.
+- Sfondo: trascina per spostarti. Ctrl + rotellina (o pinch) per lo zoom. Tasti: + - 0 (100%) 1 (adatta).
+- "Nuova cartella" crea un riquadro: spostandolo porta con sé le schede al suo interno; l'angolo in basso a destra lo ridimensiona.
+- Doppio clic su una scheda = anteprima. Canc = elimina, F2 = rinomina.
+
+Spazio
+- Il pannello in basso a sinistra confronta spazio usato e disponibile (quota offerta dal browser).
+- Per un limite fisso (es. 500 MB) imposta LIMIT_BYTES all'inizio di js/drive.js.
+
+Nota: i file sono salvati nel browser di chi usa la pagina (IndexedDB), non sul server.
