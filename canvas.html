@@ -1,0 +1,681 @@
+---
+layout: default
+title: Drive · Canvas
+kicker: Jones House
+lead: Il tuo Drive su una lavagna: sposta file e cartelle dove vuoi.
+permalink: /drive/canvas/
+compact: true
+wide: true
+scripts: [letterhead, docx-export, viewers, editor]
+quota_gb: 5
+---
+<style>
+{% raw %}
+/* Jones House · Drive in vista canvas */
+.cv{position:relative;height:80vh;min-height:560px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#f6ece1}
+
+.cv-view{position:absolute;inset:0;overflow:hidden;touch-action:none;outline:none;cursor:grab;
+  background-image:radial-gradient(rgba(16,28,77,.2) 1.2px,transparent 1.5px);background-size:24px 24px}
+.cv-view.panning{cursor:grabbing}
+.cv-world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+
+/* Barre sopra la lavagna */
+.cv-top{position:absolute;z-index:20;left:12px;right:12px;top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;box-shadow:0 8px 22px rgba(16,28,77,.1);width:fit-content;max-width:calc(100% - 24px)}
+.cv-top .btn{padding:6px 12px;font-size:13.5px}
+.cv-sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
+
+/* Elementi */
+.cvi{position:absolute;user-select:none;-webkit-user-select:none}
+.cvcard{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 4px 14px rgba(16,28,77,.08);overflow:hidden;cursor:grab}
+.cvcard:hover{border-color:var(--navy)}
+.cvthumb{flex:1;min-height:0;display:grid;place-items:center;background:#f4f1ee;overflow:hidden}
+.cvthumb img{width:100%;height:100%;object-fit:cover;object-position:top;pointer-events:none;-webkit-user-drag:none}
+.cvthumb .big-badge{width:54px;height:54px;font-size:19px;border-radius:9px}
+.cvthumb .snip{align-self:stretch;padding:9px 11px;font-size:11px;line-height:1.45;color:var(--muted);overflow:hidden;text-align:left;background:#fff}
+.cvfoot{display:flex;align-items:center;gap:7px;padding:7px 9px 0;min-width:0}
+.cvfoot b{font:700 13px/1.2 var(--body);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvfoot .fav{color:#e0a100;margin-left:auto;font-size:13px}
+.cvcard small{display:block;padding:1px 9px 8px;color:var(--muted);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Cartelle = riquadri (frame) che contengono i loro file */
+.cvframe{border:2px dashed rgba(16,28,77,.32);border-radius:10px;background:rgba(255,255,255,.5);pointer-events:none}
+.cvhead{pointer-events:auto;position:absolute;left:0;top:0;right:0;height:46px;display:flex;align-items:center;gap:9px;padding:0 14px;cursor:grab;color:var(--navy)}
+.cvhead b{font:700 21px/1 var(--head);letter-spacing:.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvhead .n{font:600 12px var(--body);font-style:normal;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+.cvhead .fav{color:#e0a100}
+.cvframe.over{background:rgba(211,18,27,.07);border-color:var(--red)}
+.cvframe.sel{outline:3px solid var(--red);outline-offset:3px}
+.cvcard.sel{outline:3px solid var(--red);outline-offset:3px}
+.cvi.dragging{box-shadow:0 18px 40px rgba(16,28,77,.28);cursor:grabbing}
+.cvframe.dragging{box-shadow:none}
+
+.cv-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;color:var(--muted);pointer-events:none;padding:24px}
+.cv-empty b{font:700 30px var(--head);color:var(--navy)}
+.cv-empty[hidden]{display:none}
+
+/* Spazio usato / disponibile */
+.cv-store{position:absolute;z-index:20;left:12px;bottom:12px;width:310px;max-width:calc(100% - 24px);background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px 11px;box-shadow:0 8px 22px rgba(16,28,77,.12)}
+.st-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.st-head b{font:700 22px/1 var(--head);letter-spacing:.01em}
+.st-head span{font-size:12.5px;color:var(--muted);font-weight:600}
+.st-bar{display:flex;height:11px;border-radius:99px;background:rgba(16,28,77,.1);overflow:hidden}
+.st-bar i{display:block;height:100%;min-width:3px}
+.st-main{margin:8px 0 5px;font-size:13.5px;font-weight:600}
+.st-main em{font-style:normal;color:var(--muted);font-weight:500}
+.st-leg{list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--muted)}
+.st-leg li{display:flex;align-items:center;gap:7px;padding:1px 0}
+.st-leg b{margin-left:auto;color:var(--navy);font-weight:600}
+.st-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.st-dot.free{background:rgba(16,28,77,.1);border:1px solid var(--muted)}
+.cv-store.warn .st-head span{color:var(--red)}
+
+.cv-zoom{position:absolute;z-index:20;right:12px;bottom:12px;display:flex;gap:2px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:3px;box-shadow:0 8px 22px rgba(16,28,77,.12)}
+.cv-zoom button{border:0;background:none;color:var(--navy);font:700 15px var(--body);min-width:34px;padding:6px 8px;border-radius:4px;cursor:pointer}
+.cv-zoom button:hover{background:var(--cream)}
+#zLevel{min-width:56px;font-variant-numeric:tabular-nums}
+
+.cv-drop{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(253,245,238,.88);border:3px dashed var(--red);pointer-events:none;color:var(--navy)}
+.cv-drop b{font:700 34px var(--head)}
+.cv-drop[hidden]{display:none}
+
+@media (max-width:700px){
+  .cv-store{bottom:60px;width:auto;right:12px}
+  .cv-zoom{left:12px;right:auto}
+}
+{% endraw %}
+</style>
+<div class="cv" id="cv" data-quota-gb="{{ page.quota_gb | default: 5 }}">
+  <div class="cv-top" id="cvTop">
+    <a class="btn ghost sm" href="/drive/" title="Torna alla vista a elenco">← Vista elenco</a>
+    <span class="cv-sep"></span>
+    <button class="btn sm" id="bDoc">+ Documento</button>
+    <button class="btn ghost sm" id="bFolder">+ Cartella</button>
+    <button class="btn ghost sm" id="bUpload">Carica file</button>
+    <span class="cv-sep"></span>
+    <button class="btn ghost sm" id="bOpen" disabled>Apri</button>
+    <button class="btn ghost sm" id="bRename" disabled>Rinomina</button>
+    <button class="btn ghost sm" id="bFav" disabled>★ Preferito</button>
+    <button class="btn ghost sm" id="bDownload" disabled>Scarica</button>
+    <button class="btn danger sm" id="bTrash" disabled>Cestino</button>
+  </div>
+
+  <div class="cv-view" id="cvView" tabindex="0" aria-label="Lavagna del Drive">
+    <div class="cv-world" id="cvWorld"></div>
+    <div class="cv-empty" id="cvEmpty" hidden>
+      <b>Il Drive è vuoto</b>
+      Trascina qui dei file, oppure usa «+ Documento», «+ Cartella» e «Carica file».
+    </div>
+  </div>
+
+  <aside class="cv-store" id="cvStore" aria-live="polite"></aside>
+
+  <div class="cv-zoom" role="group" aria-label="Zoom">
+    <button id="zOut" aria-label="Riduci" title="Riduci">−</button>
+    <button id="zLevel" title="Riporta al 100%">100%</button>
+    <button id="zIn" aria-label="Ingrandisci" title="Ingrandisci">+</button>
+    <button id="zFit" title="Mostra tutto">Adatta</button>
+  </div>
+
+  <div class="cv-drop" id="cvDrop" hidden><b>Rilascia qui per caricare</b><span id="cvDropWhere"></span></div>
+  <input type="file" id="cvPick" multiple hidden>
+</div>
+
+<script>
+{% raw %}
+/* Jones House · Drive in vista canvas
+   Stessi dati del Drive (cartelle, file, documenti), mostrati su una lavagna infinita:
+   le cartelle sono riquadri che contengono i loro file. Spostare una scheda in un riquadro
+   la sposta davvero in quella cartella. Le posizioni sono salvate nella raccolta "canvas". */
+document.addEventListener("DOMContentLoaded", async () => {
+  const [cartelle, files, docs, cv] = await Promise.all([
+    Portal.load("cartelle", []), Portal.load("file", []), Portal.load("documenti", []), Portal.load("canvas", {})
+  ]);
+  cv.pos = cv.pos && typeof cv.pos === "object" ? cv.pos : {};
+
+  /* ---------- Impostazioni ---------- */
+  const root = $("#cv"), view = $("#cvView"), world = $("#cvWorld");
+  const QUOTA = (Number(root.dataset.quotaGb) || 5) * 1024 ** 3;   // spazio totale mostrato (front matter: quota_gb)
+  const MAX_FILE = 100 * 1024 * 1024;
+  const CW = 168, CH = 150, PAD = 22, HEAD = 46, GAP = 18, MINW = 300, MINH = 190, ROW_W = 1000, FRAME_ROW_W = 860;
+  const MIN_Z = 0.1, MAX_Z = 3;
+  const VIEW_KEY = "gj-portale:canvas-view";
+  const nowIso = () => new Date().toISOString();
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const plain = h => (h || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ");
+  const shortDate = iso => iso ? fmtDate(iso.slice(0, 10), { day: "numeric", month: "short", year: "numeric" }) : "";
+
+  /* ---------- Modello (come nel Drive) ---------- */
+  const byId = id => cartelle.find(c => c.id === id);
+  const trashedAnc = p => { let g = 0; while (p && g++ < 60) { const f = byId(p); if (!f) return false; if (f.cestino) return true; p = f.parent; } return false; };
+  const okParent = p => (p && byId(p) ? p : "");
+
+  const all = () => [
+    ...cartelle.map(f => ({ kind: "folder", id: f.id, nome: f.nome, parent: okParent(f.parent), mod: f.aggiornato || f.creato || "", fav: f.preferito, trash: f.cestino, raw: f })),
+    ...docs.map(d => ({ kind: "doc", id: d.id, nome: d.titolo || "Senza titolo", parent: okParent(d.cartella), mod: d.aggiornato || d.creato || "", size: 0, fav: d.preferito, trash: d.cestino, raw: d })),
+    ...files.map(f => ({ kind: "file", id: f.id, nome: f.nome, parent: okParent(f.cartella), mod: f.aggiornato || f.creato || "", size: f.size || 0, fav: f.preferito, trash: f.cestino, raw: f, type: Viewers.kindOf(f) }))
+  ];
+  const live = it => !it.trash && !trashedAnc(it.parent);
+  const itemById = id => all().find(i => i.id === id);
+
+  const coll = k => k === "folder" ? ["cartelle", cartelle] : k === "doc" ? ["documenti", docs] : ["file", files];
+  const persist = k => Portal.save(coll(k)[0], coll(k)[1]);
+  let saveT;
+  const saveCv = () => { clearTimeout(saveT); saveT = setTimeout(() => Portal.save("canvas", cv), 500); };
+
+  /* ---------- Disposizione ----------
+     Ogni elemento ha una posizione relativa al contenuto della cartella che lo contiene (cv.pos[id]).
+     Chi non ce l'ha viene sistemato in automatico, a righe, evitando le schede già posizionate.
+     I riquadri si adattano da soli al contenuto. */
+  let L = new Map();       // id -> {x,y,w,h,depth,it,n}   (coordinate assolute sulla lavagna)
+  let LOCAL = new Map();   // id -> {x,y}                  (relative al genitore)
+
+  function layout(drag) {
+    const list = all().filter(live);
+    const kids = new Map();
+    for (const it of list) { if (!kids.has(it.parent)) kids.set(it.parent, []); kids.get(it.parent).push(it); }
+
+    let floating = null;
+    if (drag) {
+      floating = list.find(i => i.id === drag.id) || null;
+      if (floating) { const a = kids.get(floating.parent); a.splice(a.indexOf(floating), 1); }
+    }
+
+    const size = new Map(), local = new Map();
+    const sizeOf = c => c.kind === "folder" ? size.get(c.id) : { w: CW, h: CH };
+
+    const arrange = (key, ch) => {
+      const maxW = key ? FRAME_ROW_W : ROW_W, placed = [];
+      const auto = [];
+      for (const c of ch) {
+        const p = cv.pos[c.id], s = sizeOf(c);
+        if (p && isFinite(p.x) && isFinite(p.y)) {
+          const r = { x: key ? Math.max(0, p.x) : p.x, y: key ? Math.max(0, p.y) : p.y, w: s.w, h: s.h };
+          local.set(c.id, r); placed.push(r);
+        } else auto.push(c);
+      }
+      auto.sort((a, b) => (a.kind === "folder" ? 0 : 1) - (b.kind === "folder" ? 0 : 1) || a.nome.localeCompare(b.nome, "it", { numeric: true, sensitivity: "base" }));
+      const hitOf = r => placed.find(p => r.x < p.x + p.w + GAP && r.x + r.w + GAP > p.x && r.y < p.y + p.h + GAP && r.y + r.h + GAP > p.y);
+      let cx = 0, cy = 0, rowBottom = 0;
+      for (const c of auto) {
+        const s = sizeOf(c);
+        if (cx > 0 && cx + s.w > maxW) { cx = 0; cy = rowBottom + GAP; }
+        const r = { x: cx, y: cy, w: s.w, h: s.h };
+        let hit, n = 0;
+        while ((hit = hitOf(r)) && n++ < 300) {
+          r.x = hit.x + hit.w + GAP;
+          if (r.x + s.w > maxW) { r.x = 0; r.y = hit.y + hit.h + GAP; }
+        }
+        placed.push(r); local.set(c.id, r);
+        cx = r.x + s.w + GAP; cy = r.y; rowBottom = Math.max(rowBottom, r.y + s.h);
+      }
+      return placed;
+    };
+
+    const measure = id => {
+      if (size.has(id)) return;
+      const ch = kids.get(id) || [];
+      ch.forEach(c => c.kind === "folder" && measure(c.id));
+      const placed = arrange(id, ch);
+      const right = placed.reduce((m, r) => Math.max(m, r.x + r.w), 0), bottom = placed.reduce((m, r) => Math.max(m, r.y + r.h), 0);
+      size.set(id, { w: Math.max(MINW, PAD * 2 + right), h: Math.max(MINH, HEAD + PAD + bottom) });
+    };
+
+    (kids.get("") || []).forEach(c => c.kind === "folder" && measure(c.id));
+    arrange("", kids.get("") || []);
+    if (floating && floating.kind === "folder") measure(floating.id);
+
+    const out = new Map();
+    const put = (c, ox, oy, depth) => {
+      const l = local.get(c.id), s = sizeOf(c), x = ox + l.x, y = oy + l.y;
+      out.set(c.id, { x, y, w: s.w, h: s.h, depth, it: c, n: c.kind === "folder" ? (kids.get(c.id) || []).length : 0 });
+      if (c.kind === "folder") (kids.get(c.id) || []).forEach(k => put(k, x + PAD, y + HEAD, depth + 1));
+    };
+    (kids.get("") || []).forEach(c => put(c, 0, 0, 0));
+    if (floating) { local.set(floating.id, { x: drag.x, y: drag.y }); put(floating, 0, 0, 50); }
+    return { map: out, local };
+  }
+
+  /* ---------- Vista (pan / zoom) ---------- */
+  const V = { x: 0, y: 0, z: 1 };
+  const applyView = () => {
+    world.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`;
+    const s = 24 * V.z;
+    view.style.backgroundSize = `${s}px ${s}px`;
+    view.style.backgroundPosition = `${V.x}px ${V.y}px`;
+    $("#zLevel").textContent = Math.round(V.z * 100) + "%";
+    try { localStorage.setItem(VIEW_KEY, JSON.stringify(V)); } catch { /* niente */ }
+  };
+  const rect = () => view.getBoundingClientRect();
+  const toWorld = (cx, cy) => { const r = rect(); return { x: (cx - r.left - V.x) / V.z, y: (cy - r.top - V.y) / V.z }; };
+  const centerWorld = () => { const r = rect(); return toWorld(r.left + r.width / 2, r.top + r.height / 2); };
+  function zoomAt(sx, sy, nz) {
+    nz = clamp(nz, MIN_Z, MAX_Z);
+    const wx = (sx - V.x) / V.z, wy = (sy - V.y) / V.z;
+    V.z = nz; V.x = sx - wx * nz; V.y = sy - wy * nz;
+    applyView();
+  }
+  function fit() {
+    const rs = [...L.values()].filter(r => r.depth < 50);
+    const r = rect();
+    if (!rs.length) { V.x = 60; V.y = 90; V.z = 1; return applyView(); }
+    const x1 = Math.min(...rs.map(a => a.x)), y1 = Math.min(...rs.map(a => a.y));
+    const x2 = Math.max(...rs.map(a => a.x + a.w)), y2 = Math.max(...rs.map(a => a.y + a.h));
+    const padX = 50, top = 90, bottom = 240;
+    V.z = clamp(Math.min((r.width - padX * 2) / (x2 - x1), (r.height - top - bottom) / (y2 - y1)), MIN_Z, 1.2);
+    V.x = (r.width - (x2 - x1) * V.z) / 2 - x1 * V.z;
+    V.y = top + (r.height - top - bottom - (y2 - y1) * V.z) / 2 - y1 * V.z;
+    applyView();
+  }
+
+  /* ---------- Disegno ---------- */
+  const FOLDER_SVG = `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H10l2 2.5h7.5A1.5 1.5 0 0 1 21 9v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z" fill="currentColor"/></svg>`;
+  const els = new Map(), thumbCache = new Map();
+  let selected = null, drag = null;
+
+  const badgeOf = it => Viewers.badge(it.kind === "doc" ? "doc" : it.type);
+  const thumbKey = it => it.id + "|" + (it.raw.aggiornato || "");
+  const thumbHtml = it => {
+    if (it.kind === "doc") return `<div class="snip">${esc(plain(it.raw.html).replace(/\s+/g, " ").trim().slice(0, 170)) || "<span class='muted'>Documento vuoto</span>"}</div>`;
+    const u = thumbCache.get(thumbKey(it));
+    if (u) return `<img src="${esc(u)}" alt="" draggable="false">`;
+    const [l, c] = badgeOf(it);
+    return `<div class="big-badge" style="--c:${c}">${l}</div>`;
+  };
+  const sigOf = (r) => { const it = r.it; return [it.kind, it.nome, it.fav ? 1 : 0, it.size, it.mod, r.n, thumbCache.has(thumbKey(it)) ? 1 : 0].join("|"); };
+
+  function build(el, r) {
+    const it = r.it;
+    el.dataset.id = it.id;
+    el.dataset.k = it.kind;
+    const star = it.fav ? `<span class="fav" title="Preferito">★</span>` : "";
+    if (it.kind === "folder") {
+      el.className = "cvi cvframe";
+      el.innerHTML = `<div class="cvhead"><span class="tbadge folder" style="--c:#101c4d">${FOLDER_SVG}</span><b title="${esc(it.nome)}">${esc(it.nome)}</b><i class="n">${r.n}</i>${star}</div>`;
+    } else {
+      el.className = "cvi cvcard";
+      const [l, c] = badgeOf(it);
+      el.innerHTML = `<div class="cvthumb"${it.kind === "file" ? ` data-thumb="${it.id}"` : ""}>${thumbHtml(it)}</div>
+        <div class="cvfoot"><span class="tbadge" style="--c:${c}">${l}</span><b title="${esc(it.nome)}">${esc(it.nome)}</b>${star}</div>
+        <small>${esc([shortDate(it.mod), it.kind === "file" ? Portal.fmtSize(it.size) : ""].filter(Boolean).join(" · "))}</small>`;
+      const th = $("[data-thumb]", el);
+      if (th && !thumbCache.has(thumbKey(it))) thumbIO.observe(th);
+    }
+  }
+
+  function paint() {
+    const seen = new Set();
+    for (const [id, r] of L) {
+      seen.add(id);
+      let el = els.get(id);
+      if (!el) { el = document.createElement("div"); els.set(id, el); world.append(el); }
+      const sig = sigOf(r);
+      if (el._sig !== sig) { build(el, r); el._sig = sig; }
+      el.style.left = r.x + "px"; el.style.top = r.y + "px"; el.style.width = r.w + "px"; el.style.height = r.h + "px";
+      el.style.zIndex = r.it.kind === "folder" ? 10 + r.depth : 1000 + r.depth;
+      el.classList.toggle("sel", id === selected);
+      el.classList.toggle("dragging", !!(drag && drag.moved && drag.id === id));
+    }
+    for (const [id, el] of els) if (!seen.has(id)) { el.remove(); els.delete(id); }
+    $("#cvEmpty").hidden = L.size > 0;
+  }
+
+  function relayout(d) {
+    const res = layout(d || null);
+    L = res.map; LOCAL = res.local;
+    if (selected && !L.has(selected)) select(null);
+    paint();
+  }
+
+  function select(id) {
+    selected = id && L.has(id) ? id : null;
+    const it = selected && L.get(selected).it;
+    $("#bOpen").disabled = !it;
+    $("#bRename").disabled = !it;
+    $("#bFav").disabled = !it;
+    $("#bDownload").disabled = !it || it.kind === "folder";
+    $("#bTrash").disabled = !it;
+    $("#bFav").textContent = it && it.fav ? "★ Togli preferito" : "★ Preferito";
+    for (const [i, el] of els) el.classList.toggle("sel", i === selected);
+  }
+
+  /* ---------- Spazio usato / disponibile ---------- */
+  const CATS = [["documenti", "Documenti", "#2f5aa8"], ["pdf", "PDF", "#d3121b"], ["presentazioni", "Presentazioni", "#c2410c"], ["immagini", "Immagini", "#5b3f9e"], ["altro", "Altro", "#5d668a"]];
+  const CAT_OF = { docx: "documenti", doc: "documenti", text: "documenti", pdf: "pdf", pptx: "presentazioni", ppt: "presentazioni", image: "immagini" };
+  function usage() {
+    const by = Object.fromEntries(CATS.map(c => [c[0], 0]));
+    let trash = 0;
+    const liveIds = new Set(all().filter(live).map(i => i.id));
+    for (const f of files) { const n = f.size || 0; by[CAT_OF[Viewers.kindOf(f)] || "altro"] += n; if (!liveIds.has(f.id)) trash += n; }
+    for (const d of docs) { const n = (d.html || "").length; by.documenti += n; if (!liveIds.has(d.id)) trash += n; }
+    return { by, trash, total: Object.values(by).reduce((a, b) => a + b, 0) };
+  }
+  const pct = v => v.toLocaleString("it-IT", { maximumFractionDigits: v < 10 ? 1 : 0 }) + "%";
+
+  function paintStore() {
+    const u = usage(), free = Math.max(0, QUOTA - u.total), p = u.total / QUOTA * 100;
+    const segs = CATS.filter(c => u.by[c[0]] > 0).map(c => `<i style="width:${Math.max(u.by[c[0]] / QUOTA * 100, 0.8)}%;background:${c[2]}" title="${c[1]}: ${Portal.fmtSize(u.by[c[0]])}"></i>`).join("");
+    const leg = CATS.filter(c => u.by[c[0]] > 0).map(c => `<li><i class="st-dot" style="background:${c[2]}"></i>${c[1]}<b>${Portal.fmtSize(u.by[c[0]])}</b></li>`).join("");
+    const box = $("#cvStore");
+    box.classList.toggle("warn", p >= 90);
+    box.innerHTML = `<div class="st-head"><b>Spazio</b><span>${pct(p)} usato</span></div>
+      <div class="st-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p)}">${segs}</div>
+      <div class="st-main">${Portal.fmtSize(u.total)} <em>usati su</em> ${Portal.fmtSize(QUOTA)}</div>
+      <ul class="st-leg">${leg}<li><i class="st-dot free"></i>Disponibile<b>${Portal.fmtSize(free)}</b></li>${u.trash ? `<li><span style="margin-left:16px">di cui nel cestino</span><b>${Portal.fmtSize(u.trash)}</b></li>` : ""}</ul>`;
+  }
+
+  /* ---------- Miniature (immagini e prima pagina dei PDF) ---------- */
+  const queue = [];
+  let pumping = false;
+  const thumbIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { thumbIO.unobserve(e.target); queue.push(e.target.dataset.thumb); pump(); } }), { root: view, rootMargin: "300px" });
+
+  async function makeThumb(id) {
+    const f = files.find(x => x.id === id);
+    if (!f || f.size > 8 * 1024 * 1024) return;
+    const kind = Viewers.kindOf(f), key = f.id + "|" + (f.aggiornato || "");
+    if ((kind !== "image" && kind !== "pdf") || thumbCache.has(key)) return;
+    const blob = await Portal.blobs.get(f);
+    let url;
+    if (kind === "image") url = URL.createObjectURL(blob);
+    else {
+      await Portal.script("/assets/vendor/pdf.min.js");
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdf.worker.min.js";
+      const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+      try {
+        const page = await pdf.getPage(1), v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: 340 / v1.width });
+        const c = document.createElement("canvas");
+        c.width = vp.width; c.height = vp.height;
+        await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+        url = c.toDataURL("image/jpeg", .72);
+      } finally { pdf.destroy(); }
+    }
+    thumbCache.set(key, url);
+    const r = L.get(id);
+    if (r) { const el = els.get(id); if (el) { el._sig = null; build(el, r); el._sig = sigOf(r); el.classList.toggle("sel", id === selected); } }
+  }
+  async function pump() {
+    if (pumping) return;
+    pumping = true;
+    while (queue.length) { try { await makeThumb(queue.shift()); } catch { /* resta l'icona */ } }
+    pumping = false;
+  }
+
+  /* ---------- Azioni ---------- */
+  const parentForNew = () => { const r = selected && L.get(selected); return r && r.it.kind === "folder" ? r.it.id : ""; };
+  const placeNew = (id, parent) => { if (!parent) { const c = centerWorld(); cv.pos[id] = { x: Math.round(c.x - CW / 2), y: Math.round(c.y - CH / 2) }; saveCv(); } };
+  const refresh = () => { relayout(); paintStore(); };
+
+  async function newDoc() {
+    const now = nowIso(), parent = parentForNew();
+    const d = { id: Portal.uid(), titolo: "", html: "<p><br></p>", creato: now, aggiornato: now, cartella: parent, carta: true };
+    docs.push(d);
+    placeNew(d.id, parent);
+    await persist("doc");
+    refresh();
+    Editor.open(d, { docs, focusTitle: true, onClose: async () => {
+      if (!d.titolo && !plain(d.html).trim() && docs.includes(d)) { docs.splice(docs.indexOf(d), 1); await persist("doc"); }
+      refresh();
+    } });
+  }
+
+  async function newFolder() {
+    const r = await Portal.form({ title: "Nuova cartella", fields: [{ name: "nome", label: "Nome", required: true, default: "Cartella senza nome" }], submit: "Crea" });
+    if (!r) return;
+    const now = nowIso(), parent = parentForNew();
+    const f = { id: Portal.uid(), nome: r.nome, parent, creato: now, aggiornato: now };
+    cartelle.push(f);
+    if (!parent) { const c = centerWorld(); cv.pos[f.id] = { x: Math.round(c.x - MINW / 2), y: Math.round(c.y - MINH / 2) }; saveCv(); }
+    await persist("folder");
+    refresh();
+    select(f.id);
+  }
+
+  async function upload(list, parent, at) {
+    list = [...list];
+    if (!list.length) return;
+    let used = usage().total, ok = 0;
+    for (let i = 0; i < list.length; i++) {
+      const f = list[i];
+      if (f.size > MAX_FILE) { Portal.toast(`«${f.name}» supera i 100 MB`); continue; }
+      if (used + f.size > QUOTA) { Portal.toast(`Spazio esaurito: «${f.name}» non entra`); continue; }
+      try {
+        const id = Portal.uid();
+        const info = await Portal.blobs.put(id, f, p => Portal.toast(`Carico «${f.name}» (${i + 1}/${list.length}) ${Math.round(p * 100)}%`));
+        const now = nowIso();
+        files.push({ id, nome: f.name, tipo: f.type || "application/octet-stream", size: f.size, cartella: parent, creato: now, aggiornato: now, chunks: info.chunks, remote: info.remote });
+        if (!parent && at) cv.pos[id] = { x: Math.round(at.x + (ok % 4) * (CW + GAP)), y: Math.round(at.y + Math.floor(ok / 4) * (CH + GAP)) };
+        await persist("file");
+        used += f.size; ok++;
+        refresh();
+      } catch (err) { Portal.toast((err && err.message) || "Caricamento non riuscito"); }
+    }
+    if (ok) { saveCv(); Portal.toast(`${ok} file caricat${ok === 1 ? "o" : "i"}`); }
+  }
+
+  async function openItem(it) {
+    if (!it) return;
+    if (it.kind === "folder") return fitTo(it.id);
+    if (it.kind === "doc") {
+      return Editor.open(it.raw, { docs, onClose: async () => {
+        if (docs.includes(it.raw) && !it.raw.titolo && !plain(it.raw.html).trim()) { docs.splice(docs.indexOf(it.raw), 1); await persist("doc"); }
+        refresh();
+      } });
+    }
+    Viewers.open(it.raw, { getBlob: () => Portal.blobs.get(it.raw), onClose: refresh });
+  }
+
+  function fitTo(id) {
+    const r = L.get(id), vr = rect();
+    if (!r) return;
+    V.z = clamp(Math.min((vr.width - 120) / r.w, (vr.height - 340) / r.h), MIN_Z, 1.4);
+    V.x = (vr.width - r.w * V.z) / 2 - r.x * V.z;
+    V.y = 80 + (vr.height - 80 - 240 - r.h * V.z) / 2 - r.y * V.z;
+    applyView();
+  }
+
+  async function rename(it) {
+    const r = await Portal.form({ title: it.kind === "folder" ? "Rinomina cartella" : "Rinomina", fields: [{ name: "nome", label: "Nome", required: true }], values: { nome: it.nome }, submit: "Rinomina" });
+    if (!r) return;
+    if (it.kind === "doc") it.raw.titolo = r.nome; else it.raw.nome = r.nome;
+    it.raw.aggiornato = nowIso();
+    await persist(it.kind);
+    refresh();
+  }
+
+  async function toggleFav(it) { it.raw.preferito = !it.raw.preferito; await persist(it.kind); refresh(); select(it.id); }
+
+  async function download(it) {
+    try {
+      if (it.kind === "file") Portal.download(it.raw.nome, await Portal.blobs.get(it.raw));
+      else if (it.kind === "doc") {
+        Portal.toast("Preparo il file Word…");
+        const blob = await DocxExport.make({ titolo: it.raw.titolo, html: Portal.sanitize(it.raw.html), carta: it.raw.carta === false ? null : await Letterhead.get() });
+        Portal.download(Portal.slug(it.raw.titolo) + ".docx", blob);
+      }
+    } catch (err) { Portal.toast((err && err.message) || "Download non riuscito"); }
+  }
+
+  async function toTrash(it) {
+    it.raw.cestino = nowIso();
+    await persist(it.kind);
+    select(null);
+    refresh();
+    Portal.toast("Spostato nel cestino. Lo ripristini dal Drive (vista elenco).");
+  }
+
+  async function moveTo(it, dest) {
+    if ((it.parent || "") === (dest || "")) return;
+    if (it.kind === "folder") it.raw.parent = dest; else it.raw.cartella = dest;
+    it.raw.aggiornato = nowIso();
+    await persist(it.kind);
+    Portal.toast("Spostato in «" + (dest ? byId(dest).nome : "Il mio Drive") + "»");
+  }
+
+  /* ---------- Puntatore: pan, zoom, trascinamento ---------- */
+  const pointers = new Map();
+  let lastClick = { id: null, t: 0 };
+
+  view.addEventListener("pointerdown", e => {
+    if (e.button > 1) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    view.setPointerCapture(e.pointerId);
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      drag = { type: "pinch", dist: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+      return;
+    }
+    if (pointers.size > 2) return;
+    const el = e.target.closest(".cvi");
+    if (el && els.has(el.dataset.id)) {
+      const r = L.get(el.dataset.id);
+      select(el.dataset.id);
+      drag = { type: "item", id: el.dataset.id, sx: e.clientX, sy: e.clientY, ax: r.x, ay: r.y, moved: false, target: "" };
+    } else {
+      select(null);
+      view.classList.add("panning");
+      drag = { type: "pan", sx: e.clientX, sy: e.clientY, vx: V.x, vy: V.y };
+    }
+  });
+
+  const frameAt = p => {
+    let best = null;
+    for (const r of L.values()) {
+      if (r.it.kind !== "folder" || r.depth >= 50) continue;
+      if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h && (!best || r.depth > best.depth)) best = r;
+    }
+    return best;
+  };
+  const markOver = id => { for (const [i, el] of els) el.classList.toggle("over", !!id && i === id); };
+
+  view.addEventListener("pointermove", e => {
+    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (!drag) return;
+    if (drag.type === "pinch" && pointers.size >= 2) {
+      const [a, b] = [...pointers.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, r = rect();
+      V.x += mx - drag.mx; V.y += my - drag.my;
+      zoomAt(mx - r.left, my - r.top, V.z * (dist / drag.dist));
+      Object.assign(drag, { dist, mx, my });
+    } else if (drag.type === "pan") {
+      V.x = drag.vx + e.clientX - drag.sx; V.y = drag.vy + e.clientY - drag.sy;
+      applyView();
+    } else if (drag.type === "item") {
+      if (!drag.moved) {
+        if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) return;
+        drag.moved = true;
+        // blocca le posizioni dei fratelli, così non si spostano quando questa scheda esce
+        const me = L.get(drag.id).it;
+        for (const [id, r] of L) if (id !== drag.id && r.it.parent === me.parent && !cv.pos[id]) { const l = LOCAL.get(id); cv.pos[id] = { x: Math.round(l.x), y: Math.round(l.y) }; }
+      }
+      const fx = drag.ax + (e.clientX - drag.sx) / V.z, fy = drag.ay + (e.clientY - drag.sy) / V.z;
+      drag.fx = fx; drag.fy = fy;
+      relayout({ id: drag.id, x: fx, y: fy });
+      const t = frameAt(toWorld(e.clientX, e.clientY));
+      drag.target = t ? t.it.id : "";
+      markOver(drag.target);
+    }
+  });
+
+  async function endPointer(e) {
+    pointers.delete(e.pointerId);
+    if (!drag) return;
+    const d = drag;
+    if (d.type === "pinch") { if (pointers.size < 2) drag = null; return; }
+    view.classList.remove("panning");
+    drag = null;
+    if (d.type !== "item") return;
+    markOver(null);
+    if (!d.moved) {
+      const now = Date.now();
+      if (lastClick.id === d.id && now - lastClick.t < 380) { lastClick = { id: null, t: 0 }; const r = L.get(d.id); if (r) (r.it.kind === "folder" ? rename(r.it) : openItem(r.it)); }
+      else lastClick = { id: d.id, t: now };
+      return;
+    }
+    const it = itemById(d.id);
+    const tr = d.target ? L.get(d.target) : null;
+    const ox = tr ? tr.x + PAD : 0, oy = tr ? tr.y + HEAD : 0;
+    let lx = Math.round(d.fx - ox), ly = Math.round(d.fy - oy);
+    if (tr) { lx = Math.max(0, lx); ly = Math.max(0, ly); }
+    if (it && d.target !== (it.parent || "")) await moveTo(it, d.target);
+    cv.pos[d.id] = { x: lx, y: ly };
+    saveCv();
+    refresh();
+    select(d.id);
+  }
+  view.addEventListener("pointerup", endPointer);
+  view.addEventListener("pointercancel", endPointer);
+
+  view.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r = rect();
+    if (e.ctrlKey || e.metaKey) zoomAt(e.clientX - r.left, e.clientY - r.top, V.z * Math.exp(-e.deltaY * 0.01));
+    else { V.x -= e.deltaX; V.y -= e.deltaY; applyView(); }
+  }, { passive: false });
+
+  /* Trascinare file dal computer */
+  let depth = 0;
+  const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes("Files");
+  root.addEventListener("dragenter", e => { if (hasFiles(e)) { depth++; $("#cvDrop").hidden = false; } });
+  root.addEventListener("dragleave", e => { if (hasFiles(e) && --depth <= 0) { depth = 0; $("#cvDrop").hidden = true; } });
+  root.addEventListener("dragover", e => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    const t = frameAt(toWorld(e.clientX, e.clientY));
+    $("#cvDropWhere").textContent = t ? `in «${t.it.nome}»` : "in Il mio Drive";
+  });
+  root.addEventListener("drop", e => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    depth = 0; $("#cvDrop").hidden = true;
+    const p = toWorld(e.clientX, e.clientY), t = frameAt(p);
+    upload(e.dataTransfer.files, t ? t.it.id : "", { x: p.x - CW / 2, y: p.y - CH / 2 });
+  });
+  // fuori dalla lavagna il browser non deve aprire il file al posto nostro
+  window.addEventListener("dragover", e => { if (hasFiles(e) && !e.target.closest("#cv")) e.preventDefault(); });
+  window.addEventListener("drop", e => { if (hasFiles(e) && !e.target.closest("#cv")) e.preventDefault(); });
+
+  /* ---------- Pulsanti e tastiera ---------- */
+  const sel = () => (selected && L.get(selected) ? L.get(selected).it : null);
+  $("#bDoc").onclick = newDoc;
+  $("#bFolder").onclick = newFolder;
+  $("#bUpload").onclick = () => $("#cvPick").click();
+  $("#cvPick").onchange = e => {
+    const parent = parentForNew(), c = centerWorld();
+    upload(e.target.files, parent, { x: c.x - CW / 2, y: c.y - CH / 2 });
+    e.target.value = "";
+  };
+  $("#bOpen").onclick = () => openItem(sel());
+  $("#bRename").onclick = () => sel() && rename(sel());
+  $("#bFav").onclick = () => sel() && toggleFav(sel());
+  $("#bDownload").onclick = () => sel() && download(sel());
+  $("#bTrash").onclick = () => sel() && toTrash(sel());
+  const zoomBy = f => { const r = rect(); zoomAt(r.width / 2, r.height / 2, V.z * f); };
+  $("#zIn").onclick = () => zoomBy(1.25);
+  $("#zOut").onclick = () => zoomBy(1 / 1.25);
+  $("#zLevel").onclick = () => { const r = rect(); zoomAt(r.width / 2, r.height / 2, 1); };
+  $("#zFit").onclick = fit;
+
+  document.addEventListener("keydown", e => {
+    if (document.body.classList.contains("scr-open") || document.querySelector("dialog[open]") || e.target.closest("input,textarea,select,[contenteditable]")) return;
+    const it = sel();
+    if (e.key === "Escape") select(null);
+    else if ((e.key === "Delete" || e.key === "Backspace") && it) { e.preventDefault(); toTrash(it); }
+    else if (e.key === "F2" && it) { e.preventDefault(); rename(it); }
+    else if (e.key === "Enter" && it) openItem(it);
+    else if (e.key === "+" || e.key === "=") zoomBy(1.25);
+    else if (e.key === "-") zoomBy(1 / 1.25);
+    else if (e.key === "0") $("#zLevel").click();
+    else if (e.key === "1") fit();
+  });
+  window.addEventListener("resize", applyView);
+
+  /* ---------- Avvio ---------- */
+  relayout();
+  paintStore();
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(VIEW_KEY)); } catch { /* niente */ }
+  if (saved && isFinite(saved.x) && isFinite(saved.y) && isFinite(saved.z)) { Object.assign(V, { x: saved.x, y: saved.y, z: clamp(saved.z, MIN_Z, MAX_Z) }); applyView(); }
+  else fit();
+});
+{% endraw %}
+</script>
