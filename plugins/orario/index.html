@@ -2,7 +2,7 @@
 layout: default
 title: Orario di scuola
 kicker: Didattica
-lead: La tua settimana in classe, ora per ora. Tocca una casella per inserire materia, classe e aula.
+lead: La tua settimana in classe, ora per ora. Tocca una casella per inserire materia, classe, aula e quante ore consecutive dura.
 permalink: /orario/
 compact: true
 ---
@@ -17,6 +17,7 @@ compact: true
       <span class="muted" id="or-summary"></span>
       <span class="sp"></span>
       <button class="btn ghost" id="or-clear" type="button">Svuota orario</button>
+      <button class="btn" id="or-xlsx" type="button">Scarica Excel</button>
     </div>
     <div class="chips-row" id="or-classi" hidden></div>
     <div class="or-scroll"><div class="or-grid" id="or-grid"></div></div>

@@ -11,14 +11,14 @@
 .or-day b{display:block;font-weight:700}
 .or-day small{color:var(--muted)}
 .or-scroll{overflow-x:auto;padding-bottom:4px}
-.or-grid{display:grid;grid-template-columns:92px repeat(5,minmax(124px,1fr));gap:6px;min-width:760px}
+.or-grid{display:grid;grid-template-columns:92px repeat(5,minmax(124px,1fr));grid-template-rows:auto;grid-auto-rows:minmax(76px,auto);gap:6px;min-width:760px}
 .or-head{padding:8px 6px;text-align:center;font:700 15px var(--body);color:var(--navy);border-bottom:2px solid var(--line)}
 .or-head small{display:block;font:500 12px var(--body);color:var(--muted)}
 .or-head.today{background:var(--navy);color:#fff;border-radius:4px;border-bottom-color:var(--navy)}
 .or-head.today small{color:rgba(255,255,255,.75)}
 .or-time{display:flex;flex-direction:column;justify-content:center;font:600 13px var(--body);color:var(--navy);line-height:1.3}
 .or-time small{font-weight:500;color:var(--muted)}
-.or-cell{min-height:76px;border-radius:4px;font:inherit;text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:2px;justify-content:center}
+.or-cell{min-height:0;border-radius:4px;font:inherit;text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:2px;justify-content:center}
 button.or-cell{cursor:pointer;border:1.5px dashed var(--line);background:#fff;color:var(--muted)}
 button.or-cell:hover{border-color:var(--navy);color:var(--navy)}
 button.or-cell.full{border:0;border-left:4px solid hsl(var(--h) 55% 45%);background:hsl(var(--h) 60% 92%);color:var(--navy)}
@@ -30,3 +30,4 @@ button.or-cell.now{outline:3px solid var(--navy);outline-offset:1px}
 .or-cell .plus{font-size:22px;text-align:center;opacity:.5}
 .or-pausa{background:repeating-linear-gradient(135deg,var(--cream),var(--cream) 8px,#fff 8px,#fff 16px);border:1px solid var(--line);color:var(--muted);align-items:center;text-align:center;font-style:italic;font-size:13px}
 .or-off{border:1px dashed var(--line);opacity:.35}
+.or-day small.or-ore{display:inline-block;margin-left:6px}
