@@ -1,0 +1,26 @@
+---
+layout: default
+title: Materiali didattici
+kicker: Didattica
+lead: Il materiale per ogni classe, collegato ai file e ai documenti del tuo Drive.
+permalink: /materiali/
+compact: true
+---
+<div class="split">
+  <aside class="panel mt-side">
+    <h2>Classi</h2>
+    <ul class="mt-classes" id="mt-classes"></ul>
+    <button class="btn ghost sm" id="mt-newclass" type="button">+ Nuova classe</button>
+  </aside>
+  <div>
+    <div class="toolbar">
+      <input type="search" id="mt-q" placeholder="Cerca titolo, argomento, etichetta…" aria-label="Cerca nei materiali">
+      <span class="sp"></span>
+      <button class="btn" id="mt-new" type="button">Nuovo materiale</button>
+    </div>
+    <div class="chips-row" id="mt-stato" hidden></div>
+    <div class="chips-row" id="mt-args"></div>
+    <div class="grid g-cards" id="mt-grid"></div>
+    <div class="empty" id="mt-none" hidden></div>
+  </div>
+</div>
