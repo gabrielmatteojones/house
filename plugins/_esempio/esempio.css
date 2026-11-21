@@ -1,0 +1,2 @@
+/* Esempio: stile del plugin. Per attivarlo rinomina la cartella da _esempio a esempio. */
+.esempio-banner{background:var(--navy);color:var(--cream);padding:10px 16px;border-radius:var(--r);margin:0 0 20px;font-weight:600}

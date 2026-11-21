@@ -1,0 +1,5 @@
+{%- comment -%} Collega da solo ogni .css dentro plugins/ (le cartelle che iniziano con _ sono escluse). {%- endcomment -%}
+{%- assign plg = site.static_files | where_exp: "f", "f.path contains \"/plugins/\"" | sort: "path" -%}
+{%- for f in plg -%}{%- if f.extname == ".css" -%}
+  <link rel="stylesheet" href="{{ f.path | relative_url }}" data-plugin>
+{%- endif -%}{%- endfor -%}

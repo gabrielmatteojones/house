@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/portal.css">
+  {% include plugins-head.html %}
 </head>
-<body>
+<body data-page="{{ page.url }}">
   {% include header.html %}
   <section class="hero{% if page.compact %} compact{% endif %}">
     <div class="wrap">
@@ -33,5 +34,6 @@
   <script src="/assets/js/core.js"></script>
   {% for s in page.scripts %}<script src="/assets/js/{{ s }}.js"></script>{% endfor %}
   {% if page.script %}<script src="/assets/js/{{ page.script }}.js"></script>{% endif %}
+  {% include plugins-foot.html %}
 </body>
 </html>

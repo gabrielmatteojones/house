@@ -1,0 +1,28 @@
+---
+layout: default
+title: Plugin
+kicker: Strumenti
+lead: Estensioni caricate in automatico dalla cartella plugins/.
+permalink: /plugin/
+---
+{% assign tutti = site.static_files | where_exp: "f", "f.path contains \"/plugins/\"" | sort: "path" %}
+{% assign gruppi = tutti | group_by_exp: "f", "f.path | split: \"/\" | slice: 2, 1 | first" %}
+<section class="panel">
+  <h2>Plugin attivi</h2>
+  {% if gruppi.size > 0 %}
+  <ul class="list">
+    {% for g in gruppi %}
+    <li style="flex-direction:column;gap:4px;align-items:flex-start">
+      <b>{{ g.name }}</b>
+      <span class="muted">{% for f in g.items %}{{ f.name }}{% unless forloop.last %} · {% endunless %}{% endfor %}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty"><h3>Nessun plugin attivo</h3>Metti una cartella dentro <code>plugins/</code> con i suoi file <code>.css</code> e <code>.js</code>: verranno collegati a ogni pagina.</div>
+  {% endif %}
+</section>
+<section class="panel" style="margin-top:20px">
+  <h2>Come si aggiunge un plugin</h2>
+  <p class="muted" style="margin-top:0">Crea <code>plugins/nome-plugin/</code> e metti dentro i file. Ogni <code>.css</code> e <code>.js</code> trovato (anche in sottocartelle) viene incluso in tutte le pagine, in ordine alfabetico. Per spegnere un plugin rinomina la cartella con un <code>_</code> davanti (<code>_nome-plugin</code>). Dopo ogni modifica serve un nuovo deploy.</p>
+</section>
