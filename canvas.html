@@ -8,7 +8,12 @@ compact: true
 wide: true
 scripts: [letterhead, docx-export, viewers, editor]
 quota_gb: 5
+sitemap: false
 ---
+{% comment %}
+  Drive in vista canvas · file unico per Jekyll (CSS e JS inclusi).
+  Usa i dati del Drive esistente. Spazio totale mostrato: cambia quota_gb qui sopra.
+{% endcomment %}
 <style>
 {% raw %}
 /* Jones House · Drive in vista canvas */
@@ -87,7 +92,7 @@ quota_gb: 5
 </style>
 <div class="cv" id="cv" data-quota-gb="{{ page.quota_gb | default: 5 }}">
   <div class="cv-top" id="cvTop">
-    <a class="btn ghost sm" href="/drive/" title="Torna alla vista a elenco">← Vista elenco</a>
+    <a class="btn ghost sm" href="{{ '/drive/' | relative_url }}" title="Torna alla vista a elenco">← Vista elenco</a>
     <span class="cv-sep"></span>
     <button class="btn sm" id="bDoc">+ Documento</button>
     <button class="btn ghost sm" id="bFolder">+ Cartella</button>
