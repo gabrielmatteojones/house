@@ -1,17 +1,24 @@
 ---
 layout: default
-title: Orario scolastico
+title: Orario di scuola
 kicker: Didattica
-lead: La tua settimana di lezioni: cosa c'è ora, cosa viene dopo, e quante ore lavori.
+lead: La tua settimana in classe, ora per ora. Tocca una casella per inserire materia, classe e aula.
 permalink: /orario/
 compact: true
 ---
-<div class="toolbar">
-  <div class="chips-row" id="or-views"></div>
-  <span class="sp"></span>
-  <button class="btn ghost sm" id="or-ics" type="button">Esporta .ics</button>
-  <button class="btn ghost sm" id="or-print" type="button">Stampa</button>
-  <button class="btn" id="or-new" type="button">Nuova lezione</button>
+<div class="split">
+  <aside class="panel or-side">
+    <h2 id="or-today-title">Oggi</h2>
+    <p class="muted" id="or-today-sub"></p>
+    <ul class="or-day" id="or-today"></ul>
+  </aside>
+  <div>
+    <div class="toolbar">
+      <span class="muted" id="or-summary"></span>
+      <span class="sp"></span>
+      <button class="btn ghost" id="or-clear" type="button">Svuota orario</button>
+    </div>
+    <div class="chips-row" id="or-classi" hidden></div>
+    <div class="or-scroll"><div class="or-grid" id="or-grid"></div></div>
+  </div>
 </div>
-<div class="chips-row" id="or-classes" hidden></div>
-<div id="or-main"></div>
