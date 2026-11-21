@@ -1,5 +1,5 @@
 {%- comment -%} Collega da solo ogni .js dentro plugins/, dopo core.js e lo script della pagina. {%- endcomment -%}
-{%- assign plg = site.static_files | where_exp: "f", "f.path contains \"/plugins/\"" | sort: "path" -%}
+{%- assign plg = site.static_files | where_exp: "f", "f.path contains '/plugins/'" | sort: "path" -%}
 {%- for f in plg -%}{%- if f.extname == ".js" -%}
   <script src="{{ f.path | relative_url }}" data-plugin></script>
 {%- endif -%}{%- endfor -%}
