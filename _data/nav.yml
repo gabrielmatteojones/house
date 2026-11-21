@@ -12,6 +12,7 @@
     - { title: Giochi, url: /giochi/ }
     - { title: Link, url: /link/ }
     - { title: Accessi rapidi, url: /accessi/ }
+    - { title: Timbra, url: /timbra/ }
 - title: Didattica
   children:
     - { title: Calendario, url: /calendario/ }
