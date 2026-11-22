@@ -13,3 +13,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+  - .env
+  - .env.example
+  - _archivio

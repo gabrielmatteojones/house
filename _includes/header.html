@@ -3,6 +3,7 @@
     <span id="today"></span>
     <span class="sp"></span>
     <span id="sync" class="sync" data-ok="">Connessione…</span>
+    <button class="linkbtn" id="logout" type="button">Esci</button>
   </div>
 </div>
 <header class="site-header">
@@ -40,7 +41,7 @@
         </div>
       {% endif %}
     </nav>
-    <a class="btn go" href="/registro/?avvia=1">Avvia lezione</a>
+    <button class="btn go" id="timbra-btn" type="button" aria-haspopup="dialog" title="Timbra entrata o uscita"><span class="tb-dot" aria-hidden="true"></span>Timbra</button>
     <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
       <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>
     </button>

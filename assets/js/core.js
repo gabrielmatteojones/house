@@ -12,7 +12,7 @@ const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
 
 const Portal = (() => {
   const LS = "gj-portale:";
-  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro", "note"];
+  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro", "note", "calendario", "mail-impostazioni"];
   const SEED_UTILI = [
     { id: "seed-zoho", nome: "Zoho Mail", url: "https://mail.zoho.eu", categoria: "Posta" },
     { id: "seed-outlook", nome: "Outlook", url: "https://outlook.office.com", categoria: "Posta" },
@@ -298,7 +298,7 @@ const Portal = (() => {
   /* Backup completo */
   async function exportAll() {
     const out = { versione: 1, esportato: new Date().toISOString(), dati: {} };
-    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : n === "impostazioni" ? {} : []);
+    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : (n === "impostazioni" || n === "mail-impostazioni") ? {} : []);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
     a.download = `portale-backup-${isoDate(new Date())}.json`;
@@ -326,4 +326,19 @@ const Portal = (() => {
   });
   $$(".dd-btn").forEach(b => b.addEventListener("click", () => b.parentElement.classList.toggle("open")));
   document.addEventListener("click", e => { if (!e.target.closest(".dd")) $$(".dd.open").forEach(d => d.classList.remove("open")); });
+})();
+
+/* Esci: invio credenziali sbagliate apposta, così il browser dimentica quelle vere */
+(() => {
+  document.addEventListener("click", e => {
+    if (!e.target.closest("#logout")) return;
+    const x = new XMLHttpRequest();
+    x.open("GET", "/api/data/utili", true, "esci", "esci");
+    x.onloadend = () => {
+      const d = document.createElement("div"); d.className = "bye";
+      d.innerHTML = `<div><h2>Sei uscito</h2><p class="muted">Per entrare di nuovo ti verranno chieste utente e password.<br>Su un dispositivo condiviso chiudi anche la finestra del browser.</p><a class="btn" href="/">Rientra</a></div>`;
+      document.body.append(d);
+    };
+    x.send();
+  });
 })();

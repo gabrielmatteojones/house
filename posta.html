@@ -1,0 +1,97 @@
+---
+layout: default
+title: Posta
+kicker: Zoho Mail
+lead: La tua casella Zoho dentro il portale, protetta dalla stessa password.
+permalink: /posta/
+styles: [webmail]
+compact: true
+wide: true
+script: webmail
+---
+<section class="panel" id="connect" hidden>
+  <h2>Collega Zoho Mail</h2>
+  <p id="connect-msg" class="muted" style="margin-top:0"></p>
+  <div id="connect-actions">
+    <a class="btn" href="/api/zoho/login">Collega con Zoho</a>
+    <details style="margin-top:18px">
+      <summary><b>Uso un «Self Client»</b> (nessun reindirizzamento)</summary>
+      <form id="code-form" class="field" style="margin-top:12px">
+        <label for="code">Codice generato nella console API di Zoho</label>
+        <div class="row"><input id="code" required autocomplete="off" placeholder="1000.xxxxxxxx.xxxxxxxx"><button class="btn navy" type="submit">Collega</button></div>
+        <small>Scope da indicare: <code>ZohoMail.accounts.READ,ZohoMail.folders.READ,ZohoMail.messages.ALL</code></small>
+      </form>
+    </details>
+  </div>
+</section>
+
+<div class="wm" id="mail" hidden>
+  <aside class="wm-folders">
+    <ul id="folders"></ul>
+    <div class="wm-foot">
+      <button class="btn ghost sm" id="b-set" type="button">Impostazioni</button>
+      <button class="btn ghost sm" id="disconnect" type="button">Scollega Zoho</button>
+      <p class="wm-hint">Tasti: <b>N</b> nuovo · <b>R</b> rispondi · <b>A</b> a tutti · <b>J/K</b> scorri · <b>/</b> cerca · <b>Canc</b> elimina</p>
+    </div>
+  </aside>
+  <section class="wm-list">
+    <div class="wm-bar">
+      <button class="btn go sm" data-new type="button">Scrivi</button>
+      <input type="search" id="q" placeholder="Cerca nella posta" aria-label="Cerca">
+      <button class="icon-btn" id="refresh" type="button" title="Aggiorna" aria-label="Aggiorna">↻</button>
+    </div>
+    <ul id="msgs" class="wm-msgs"></ul>
+    <div class="pad"><button class="btn ghost sm" id="more" type="button" hidden>Carica altre</button></div>
+  </section>
+  <div class="wm-right">
+    <article class="wm-read" id="reader"></article>
+
+    <form class="wm-read" id="composer" hidden>
+      <h3>Nuovo messaggio</h3>
+      <div class="fields">
+        <div class="field"><label for="c-from">Da</label><select id="c-from"></select></div>
+        <div class="field"><label for="c-to">A</label><input id="c-to" type="text" required placeholder="nome@esempio.it, altro@esempio.it"></div>
+        <div class="field half"><label for="c-cc">Cc</label><input id="c-cc" type="text"></div>
+        <div class="field half"><label for="c-bcc">Ccn</label><input id="c-bcc" type="text"></div>
+        <div class="field"><label for="c-sub">Oggetto</label><input id="c-sub" type="text"></div>
+        <div class="field"><label id="c-lbl">Messaggio</label>
+          <div class="fmt" id="fmt" role="toolbar" aria-label="Formattazione">
+            <button type="button" data-cmd="bold" title="Grassetto (Ctrl+B)"><b>B</b></button>
+            <button type="button" data-cmd="italic" title="Corsivo (Ctrl+I)"><i>I</i></button>
+            <button type="button" data-cmd="underline" title="Sottolineato (Ctrl+U)"><u>S</u></button>
+            <button type="button" data-cmd="strikeThrough" title="Barrato"><s>B</s></button>
+            <span class="sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Elenco puntato">• Elenco</button>
+            <button type="button" data-cmd="insertOrderedList" title="Elenco numerato">1. Elenco</button>
+            <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Citazione">❝</button>
+            <button type="button" data-cmd="createLink" title="Inserisci link">🔗 Link</button>
+            <span class="sep"></span>
+            <select data-cmd="fontSize" title="Dimensione" aria-label="Dimensione"><option value="">Dimensione</option><option value="2">Piccolo</option><option value="3">Normale</option><option value="5">Grande</option><option value="6">Enorme</option></select>
+            <input type="color" data-cmd="foreColor" value="#101c4d" title="Colore del testo" aria-label="Colore del testo">
+            <button type="button" data-cmd="removeFormat" title="Rimuovi formattazione">Tx</button>
+          </div>
+          <div id="c-body" class="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="c-lbl"></div></div>
+        <div class="field"><div class="atts" id="c-atts"></div>
+          <button class="btn ghost sm" type="button" id="c-attach">📎 Allega file</button><input type="file" id="c-file" multiple hidden>
+          <small>Fino a 4 MB per file.</small></div>
+      </div>
+      <div class="acts"><button class="btn" type="submit" id="c-send">Invia</button><button class="btn ghost" type="button" id="c-cancel">Annulla</button></div>
+    </form>
+
+    <form class="wm-read" id="settings" hidden>
+      <h3>Impostazioni</h3>
+      <div class="fields">
+        <div class="field"><label for="s-addr">Firma per l'indirizzo</label><select id="s-addr"></select></div>
+        <div class="field"><label for="s-sig">Firma</label>
+          <textarea id="s-sig" rows="5" placeholder="Cordiali saluti,&#10;Gabriel Jones"></textarea>
+          <small>Viene aggiunta ai nuovi messaggi e alle risposte. «Tutti gli indirizzi» vale per quelli senza una firma propria.</small></div>
+        <div class="field"><label for="s-from">Indirizzo predefinito per i nuovi messaggi</label><select id="s-from"></select></div>
+        <div class="field"><label class="check"><input type="checkbox" id="s-sound"> Suono quando arriva una mail</label>
+          <button class="btn ghost sm" type="button" id="s-sound-test" style="margin-top:6px">Prova suono</button></div>
+        <div class="field"><label>Notifiche push</label><p id="s-push-msg" class="muted" style="margin:0 0 8px"></p>
+          <div class="row"><button class="btn navy sm" type="button" id="s-push">Attiva</button><button class="btn ghost sm" type="button" id="s-push-test">Invia una prova</button></div></div>
+      </div>
+      <div class="acts"><button class="btn" type="submit">Salva</button><button class="btn ghost" type="button" id="s-close">Chiudi</button></div>
+    </form>
+  </div>
+</div>

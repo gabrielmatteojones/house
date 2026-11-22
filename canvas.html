@@ -412,7 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function newDoc() {
     const now = nowIso(), parent = parentForNew();
-    const d = { id: Portal.uid(), titolo: "", html: "<p><br></p>", creato: now, aggiornato: now, cartella: parent, carta: true };
+    const d = { id: Portal.uid(), titolo: "", html: "<p><br></p>", creato: now, aggiornato: now, cartella: parent, carta: true, cartaModello: await Letterhead.getDefault() };
     docs.push(d);
     placeNew(d.id, parent);
     await persist("doc");
@@ -494,7 +494,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (it.kind === "file") Portal.download(it.raw.nome, await Portal.blobs.get(it.raw));
       else if (it.kind === "doc") {
         Portal.toast("Preparo il file Word…");
-        const blob = await DocxExport.make({ titolo: it.raw.titolo, html: Portal.sanitize(it.raw.html), carta: it.raw.carta === false ? null : await Letterhead.get() });
+        const blob = await DocxExport.make({ titolo: it.raw.titolo, html: Portal.sanitize(it.raw.html), carta: await Letterhead.forDoc(it.raw) });
         Portal.download(Portal.slug(it.raw.titolo) + ".docx", blob);
       }
     } catch (err) { Portal.toast((err && err.message) || "Download non riuscito"); }

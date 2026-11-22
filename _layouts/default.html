@@ -10,10 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/portal.css">
+  {% for s in page.styles %}<link rel="stylesheet" href="/assets/css/{{ s }}.css">{% endfor %}
+  <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
+  <meta name="theme-color" content="#101c4d">
   {% include plugins-head.html %}
 </head>
 <body data-page="{{ page.url }}">
   {% include header.html %}
+  {% unless page.nohero %}
   <section class="hero{% if page.compact %} compact{% endif %}">
     <div class="wrap">
       {% if page.kicker %}<p class="kicker">{{ page.kicker }}</p>{% endif %}
@@ -21,6 +25,7 @@
       {% if page.lead %}<p class="lead">{{ page.lead }}</p>{% endif %}
     </div>
   </section>
+  {% endunless %}
   <main class="wrap{% if page.wide %} wide{% endif %}">
     {{ content }}
   </main>
@@ -32,6 +37,7 @@
     </div>
   </footer>
   <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/timbra.js"></script>
   {% for s in page.scripts %}<script src="/assets/js/{{ s }}.js"></script>{% endfor %}
   {% if page.script %}<script src="/assets/js/{{ page.script }}.js"></script>{% endif %}
   {% include plugins-foot.html %}

@@ -1,0 +1,26 @@
+{
+ "name": "Jones House",
+ "short_name": "Jones House",
+ "start_url": "/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#101c4d",
+ "icons": [
+  {
+   "src": "/assets/icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Timbra",
+   "url": "/presenze/timbra/"
+  },
+  {
+   "name": "Drive",
+   "url": "/drive/"
+  }
+ ]
+}

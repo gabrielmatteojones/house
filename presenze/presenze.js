@@ -673,6 +673,8 @@
     ultimoMin = -1; render(); invia();
     scarica(mese, true).then(ok => ok && render());
   });
+  // Timbrato dal pulsante «Timbra» in alto: rileggi i dati
+  window.addEventListener("timbra:change", () => { coda = leggi(LS_CODA, {}); cache = leggi(LS_CACHE, {}); bump(); ultimoMin = -1; render(); });
   // Altra scheda del browser: tieni allineato
   window.addEventListener("storage", e => {
     if (e.key === LS_CODA) coda = leggi(LS_CODA, {});

@@ -441,6 +441,65 @@ main.wrap.wide{max-width:1500px}
 .lh-fake{padding:20px 0 24px}
 .lh-fake i{display:block;height:8px;margin:12px 0;border-radius:4px;background:#e8eaf3}
 
+/* Scelta della carta intestata e foglio col modello «Gabriel Jones» */
+.lh-pick{display:flex;gap:10px;padding:6px 26px 12px}
+.lh-opt{flex:1;position:relative;text-align:left;border:2px solid var(--line);background:#fff;border-radius:6px;padding:10px 14px;cursor:pointer;font:inherit;color:var(--navy)}
+.lh-opt b{display:block;font:700 24px/1.05 var(--head)}
+.lh-opt small{display:block;color:var(--muted);font-size:13px}
+.lh-opt:hover{border-color:var(--navy)}
+.lh-opt[aria-checked="true"]{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.lh-star{position:absolute;right:10px;top:9px;font:700 10.5px var(--body);font-style:normal;text-transform:uppercase;letter-spacing:.07em;color:var(--red)}
+.lh-sheet.lg{padding:22px 26px 16px 0;position:relative}
+.lh-sheet.lg::before{content:"";position:absolute;left:27.6%;top:120px;bottom:14px;border-left:1px solid #3D6E99}
+.lh-sheet.lg .lh-fake,.lh-sheet.lg .lg-foot{margin-left:29.5%}
+.lh-sheet.lg .lg-head{min-height:120px}
+.sheet.lg{padding:34px 0 30px;position:relative}
+.sheet.lg::before{content:"";position:absolute;left:27.6%;top:170px;bottom:26px;border-left:1px solid #3D6E99;pointer-events:none}
+.sheet.lg .paper{margin-left:29.5%;margin-right:7%;padding-top:8px}
+.sheet.lg #ed-foot{margin-left:29.5%;margin-right:7%}
+.sheet.lg .lg-head{padding-right:7%}
+.sheet.lg .lg-text{padding-top:16px}
+.sheet.no-lh.lg::before{display:none}
+.ed-doc-meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:8px 18px;background:#fff;border-bottom:1px solid var(--line);font-size:14px}
+.ed-doc-meta label{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--muted)}
+.ed-doc-meta input,.ed-doc-meta select{width:auto;font:inherit;padding:5px 9px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--navy);min-width:0}
+.ed-doc-meta input{width:min(260px,40vw)}
+.rte-bar select{width:auto;flex:none;max-width:150px;font:inherit;font-size:14px;height:32px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--navy);padding:0 6px}
+.rte-bar input[type=color]{width:30px;height:30px;padding:1px;border:1px solid var(--line);border-radius:4px;background:#fff;cursor:pointer;vertical-align:middle}
+.rte-bar label.rte-color{display:inline-flex;align-items:center;gap:2px;font-weight:700;cursor:pointer}
+.ed-carta{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;color:var(--muted)}
+.ed-carta select{width:auto;font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--navy)}
+.paper .pb{height:0;border-top:2px dashed var(--line);margin:1.4em 0;position:relative}
+.paper .pb::after{content:"nuova pagina";position:absolute;right:0;top:-9px;background:#fff;padding:0 6px;font-size:11px;color:var(--muted)}
+.ed-zoom{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.ed-zoom input{width:90px}
+.ed-body .sheet{transform-origin:top center}
+
+/* «Timbra»: pulsante nell'intestazione e finestra */
+.site-header .go{white-space:nowrap}
+.btn.go .tb-dot{display:none;width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
+.btn.go.in-servizio .tb-dot{display:inline-block}
+.btn.go.in-servizio{background:var(--navy);border-color:var(--navy)}
+.tb-home{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.tb-home h2{font-size:30px}
+.tb-modal{width:min(520px,calc(100vw - 24px))}
+.tb-modal form{padding-bottom:6px}
+.tb-modal .tb-sub{margin:0;padding:0 26px 4px;color:var(--muted)}
+.tb-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 26px 6px}
+.tb-grid button{font:700 22px/1.1 var(--head);text-align:left;padding:16px 16px;border:2px solid var(--line);border-radius:6px;background:#fff;color:var(--navy);cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:74px;justify-content:center}
+.tb-grid button small{font:500 13px var(--body);color:var(--muted)}
+.tb-grid button:hover,.tb-grid button:focus-visible{border-color:var(--red);background:var(--cream)}
+.tb-grid button.tb-last{border-color:var(--navy)}
+.tb-live{padding:10px 26px 4px;display:flex;flex-direction:column;gap:6px}
+.tb-live .tb-where{font:700 30px/1 var(--head);display:flex;align-items:center;gap:12px}
+.tb-live .timer{font-size:52px}
+.tb-actions{display:flex;gap:10px;flex-wrap:wrap;padding:12px 26px 8px;align-items:center}
+.tb-actions .btn{font-size:20px;padding:14px 28px}
+.tb-more{padding:0 26px 18px;font-size:14px}
+.tb-more a,.tb-more button{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.tb-state{padding:0 26px 14px;font-size:13px;color:var(--muted)}
+@media (max-width:520px){.tb-grid{grid-template-columns:1fr}.lh-pick{flex-direction:column}}
+
 @media (max-width:980px){
   .drive{grid-template-columns:1fr;gap:14px}
   .d-side{position:static;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px}
@@ -493,3 +552,10 @@ main.wrap.wide{max-width:1500px}
 .nt-svg .n.from rect{stroke:var(--red);stroke-width:4}
 .btn.on{background:var(--navy);border-color:var(--navy);color:#fff}
 @media(max-width:800px){.nt-cols{grid-template-columns:1fr}}
+
+/* Esci (barra in alto) e schermata di uscita */
+.topbar .linkbtn{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;opacity:.85}
+.topbar .linkbtn:hover{opacity:1}
+.bye{position:fixed;inset:0;z-index:200;background:var(--cream);display:grid;place-items:center;text-align:center;padding:24px}
+.bye h2{font-size:48px;margin:0 0 10px}
+.bye .btn{margin-top:18px}

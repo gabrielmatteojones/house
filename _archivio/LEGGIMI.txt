@@ -1,0 +1,22 @@
+File messi da parte durante l'unione dei siti. Jekyll non li pubblica (cartella _archivio esclusa).
+Se dopo qualche settimana non ti servono, puoi cancellarli.
+
+_includes/default.html, _layouts/default1.html, _includes/header_old.html
+    Copie vecchie del layout (identiche o superate da _layouts/default.html).
+agenda.html, agenda.js
+    La vecchia «Agenda personale»: sostituita dal Calendario. I suoi impegni vengono spostati
+    automaticamente nel Calendario la prima volta che apri /calendario/ (copia in "agenda-migrata").
+documenti/, assets/js/CartaIntestata.docx
+    Il vecchio editor «Documenti»: /documenti/ era definito due volte (redirect + questa pagina).
+    Ora i documenti con carta intestata si fanno dal Drive.
+timbra/timbra.js
+    Copia identica di presenze/timbra.js (la pagina Timbra usa quest'ultimo).
+presenze-2026-11.csv (x2), resoconto-presenze-2026-09-01_2026-11-21.pdf
+    Dati di presenza che stavano dentro il repository, senza essere usati dal sito.
+gjones/18F WebMail.url
+    Collegamento di Windows alla vecchia webmail.
+webmail-www-2-manutenzione.html
+    Copia della pagina di manutenzione, finita per errore dentro la webmail.
+
+docs-editor-gabriel.html
+    Il vecchio editor «Documenti» con la carta Gabriel Jones: ora è nel Drive (scegli la carta dal menu «Carta» dell'editor).

@@ -1,20 +1,21 @@
 - title: Home
   url: /
-- title: Drive
-  url: /drive/
-- title: Siti
-  url: /siti/
 - title: Presenze in rete
   url: /presenze/
+- title: Suite
+  children:
+    - { title: Posta, url: /posta/ }
+    - { title: Drive, url: /drive/ }
+    - { title: Calendario, url: /calendario/ }
+    - { title: Accessi rapidi, url: /accessi/ }
+    - { title: Note e mappe, url: /note/ }
 - title: Raccolte
   children:
     - { title: Libri, url: /libri/ }
     - { title: Giochi, url: /giochi/ }
     - { title: Link, url: /link/ }
+    - { title: Siti, url: /siti/ }
     - { title: Accessi rapidi, url: /accessi/ }
-    - { title: Timbra, url: /timbra/ }
-- title: Didattica
-  children:
-    - { title: Calendario, url: /calendario/ }
+    - { title: Note e mappe, url: /note/ }
+    - { title: Lezioni, url: /lezioni/ }
     - { title: Registro, url: /registro/ }
-    - { title: Presenze in rete, url: /presenze/ }

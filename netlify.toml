@@ -17,3 +17,12 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
     Cache-Control = "private, max-age=0, must-revalidate"
+
+# --- Vecchi sotto-domini (facoltativo) --------------------------------------------------
+# Dopo aver aggiunto calendar.joneshouse.it e il dominio della webmail come «Domain aliases»
+# di QUESTO sito su Netlify, togli il commento e metti il dominio principale al posto di TUO-DOMINIO:
+# [[redirects]]
+#   from = "https://calendar.joneshouse.it/*"
+#   to = "https://TUO-DOMINIO/calendario/"
+#   status = 301
+#   force = true

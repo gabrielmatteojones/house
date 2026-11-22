@@ -303,7 +303,7 @@
   async function wordOf(it) {
     try {
       Portal.toast("Preparo il file Word…");
-      const blob = await DocxExport.make({ titolo: it.raw.titolo, html: Portal.sanitize(it.raw.html), carta: it.raw.carta === false ? null : await Letterhead.get() });
+      const blob = await DocxExport.make({ titolo: it.raw.titolo, html: Portal.sanitize(it.raw.html), carta: await Letterhead.forDoc(it.raw) });
       Portal.download(Portal.slug(it.raw.titolo) + ".docx", blob);
     } catch (err) { Portal.toast(err.message || "Impossibile creare il file Word"); }
   }
@@ -328,7 +328,7 @@
       const hadImgs = /<img/i.test(html);
       html = html.replace(/<img[^>]*>/gi, "");
       const now = nowIso();
-      const d = { id: Portal.uid(), titolo: m.nome.replace(/\.docx$/i, ""), html: html || "<p><br></p>", creato: now, aggiornato: now, cartella: m.cartella || "", carta: false };
+      const d = { id: Portal.uid(), titolo: m.nome.replace(/\.docx$/i, ""), html: html || "<p><br></p>", creato: now, aggiornato: now, cartella: m.cartella || "", carta: false, cartaModello: "nessuna" };
       docs.push(d);
       await persist("doc");
       render();
@@ -341,7 +341,7 @@
 
   async function newDoc() {
     const now = nowIso();
-    const d = { id: Portal.uid(), titolo: "", html: "<p><br></p>", creato: now, aggiornato: now, cartella: here(), carta: true };
+    const d = { id: Portal.uid(), titolo: "", html: "<p><br></p>", creato: now, aggiornato: now, cartella: here(), carta: true, cartaModello: await Letterhead.getDefault() };
     docs.push(d);
     await persist("doc");
     openDoc(d, { focusTitle: true });

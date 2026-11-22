@@ -1,13 +1,12 @@
 /* Presenze in rete · «Scarica resoconto»
    Caricato solo quando serve (al clic su «Scarica resoconto»), così la pagina si apre più in fretta.
-   Genera un PDF (scritto qui, senza librerie esterne) con la carta intestata del portale:
+   Genera un PDF (scritto qui, senza librerie esterne) con la carta intestata scelta (Jones House o Gabriel Jones, vedi letterhead.js):
    presentazione, indice, presenze, assenze, ritardi, riepilogo, sintesi mensile, calendari
    e una pagina di dettaglio per ogni settimana. */
 (() => {
   const LS_CACHE = "gj-presenze:cache", LS_CODA = "gj-presenze:coda", LS_RES = "gj-presenze:resoconto";
-  const TEMPLATE = "/assets/js/CartaIntestata.docx";
-  const W = 7655;                               // larghezza utile del testo sulla carta intestata (twip)
-  const BLUE = "3D6E99", PALE = "EEF3F8", LINE = "C5D0DD", TOT = "DCE6F0";
+  let BLUE = "3D6E99";                          // colore dei titoli: cambia con la carta scelta
+  const PALE = "EEF3F8", LINE = "C5D0DD", TOT = "DCE6F0";
 
   const pad = n => String(n).padStart(2, "0");
   const leggi = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
@@ -62,7 +61,13 @@
   }
 
   /* ---------- Scrittore PDF (senza librerie) ---------- */
-  const PW = 595.28, PH = 841.89, X0 = 176, XW = 377, XR = X0 + XW, Y0 = 132, YB = 762;
+  const PW = 595.28, PH = 841.89, YB = 762;
+  let X0 = 176, XW = 377, XR = X0 + XW, Y0 = 132;   // area del testo: dipende dalla carta (Gabriel Jones: colonna del logo a sinistra)
+  const geometria = modello => {
+    if (modello === "jones") { X0 = 57; XW = 481; Y0 = 122; BLUE = "101C4D"; }
+    else { X0 = 176; XW = 377; Y0 = 132; BLUE = "3D6E99"; }
+    XR = X0 + XW;
+  };
   const GRY = "555555", AMB = "E3A33A", RED = "C0504D", OKF = "E3EEF8", LATE = "FBEFD5", ABSF = "F8DADA", WKND = "F1F1F1";
   const WR = [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
   const WB = [278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
@@ -100,10 +105,23 @@
     };
     const line = (x1, y1, x2, y2, color, w) => ops.push(`${rgbOf(color || LINE)} RG ${w || 0.6} w ${n2(x1)} ${n2(PH - y1)} m ${n2(x2)} ${n2(PH - y2)} l S`);
 
+    const carta = cfg.carta || { modello: "gabriel", ...Letterhead.DEF.gabriel };
     function head() {
+      if (carta.modello === "jones") {
+        const NAVY = "101C4D", RD = "D3121B", righe = Letterhead.contactLines(carta);
+        rect(X0, 36, 42, 42, NAVY);
+        text(Letterhead.initials(carta.nome), X0 + 21, 62, { b: true, sz: 19, color: "FDF5EE", al: "c" });
+        rect(X0 + 8, 66, 26, 3.5, RD);
+        text(carta.nome.toUpperCase(), X0 + 54, 62, { b: true, sz: 24, color: NAVY });
+        if (carta.sottotitolo) text(carta.sottotitolo.toUpperCase(), X0 + 55, 74, { b: true, sz: 7, color: RD });
+        righe.slice(0, 5).forEach((l, i) => text(l.t, XR, 44 + i * 10.5, { sz: l.b ? 8.5 : 8, b: l.b, color: l.b ? NAVY : "5D668A", al: "r" }));
+        rect(X0, 88, XW, 1.8, NAVY);
+        rect(X0, 86.4, 70, 4.2, RD);
+        return;
+      }
       if (hasLogo) ops.push(`q 118 0 0 118 24 ${n2(PH - 30 - 118)} cm /Im1 Do Q`);
-      text("GABRIEL JONES", X0, 52, { b: true, sz: 11 });
-      ["Fontanafredda (PN)", "Tel. 0434 733808", "Email: -@joneshouse.it"].forEach((s, i) => text(s, X0 + 3, 66 + i * 12, { sz: 9.5 }));
+      text(carta.nome.toUpperCase(), X0, 52, { b: true, sz: 11 });
+      Letterhead.contactLines(carta).slice(0, 4).forEach((l, i) => text(l.t, X0 + 3, 66 + i * 12, { sz: 9.5 }));
       line(166, Y0 - 8, 166, 782, BLUE, 0.8);
     }
     function page() { ops = []; pages.push(ops); y = Y0; head(); return pages.length; }
@@ -210,9 +228,14 @@
       const N = pages.length;
       pages.forEach((p, i) => {
         ops = p;
-        line(X0, 784, XR, 784, LINE, 0.5);
-        const f = wrap(`Documento realizzato dall’ufficio di Gabriel Jones destinato a ${cfg.destinatario} con l’oggetto ${cfg.oggetto}`, XW, { sz: 7.5, i: true });
-        f.slice(0, 2).forEach((ln, j) => { let cx = X0; ln.forEach(pp => { text(pp.t, cx, 795 + j * 9.5, { sz: 7.5, i: true, color: GRY }); cx += pp.w; }); });
+        const ft = Letterhead.footText(carta, { destinatario: cfg.destinatario, oggetto: cfg.oggetto });
+        if (carta.modello === "jones") {
+          rect(X0, 774, XW, 6, "101C4D");
+          wrap(ft, XW, { sz: 7.5 }).slice(0, 2).forEach((ln, j) => { const w = ln.reduce((a, pp) => a + pp.w, 0); let cx = X0 + (XW - w) / 2; ln.forEach(pp => { text(pp.t, cx, 794 + j * 9.5, { sz: 7.5, color: "5D668A" }); cx += pp.w; }); });
+        } else {
+          line(X0, 784, XR, 784, LINE, 0.5);
+          wrap(ft, XW, { sz: 7.5, i: true }).slice(0, 2).forEach((ln, j) => { let cx = X0; ln.forEach(pp => { text(pp.t, cx, 795 + j * 9.5, { sz: 7.5, i: true, color: GRY }); cx += pp.w; }); });
+        }
         text(`Pagina ${i + 1} di ${N}`, XR, 822, { sz: 7.5, color: GRY, al: "r" });
       });
     }
@@ -249,34 +272,9 @@
     return new Blob(chunks, { type: "application/pdf" });
   }
 
-  /* Il logo della carta intestata si legge dal modello Word (è un archivio ZIP) */
-  function readZip(buf) {
-    const u8 = new Uint8Array(buf), dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
-    let e = u8.length - 22;
-    while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
-    if (e < 0) throw new Error("Modello non valido");
-    const n = dv.getUint16(e + 10, true);
-    let p = dv.getUint32(e + 16, true);
-    const out = [];
-    for (let i = 0; i < n; i++) {
-      const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
-      const nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
-      const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nl));
-      const start = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true);
-      out.push({ name, method, data: u8.subarray(start, start + csize) });
-      p += 46 + nl + el + cl;
-    }
-    return out;
-  }
-  async function inflate(b) {
-    const s = new Blob([b]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
-    return new Uint8Array(await new Response(s).arrayBuffer());
-  }
-  async function caricaLogo(buf) {
+  /* Il logo della carta «Gabriel Jones» (PNG) diventa un'immagine PDF con trasparenza */
+  async function caricaLogo(png) {
     try {
-      const f = readZip(buf).find(x => x.name === "word/media/image1.png");
-      if (!f) return null;
-      const png = f.method === 0 ? f.data : await inflate(f.data);
       const bmp = await createImageBitmap(new Blob([png], { type: "image/png" }));
       const S = 360, cv = document.createElement("canvas");
       cv.width = cv.height = S;
@@ -292,6 +290,8 @@
   async function buildPdf(recs, cfg, logo, quando) {
     const c = compute(recs, cfg);
     const { pres, assenze, ritardi, t, E, U1, U5 } = c;
+    cfg.carta = cfg.carta || { modello: "gabriel", ...Letterhead.DEF.gabriel };
+    geometria(cfg.carta.modello);
     const D = Layout(cfg, !!logo);
     const multi = new Set(pres.map(r => r.luogo)).size > 1;
     const luogoTxt = cfg.luogo ? `«${cfg.luogo}»` : "tutti i luoghi di lavoro registrati";
@@ -524,11 +524,13 @@
     const salvato = leggi(LS_RES, {});
     const conf = await Portal.load("presenze-config", { luoghi: [] });
     const luoghi = [...new Set([...(conf.luoghi || []), ...Object.values(leggi(LS_CACHE, {})).flat().map(r => r.luogo)])];
+    const cartaDef = ["jones", "gabriel"].includes(salvato.cartaModello) ? salvato.cartaModello : await Letterhead.getDefault();
     const res = await Portal.form({
       title: "Scarica resoconto",
       submit: "Scarica",
-      values: { dal: `${annoScol}-09-01`, al: iso(oggi), luogo: salvato.luogo ?? (luoghi.includes("Scuola") ? "Scuola" : ""), destinatario: salvato.destinatario || "", oggetto: salvato.oggetto || "Resoconto delle presenze", entrata: salvato.entrata || "08:40", uscita: salvato.uscita || "16:40", uscitaVen: salvato.uscitaVen || "13:40" },
+      values: { cartaModello: cartaDef, dal: `${annoScol}-09-01`, al: iso(oggi), luogo: salvato.luogo ?? (luoghi.includes("Scuola") ? "Scuola" : ""), destinatario: salvato.destinatario || "", oggetto: salvato.oggetto || "Resoconto delle presenze", entrata: salvato.entrata || "08:40", uscita: salvato.uscita || "16:40", uscitaVen: salvato.uscitaVen || "13:40" },
       fields: [
+        { name: "cartaModello", label: "Carta intestata", type: "select", options: Letterhead.MODELS.map(m => [m.id, m.nome]), hint: "Cambia l'aspetto dell'intestazione e del piè di pagina. Si modifica dal Drive (⚙ Carta intestata)." },
         { name: "dal", label: "Dal", type: "date", required: true, half: true },
         { name: "al", label: "Al", type: "date", required: true, half: true },
         { name: "luogo", label: "Luogo", type: "select", options: [["", "Tutti i luoghi"], ...luoghi.map(l => [l, l])] },
@@ -541,14 +543,15 @@
     });
     if (!res) return;
     if (res.dal > res.al) return Portal.toast("La data iniziale è dopo quella finale");
-    try { localStorage.setItem(LS_RES, JSON.stringify({ luogo: res.luogo, destinatario: res.destinatario, oggetto: res.oggetto, entrata: res.entrata, uscita: res.uscita, uscitaVen: res.uscitaVen })); } catch { /* quota */ }
+    try { localStorage.setItem(LS_RES, JSON.stringify({ cartaModello: res.cartaModello, luogo: res.luogo, destinatario: res.destinatario, oggetto: res.oggetto, entrata: res.entrata, uscita: res.uscita, uscitaVen: res.uscitaVen })); } catch { /* quota */ }
     const btn = $("#pr-report");
     btn.disabled = true;
     try {
-      const [recs, tpl] = await Promise.all([carica(res), fetch(TEMPLATE, { cache: "no-store" }).then(r => r.ok ? r.arrayBuffer() : null).catch(() => null)]);
+      res.carta = await Letterhead.get(res.cartaModello);
+      const [recs, png] = await Promise.all([carica(res), res.carta.modello === "gabriel" ? Letterhead.logoBytes().catch(() => null) : null]);
       if (!recs.length) return Portal.toast("Nessuna presenza nel periodo scelto");
       const quando = `${dLunga(iso(oggi))} alle ${pad(oggi.getHours())}:${pad(oggi.getMinutes())}`;
-      const logo = tpl ? await caricaLogo(tpl) : null;
+      const logo = png ? await caricaLogo(png) : null;
       const { blob } = await buildPdf(recs, res, logo, quando);
       Portal.download(`resoconto-presenze-${res.dal}_${res.al}.pdf`, blob);
       Portal.toast("Resoconto PDF scaricato");
