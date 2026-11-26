@@ -51,8 +51,6 @@ const Tema = (() => {
       if (!l) { l = document.createElement("link"); l.id = "tema-font"; l.rel = "stylesheet"; document.head.append(l); }
       if (l.getAttribute("href") !== c.fonts) l.setAttribute("href", c.fonts);
     } else if (l) l.remove();
-    const m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute("content", c.vars["--navy"]);
     return c;
   };
 

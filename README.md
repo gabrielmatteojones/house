@@ -10,6 +10,11 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 | «Calendario» del portale (le lezioni) | **/lezioni/** |
 | «Agenda personale» | assorbita dal Calendario (vedi sotto) |
 
+## Novità: nuovo header giallo e nero (stile Gates Notes)
+
+- Logo grande a sinistra, menu unico a destra, poi Timbra (quadrato giallo) ed «Esci» a riquadro nero; filetto nero sotto. Scorrendo diventa una barra nera bassa con «Esci» giallo. Il blu del riferimento è sostituito dal giallo `#ffd400` (variabili `--hd-*` in `portal.css`, fisse e indipendenti dal tema).
+- Codice: `_includes/header.html` (un solo `<nav>`), sezione «Intestazione» di `portal.css`, `header.js` invariato.
+
 ## Novità: calendario unico, header a scelta, Palestra
 
 - **Calendario unico** (`/calendario/`): oltre agli eventi mostra, come livelli che si accendono e spengono (le caselline sotto la barra), le **Lezioni** (prima in `/lezioni/`, che ora rimanda qui; «Nuova lezione» o tasto L, con «Avvia lezione» e ripetizione settimanale), le **Timbrature** (lette dalle presenze, anche quelle ancora in coda offline) e l'**Orario di scuola** (la griglia di `/orario/` ripetuta ogni settimana, senza festività). Lezioni si modificano dal calendario; timbrature e orario si leggono qui e si modificano da Presenze e «Modifica orario». Codice: `assets/js/calendar.js` (`virtuali()`). Il vecchio `lezioni.js` è in `_archivio/js/`.

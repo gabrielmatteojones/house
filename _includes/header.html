@@ -1,32 +1,26 @@
-<div class="hd-strip" aria-hidden="false"></div>
+{%- comment -%} Intestazione in stile «Gates Notes»: logo a sinistra, menu a destra, Timbra + Esci all'estremità.
+   In cima è bianca con filetto nero; scorrendo diventa una barra nera bassa (classe hd-small, la mette header.js).
+   Colori fissi giallo/nero (--hd-yellow in portal.css), indipendenti dal tema. {%- endcomment -%}
 <header class="site-header">
   <div class="hd-in">
 
-    <div class="hd-left">
-      {%- comment -%} Pulsante «Timbra», solo icona: lo anima assets/js/timbra.js (tondo pieno quando sei in servizio). {%- endcomment -%}
+    <a class="logo" href="/" aria-label="Jones House, home">
+      <b>Jones House</b>
+      <span class="logo-tag">Gabriel<br>Dal 2022 ad oggi</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Principale">
+      {%- for item in site.data.nav -%}{% include nav-item.html item=item %}{%- endfor -%}
+    </nav>
+
+    <div class="hd-right">
+      {%- comment -%} Pulsante «Timbra», solo icona: lo anima assets/js/timbra.js (pieno quando sei in servizio). {%- endcomment -%}
       <button class="ck" id="timbra-btn" type="button" aria-haspopup="dialog" title="Timbra entrata o uscita" aria-label="Timbra entrata o uscita">
         <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.8 12.4l3 3 5.6-6.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-
-    <div class="hd-center">
-      <nav class="nav nav-l" id="nav" aria-label="Principale">
-        {%- for item in site.data.nav -%}{%- if item.side == "left" -%}{% include nav-item.html item=item %}{%- endif -%}{%- endfor -%}
-      </nav>
-      <a class="logo" href="/" aria-label="Jones House, home">
-        <small>Gabriel</small>
-        <b>Jones House</b>
-        <small>Dal 2022 ad oggi</small>
-      </a>
-      <nav class="nav nav-r" id="nav-r" aria-label="Secondario">
-        {%- for item in site.data.nav -%}{%- if item.side == "right" -%}{% include nav-item.html item=item %}{%- endif -%}{%- endfor -%}
-      </nav>
-    </div>
-
-    <div class="hd-right">
       <button class="linkbtn" id="logout" type="button">Esci</button>
       <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" fill="none"/></svg>
       </button>
     </div>
 
