@@ -10,6 +10,18 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 | «Calendario» del portale (le lezioni) | **/lezioni/** |
 | «Agenda personale» | assorbita dal Calendario (vedi sotto) |
 
+## Novità: design aziendale, calendario chiaro, Catalogo OPAC, Cartella locale
+
+- **Design**: sfondo grigio chiaro, schede bianche con filetto, niente ombre, pulsanti neri (giallo al passaggio), testate di pagina bianche con barra gialla. La tavolozza «Classico» ora è l'**Aziendale** (nero/grigio); il vecchio blu e rosso è la tavolozza «Navy e rosso» nelle Impostazioni. Sezione «Design aziendale» in fondo a `portal.css`. Header: tolta l'ombra delle tendine.
+- **Calendario** (`calendar.css`, in fondo): barra comandi in una scheda, legenda «Mostra» con quadratini, intestazione dei giorni nera, oggi evidenziato in giallo, weekend e giorni fuori mese più tenui, eventi più leggibili.
+- **Libri → Catalogo online (OPAC)** (`libri.html`, `libri.js`, `opac.css`): ricerca semplice (con scelta del campo) e avanzata, filtri a faccette con conteggi (disponibilità, biblioteca, autore, soggetto, anno, editore), elenco o copertine, ordinamento, paginazione, scheda bibliografica con copie e disponibilità, prestito/rientro con scadenza (i prestiti scaduti sono evidenziati), citazione, stampa. Nuovi campi facoltativi nei libri: `soggetti`, `lingua`, `collocazione`, `prestatoA`, `scadenza`. I dati esistenti funzionano senza modifiche.
+- **Cartella locale** (`/locale/`, `locale.html`, `locale.js`, `locale.css`, voce in Suite): sfoglia in sola lettura una cartella, chiavetta o disco (File System Access API su Chrome/Edge; altrove modalità compatibile con selezione cartella). Miniature delle foto, foto a schermo intero con le frecce, documenti aperti con i visualizzatori del Drive, filtri per tipo, «Includi sottocartelle», selezione con caselle e pulsanti **Carica nel Drive** / **Carica questa cartella** (anche una foto sola dal visualizzatore), scelta della cartella di destinazione nel Drive, salta i file già presenti. Niente drag and drop. «Riapri l'ultima cartella» ricorda la sorgente.
+
+## Novità: nuovo header giallo e nero (stile Gates Notes)
+
+- Logo grande a sinistra, menu unico a destra, poi Timbra (quadrato giallo) ed «Esci» a riquadro nero; filetto nero sotto. Scorrendo diventa una barra nera bassa con «Esci» giallo. Il blu del riferimento è sostituito dal giallo `#ffd400` (variabili `--hd-*` in `portal.css`, fisse e indipendenti dal tema).
+- Codice: `_includes/header.html` (un solo `<nav>`), sezione «Intestazione» di `portal.css`, `header.js` invariato.
+
 ## Novità: calendario unico, header a scelta, Palestra
 
 - **Calendario unico** (`/calendario/`): oltre agli eventi mostra, come livelli che si accendono e spengono (le caselline sotto la barra), le **Lezioni** (prima in `/lezioni/`, che ora rimanda qui; «Nuova lezione» o tasto L, con «Avvia lezione» e ripetizione settimanale), le **Timbrature** (lette dalle presenze, anche quelle ancora in coda offline) e l'**Orario di scuola** (la griglia di `/orario/` ripetuta ogni settimana, senza festività). Lezioni si modificano dal calendario; timbrature e orario si leggono qui e si modificano da Presenze e «Modifica orario». Codice: `assets/js/calendar.js` (`virtuali()`). Il vecchio `lezioni.js` è in `_archivio/js/`.

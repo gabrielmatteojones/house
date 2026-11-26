@@ -129,3 +129,79 @@ main.wrap{padding-top:26px}
 .liv-link:hover{color:var(--navy)}
 .ro{border-left-style:dashed!important}
 .ag-it .src{text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+
+/* ================= Calendario · versione chiara (giallo/nero) ================= */
+:root{--c-navy:#374151;--cal-line:#d9dce1;--cal-y:#ffd400}
+main.wrap{padding-top:20px}
+.cal-card{background:#fff;border:1px solid var(--cal-line);border-radius:3px;padding:14px 16px;margin-bottom:12px}
+.cal-nav .btn.ghost{font-weight:700}
+.cal-nav .icon-btn{font-size:24px;height:34px;width:36px;padding:0;border:1.5px solid #c5c9cf;border-radius:2px;color:#111;background:#fff}
+.cal-nav .icon-btn:hover{background:var(--cal-y);border-color:#111}
+.cal-title{font:800 clamp(28px,3.4vw,40px)/1 var(--head);text-transform:uppercase;letter-spacing:0;margin-left:6px}
+.jseg{border:1.5px solid #111;border-radius:2px}
+.jseg button{color:#111;border-left:1px solid #111;padding:8px 16px;font-size:13.5px}
+.jseg button:hover{background:#fff6c2}
+.jseg button.on{background:#111;color:var(--cal-y)}
+.cal-bar input[type=search]{width:150px}
+.cal-bar{gap:10px 10px}
+.cal-title{font-size:clamp(26px,2.8vw,34px)}
+
+/* Livelli: legenda chiara con quadratini colorati */
+.cal-liv{margin:0 0 12px;padding:8px 12px;background:#fff;border:1px solid var(--cal-line);border-radius:3px}
+.liv-lab{font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:#5f6670;margin-right:4px}
+.liv{border-radius:2px;border:1.5px solid #c5c9cf;padding:4px 12px 4px 8px}
+.liv i{border-radius:2px;width:14px;height:14px}
+.liv:has(input:checked){background:color-mix(in srgb,var(--c) 10%,#fff);border-color:var(--c)}
+.liv-link{color:#111;font-weight:700}
+.liv-link:hover{background:var(--cal-y)}
+
+.cal-view{border-color:var(--cal-line);border-radius:3px}
+
+/* Mese */
+.mg .wd{background:#111;color:#fff;border-bottom:0;font:700 12px var(--body);letter-spacing:.12em;padding:11px 10px;text-align:left}
+.cell{min-height:132px;padding:6px 6px 8px;border-right:1px solid var(--cal-line);border-bottom:1px solid var(--cal-line);gap:4px;background:#fff}
+.cell:hover{background:#fffbe3}
+.cell.we{background:#fafafb}
+.cell.out{background:#f1f2f4}
+.cell.out .cn b,.cell.we .cn b{color:#8a909a}
+.cell.out .evs{opacity:.55}
+.cn b{font:700 15px/1 var(--body);color:#111}
+.cell.today{background:#fffbe3;box-shadow:inset 0 3px 0 var(--cal-y)}
+.cell.today .cn b{background:#111;color:var(--cal-y)}
+.jev{font:600 13px/1.35 var(--body);padding:3px 7px;border-radius:2px;background:color-mix(in srgb,var(--c) 14%,#fff);color:#111;border-left-width:4px}
+.jev i{font-weight:800}
+.jev.solid{background:var(--c);color:#fff}
+.fe{color:#b3261e;font-weight:700;font-size:12px}
+.jmore{color:#111;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+/* Giorno e settimana */
+.tg-top{background:#fff;border-bottom:2px solid #111}
+.th{padding:10px 4px 8px}
+.th span{color:#5f6670;font-size:11.5px;letter-spacing:.12em}
+.th b{font:800 24px/1 var(--head);border-radius:2px;width:38px;height:34px}
+.th.today b{background:#111;color:var(--cal-y)}
+.th.today span{color:#111}
+.dc{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--hh) - 1px),#e5e7eb calc(var(--hh) - 1px),#e5e7eb var(--hh))}
+.dc.today{background-color:#fffbe3}
+.te{border-radius:2px;border-left-width:4px;font-size:12.5px;color:#111;background:color-mix(in srgb,var(--c) 18%,#fff)}
+.now{background:#e5231b;height:2px}
+.now::before{background:#e5231b}
+.hrs .hr{color:#5f6670;font-weight:700}
+
+/* Agenda */
+.ag-day{padding:16px 20px;border-top:1px solid var(--cal-line)}
+.ag-d{font:800 26px/1 var(--head);text-transform:uppercase}
+.ag-day.today .ag-d{color:#111;box-shadow:inset 0 -6px 0 var(--cal-y)}
+.ag-it{border-radius:2px;background:color-mix(in srgb,var(--c) 9%,#fff);border-left-width:5px}
+.ag-it b{font-size:16.5px;color:#111}
+.ag-fe{color:#b3261e}
+
+/* Pulsante flottante */
+.fab{background:var(--cal-y);color:#111;border:2px solid #111;box-shadow:none;border-radius:2px}
+.cal-hint{font-size:12.5px}
+.cal-hint b{display:inline-block;min-width:20px;text-align:center;padding:0 5px;border:1px solid #c5c9cf;border-bottom-width:2px;border-radius:3px;background:#fff;font-weight:700}
+@media (max-width:760px){
+  .cell{min-height:64px}
+  .cell.today{box-shadow:inset 0 3px 0 var(--cal-y)}
+  .mg .wd{text-align:center;letter-spacing:.04em}
+}

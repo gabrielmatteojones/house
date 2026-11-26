@@ -1,23 +1,89 @@
 ---
 layout: default
-title: Libri
-kicker: Raccolte
-lead: Il catalogo unico di tutti i libri, con copertina e dati presi dal link.
+title: Catalogo online
+kicker: Biblioteca · OPAC
+lead: Cerca nel catalogo, filtra per biblioteca e disponibilità, consulta la scheda di ogni libro e gestisci i prestiti.
 permalink: /libri/
+styles: [opac]
+wide: true
+compact: true
 script: libri
 ---
-<div class="toolbar">
-  <form class="quick" id="quick">
-    <input type="text" id="qin" placeholder="Incolla il link del libro (o il suo ISBN)" aria-label="Link o ISBN del libro" required>
-    <button class="btn" type="submit">Aggiungi libro</button>
-  </form>
+<div class="opac">
+  <section class="op-search" aria-label="Ricerca nel catalogo">
+    <div class="op-tabs" role="tablist">
+      <button type="button" role="tab" data-mode="semplice" aria-selected="true">Ricerca semplice</button>
+      <button type="button" role="tab" data-mode="avanzata" aria-selected="false">Ricerca avanzata</button>
+      <span class="sp"></span>
+      <button type="button" class="op-add" id="op-add-toggle" aria-expanded="false">+ Catalogazione</button>
+    </div>
+
+    <form class="op-simple" id="op-simple" role="search">
+      <select id="op-campo" aria-label="Cerca in">
+        <option value="tutto">Tutti i campi</option>
+        <option value="titolo">Titolo</option>
+        <option value="autore">Autore</option>
+        <option value="soggetti">Soggetto</option>
+        <option value="isbn">ISBN</option>
+        <option value="editore">Editore</option>
+      </select>
+      <input type="search" id="op-q" placeholder="Scrivi titolo, autore, soggetto o ISBN" aria-label="Termini di ricerca" autocomplete="off">
+      <button class="btn" type="submit">Cerca</button>
+      <button class="btn ghost" type="button" id="op-reset">Azzera</button>
+    </form>
+
+    <form class="op-adv" id="op-adv" hidden>
+      <label>Titolo<input id="a-titolo" type="text"></label>
+      <label>Autore<input id="a-autore" type="text"></label>
+      <label>Soggetto<input id="a-soggetti" type="text"></label>
+      <label>ISBN<input id="a-isbn" type="text"></label>
+      <label>Editore<input id="a-editore" type="text"></label>
+      <label>Anno dal<input id="a-da" type="number" min="0" max="2100"></label>
+      <label>Anno al<input id="a-a" type="number" min="0" max="2100"></label>
+      <label>Biblioteca<select id="a-bib"></select></label>
+      <div class="op-adv-go"><button class="btn" type="submit">Cerca</button><button class="btn ghost" type="button" id="op-adv-reset">Azzera</button></div>
+    </form>
+
+    <form class="op-new" id="op-new" hidden>
+      <label for="op-link">Aggiungi un libro al catalogo</label>
+      <div class="op-new-row">
+        <input type="text" id="op-link" placeholder="Incolla il link del libro (negozio, catalogo) oppure l'ISBN" aria-label="Link o ISBN del libro">
+        <button class="btn" type="submit">Cataloga</button>
+        <button class="btn ghost" type="button" id="op-manual">Scheda vuota</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="op-kpi" id="op-kpi" aria-label="Riepilogo"></section>
+
+  <div class="op-body">
+    <aside class="op-facets" id="op-facets" aria-label="Raffina la ricerca"></aside>
+    <section class="op-results" aria-live="polite">
+      <div class="op-bar">
+        <div class="op-count" id="op-count"></div>
+        <span class="sp"></span>
+        <label class="op-sel">Ordina per
+          <select id="op-sort">
+            <option value="rilevanza">Rilevanza</option>
+            <option value="titolo">Titolo (A–Z)</option>
+            <option value="autore">Autore (A–Z)</option>
+            <option value="anno-desc">Anno (recenti prima)</option>
+            <option value="anno-asc">Anno (vecchi prima)</option>
+            <option value="aggiunto">Ultimi inseriti</option>
+          </select>
+        </label>
+        <label class="op-sel">Per pagina
+          <select id="op-per"><option>10</option><option selected>20</option><option>50</option></select>
+        </label>
+        <div class="jseg" role="group" aria-label="Vista">
+          <button type="button" data-vista="lista" aria-pressed="true">Elenco</button>
+          <button type="button" data-vista="copertine" aria-pressed="false">Copertine</button>
+        </div>
+      </div>
+      <div class="op-chosen" id="op-chosen"></div>
+      <div id="op-list"></div>
+      <nav class="op-pager" id="op-pager" aria-label="Pagine dei risultati"></nav>
+      <div class="empty" id="op-none" hidden></div>
+    </section>
+  </div>
 </div>
-<div class="toolbar">
-  <input type="search" id="q" placeholder="Cerca per titolo, autore o ISBN" aria-label="Cerca nei libri">
-  <select id="fbib" aria-label="Biblioteca"></select>
-  <select id="fst" aria-label="Stato"></select>
-  <span class="sp"></span>
-  <span class="muted" id="count"></span>
-</div>
-<div class="grid g-books" id="grid"></div>
-<div class="empty" id="none" hidden><h3>Nessun libro</h3>Incolla il link di un libro (negozio online, catalogo, ISBN) per aggiungerlo.</div>

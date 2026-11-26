@@ -282,6 +282,8 @@ const Viewers = (() => {
   /* ---------- Apertura ---------- */
   async function open(meta, opts = {}) {
     hooks = opts;
+    $('[data-a="close"]', root).textContent = opts.backLabel || "← Drive";
+    $('[data-a="download"]', root).hidden = !!opts.noDownload;
     const kind = kindOf(meta), my = ++session;
     current = { meta, kind, blob: null };
     root.hidden = false;

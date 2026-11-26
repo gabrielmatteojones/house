@@ -1,0 +1,90 @@
+---
+layout: default
+title: Cartella locale
+kicker: Suite · Dispositivo
+lead: Sfoglia foto, documenti e video di una chiavetta USB, di un disco o di una cartella del computer, direttamente dal sito. Nulla viene caricato finché non lo chiedi.
+permalink: /locale/
+styles: [locale]
+wide: true
+compact: true
+scripts: [viewers]
+script: locale
+---
+<div class="loc" id="loc">
+
+  <section class="lc-start" id="lc-start">
+    <div class="lc-start-main">
+      <h2>Apri una cartella del tuo dispositivo</h2>
+      <p>Scegli la cartella (o l'unità USB / il disco): il sito la legge <b>solo in lettura</b> e te ne mostra il contenuto. I file restano dove sono e non lasciano il computer finché non premi <b>«Carica nel Drive»</b>.</p>
+      <div class="lc-actions">
+        <button class="btn" id="lc-pick" type="button">Scegli cartella o unità…</button>
+        <button class="btn ghost" id="lc-reopen" type="button" hidden>Riapri l'ultima cartella</button>
+        <button class="btn ghost" id="lc-files" type="button">Scegli singoli file…</button>
+      </div>
+      <p class="lc-note" id="lc-note"></p>
+    </div>
+    <ul class="lc-tips">
+      <li><b>Chiavetta o disco esterno</b> Collegalo, poi scegli la sua lettera (es. <code>E:</code>) nella finestra. Se il browser rifiuta la radice, apri una cartella al suo interno.</li>
+      <li><b>Foto</b> Anteprime a griglia e visione a schermo intero con le frecce.</li>
+      <li><b>Documenti</b> PDF, Word, PowerPoint, testi e fogli si aprono senza scaricarli.</li>
+    </ul>
+  </section>
+
+  <section class="lc-browser" id="lc-browser" hidden>
+    <div class="lc-head">
+      <div class="lc-src"><span class="lc-ico" aria-hidden="true">▣</span><div><small>Sorgente (sola lettura)</small><b id="lc-rootname"></b></div></div>
+      <nav class="lc-crumbs" id="lc-crumbs" aria-label="Percorso"></nav>
+      <span class="sp"></span>
+      <button class="btn ghost sm" id="lc-change" type="button">Cambia cartella</button>
+    </div>
+
+    <div class="lc-tools">
+      <input type="search" id="lc-q" placeholder="Filtra per nome in questa cartella" aria-label="Filtra per nome">
+      <div class="lc-chips" id="lc-types" role="group" aria-label="Tipo di file"></div>
+      <span class="sp"></span>
+      <label class="lc-chk"><input type="checkbox" id="lc-deep"> Includi sottocartelle</label>
+      <label class="lc-chk"><input type="checkbox" id="lc-hidden"> Mostra nascosti</label>
+      <select id="lc-sort" aria-label="Ordina per">
+        <option value="nome">Nome</option>
+        <option value="mod">Più recenti</option>
+        <option value="size">Dimensione</option>
+        <option value="tipo">Tipo</option>
+      </select>
+      <div class="jseg" role="group" aria-label="Vista">
+        <button type="button" data-mode="grid" aria-pressed="true">Miniature</button>
+        <button type="button" data-mode="list" aria-pressed="false">Elenco</button>
+      </div>
+    </div>
+
+    <div class="lc-selbar" id="lc-selbar">
+      <label class="lc-chk"><input type="checkbox" id="lc-all"> Seleziona tutto</label>
+      <span id="lc-selinfo" class="muted">Nessun file selezionato</span>
+      <span class="sp"></span>
+      <label class="lc-dest">Destinazione nel Drive
+        <select id="lc-dest" aria-label="Destinazione nel Drive"></select>
+      </label>
+      <button class="btn ghost sm" id="lc-up-folder" type="button">Carica questa cartella</button>
+      <button class="btn go" id="lc-up-sel" type="button" disabled>Carica nel Drive</button>
+    </div>
+
+    <div id="lc-status" class="lc-status" aria-live="polite"></div>
+    <div id="lc-items"></div>
+    <div class="empty" id="lc-empty" hidden></div>
+  </section>
+</div>
+
+<div class="lc-lb" id="lc-lb" hidden role="dialog" aria-modal="true" aria-label="Foto a schermo intero">
+  <div class="lc-lb-top">
+    <b id="lb-name"></b><small id="lb-meta" class="muted-light"></small>
+    <span class="sp"></span>
+    <button class="btn go sm" id="lb-up" type="button">Carica nel Drive</button>
+    <button class="btn ghost sm" id="lb-x" type="button" aria-label="Chiudi">Chiudi ✕</button>
+  </div>
+  <button class="lc-lb-nav prev" id="lb-prev" type="button" aria-label="Precedente">‹</button>
+  <div class="lc-lb-stage"><img id="lb-img" alt=""></div>
+  <button class="lc-lb-nav next" id="lb-next" type="button" aria-label="Successiva">›</button>
+  <div class="lc-lb-cnt" id="lb-cnt"></div>
+</div>
+
+<input type="file" id="lc-fallback-dir" webkitdirectory multiple hidden>
+<input type="file" id="lc-fallback-files" multiple hidden>

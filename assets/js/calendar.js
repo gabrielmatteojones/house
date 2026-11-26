@@ -310,7 +310,7 @@
 
   /* ---------- Livelli ---------- */
   function disegnaLivelli() {
-    $("#c-liv").innerHTML = LIVELLI.map(([k, n, c]) => `<label class="liv" style="--c:var(--c-${c})"><input type="checkbox" data-liv="${k}"${S.liv[k] ? " checked" : ""}><i></i>${n}</label>`).join("")
+    $("#c-liv").innerHTML = `<span class="liv-lab">Mostra</span>` + LIVELLI.map(([k, n, c]) => `<label class="liv" style="--c:var(--c-${c})"><input type="checkbox" data-liv="${k}"${S.liv[k] ? " checked" : ""}><i></i>${n}</label>`).join("")
       + `<span class="sp"></span><a class="liv-link" href="/orario/">Modifica orario</a><a class="liv-link" href="/presenze/">Presenze</a>`;
   }
 

@@ -3,7 +3,8 @@
    così theme-boot.js lo applica prima del disegno. Questo file serve a calcolarlo e a tenerlo allineato tra dispositivi. */
 const Tema = (() => {
   const PRESETS = {
-    classico: { nome: "Classico", primario: "#101c4d", accento: "#d3121b", sfondo: "#fdf5ee" },
+    classico: { nome: "Aziendale", primario: "#111111", accento: "#111111", sfondo: "#f3f4f6" },
+    navy:     { nome: "Navy e rosso", primario: "#101c4d", accento: "#d3121b", sfondo: "#fdf5ee" },
     bosco:    { nome: "Bosco",    primario: "#1d3b2c", accento: "#c8541a", sfondo: "#f5f2e6" },
     oceano:   { nome: "Oceano",   primario: "#0b3a4a", accento: "#0e9aa7", sfondo: "#eef6f7" },
     vinaccia: { nome: "Vinaccia", primario: "#3b0d1e", accento: "#d1495b", sfondo: "#fbf3f1" },
@@ -32,6 +33,8 @@ const Tema = (() => {
   /** Dal tema scelto ai valori finali (variabili CSS + caratteri) */
   const calcola = t => {
     t = { ...BASE, ...t, colori: { ...BASE.colori, ...(t && t.colori) } };
+    // tema «Classico» salvato con i vecchi colori navy/rosso → ora è l'Aziendale (nero + grigio); chi vuole il vecchio sceglie «Navy e rosso»
+    if (t.preset === "classico" && t.colori.primario === "#101c4d" && t.colori.accento === "#d3121b") t.colori = { ...PRESETS.classico };
     const { primario: p, accento: a, sfondo: s } = t.colori, f = FONTS[t.font] || FONTS.classico, r = RAGGI[t.raggio] || RAGGI.medio;
     const vars = {
       "--navy": p, "--navy-d": mix(p, "#000000", .35), "--red": a, "--red-d": mix(a, "#000000", .18),
@@ -39,7 +42,7 @@ const Tema = (() => {
       "--muted": mix(p, s, .36), "--line": `rgba(${rgb(p).join(",")},.15)`,
       "--r": r.r, "--rb": r.rb, "--head": f.head, "--body": f.body
     };
-    return { vars, fonts: f.url, hero: t.hero, contrastoAccento: buio(a) };
+    return { v: 2, vars, fonts: f.url, hero: t.hero, contrastoAccento: buio(a) };
   };
 
   const applica = t => {
@@ -51,8 +54,6 @@ const Tema = (() => {
       if (!l) { l = document.createElement("link"); l.id = "tema-font"; l.rel = "stylesheet"; document.head.append(l); }
       if (l.getAttribute("href") !== c.fonts) l.setAttribute("href", c.fonts);
     } else if (l) l.remove();
-    const m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute("content", c.vars["--navy"]);
     return c;
   };
 

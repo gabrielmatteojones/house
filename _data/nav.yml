@@ -9,6 +9,7 @@
   children:
     - { title: Posta, url: /posta/ }
     - { title: Drive, url: /drive/ }
+    - { title: Cartella locale, url: /locale/ }
     - { title: Calendario, url: /calendario/ }
     - { title: Note e mappe, url: /note/ }
     - { title: Spazio di lavoro, url: /notion/ }
