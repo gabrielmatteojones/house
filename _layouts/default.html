@@ -32,9 +32,20 @@
   </main>
   <footer class="site-footer">
     <div class="wrap">
-      <span>Jones House · portale privato di Gabriel Jones</span>
-      <span class="sp"></span>
-      <span class="muted-light">I dati sono salvati nel tuo spazio Netlify</span>
+      <div class="ft-top"><a class="ft-logo" href="/">Jones House<small>Gabriel · dal 2022 ad oggi</small></a></div>
+      <div class="ft-mid">
+        <nav class="ft-cols" aria-label="Piè di pagina">
+          {%- for item in site.data.nav -%}{%- if item.children -%}
+          <div><h4>{{ item.title }}</h4>{%- for c in item.children -%}<a href="{{ c.url }}">{{ c.title }}</a>{%- endfor -%}</div>
+          {%- endif -%}{%- endfor -%}
+        </nav>
+        <div class="ft-side">
+          <h4>Subito</h4>
+          <p>Registra l'entrata o l'uscita dal luogo di lavoro.</p>
+          <button class="ft-btn" type="button" onclick="Timbra.open()">Timbra</button>
+        </div>
+      </div>
+      <div class="ft-bot"><span>© {{ 'now' | date: "%Y" }} Jones House · portale privato di Gabriel Jones</span><span>I dati sono salvati nel tuo spazio Netlify</span></div>
     </div>
   </footer>
   <script src="/assets/js/core.js"></script>

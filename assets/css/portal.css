@@ -2,7 +2,7 @@
    Palette: navy #101c4d · navy scuro #0a1238 · crema #fdf5ee · rosso #d3121b */
 :root{
   --navy:#101c4d; --navy-d:#0a1238; --cream:#fdf5ee; --red:#d3121b; --red-d:#b00e16;
-  --muted:#5d668a; --line:rgba(16,28,77,.13); --paper:#fff; --r:12px;
+  --muted:#5d668a; --line:rgba(16,28,77,.13); --paper:#fff; --r:4px;
   --shadow:0 1px 2px rgba(16,28,77,.05),0 10px 28px -16px rgba(16,28,77,.22);
   --head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
   --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -25,14 +25,14 @@ img{max-width:100%}
 
 /* Intestazione: fascia rossa sottile, «Timbra» piccolo a sinistra, menu 3 + logo + 3, «Esci» a destra */
 .hd-strip{height:6px;background:linear-gradient(90deg,#3b000a 0%,#a8001f 38%,#c4001f 50%,#a8001f 62%,#3b000a 100%)}
-.site-header{background:color-mix(in srgb,var(--hd-bg,#faf8f4) 92%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 6px 22px -14px rgba(16,28,77,.35)}
+.site-header{background:var(--hd-bg,#fff);position:sticky;top:0;z-index:30;border-bottom:1px solid var(--navy)}
 .hd-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;max-width:1560px;margin:0 auto;padding:8px 32px;min-height:84px}
 .hd-left{justify-self:start;min-width:0}
 .hd-center{display:flex;align-items:center;gap:48px}
 .hd-right{justify-self:end;display:flex;align-items:center;gap:16px}
 
 .logo{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;line-height:1;gap:5px;padding:0 6px;position:relative}
-.logo b{font:800 34px/.9 var(--head);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.logo b{font:800 38px/.9 var(--head);text-transform:uppercase;letter-spacing:.01em;white-space:nowrap}
 .logo small{font:600 10.5px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .logo small:last-child{color:var(--red);display:flex;align-items:center;gap:8px}
 .logo small:last-child::before,.logo small:last-child::after{content:"";width:14px;height:1px;background:currentColor;opacity:.55}
@@ -44,7 +44,7 @@ img{max-width:100%}
 .dd-btn svg{opacity:.7}
 
 .dd{position:relative}
-.dd-menu{position:absolute;top:100%;left:-16px;min-width:230px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 22px 48px -12px rgba(16,28,77,.28),0 2px 6px rgba(16,28,77,.06);padding:8px;display:none;z-index:5;}
+.dd-menu{position:absolute;top:100%;left:-16px;min-width:230px;background:var(--paper);border:1px solid var(--navy);border-radius:2px;box-shadow:0 18px 40px -14px rgba(16,28,77,.35);padding:8px;display:none;z-index:5}
 .dd-menu::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}
 .nav-r .dd:last-child .dd-menu{left:auto;right:-16px}
 .dd:hover .dd-menu,.dd:focus-within .dd-menu,.dd.open .dd-menu{display:block}
@@ -52,15 +52,28 @@ img{max-width:100%}
 .dd-menu a:hover{background:var(--cream);padding-left:18px}
 .dd-menu a.on{background:var(--cream);box-shadow:inset 3px 0 0 var(--red)}
 
-.linkbtn{background:transparent;border:1.5px solid var(--line);border-radius:999px;color:var(--navy);font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:8px 16px;}
-.linkbtn:hover{background:var(--navy);border-color:var(--navy);color:#fff}
+.linkbtn{background:transparent;border:1.5px solid var(--red);border-radius:2px;color:var(--red);font:700 12px var(--body);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:8px 14px}
+.linkbtn:hover{background:var(--red);color:#fff}
 .burger{display:none;background:none;border:0;color:var(--navy);cursor:pointer;padding:6px}
 
 /* «Timbra»: solo un'icona. Fuori servizio contorno chiaro; in servizio il tondo diventa pieno (e il titolo dice dove). */
-.ck{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);color:var(--red);cursor:pointer}
+.ck{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;border-radius:2px;border:1.5px solid var(--line);background:var(--paper);color:var(--red);cursor:pointer}
 .ck:hover{border-color:var(--red)}
 .ck.in-servizio{background:var(--red);border-color:var(--red);color:#fff}
 
+
+/* Scorrendo la pagina l'intestazione si fa bassa e scura (la classe la mette header.js) */
+html.hd-small .hd-strip{display:none}
+html.hd-small .site-header{background:var(--navy-d);border-bottom-color:var(--navy-d)}
+html.hd-small .hd-in{min-height:56px;padding-top:4px;padding-bottom:4px}
+html.hd-small .logo small{display:none}
+html.hd-small .logo b{font-size:26px}
+html.hd-small .nav>a,html.hd-small .dd-btn,html.hd-small .logo b,html.hd-small .burger{color:var(--cream)}
+html.hd-small .linkbtn{color:#fff;border-color:rgba(255,255,255,.6)}
+html.hd-small .linkbtn:hover{background:#fff;color:var(--navy-d)}
+html.hd-small .ck{background:transparent;border-color:rgba(255,255,255,.35);color:#fff}
+html.hd-small .ck.in-servizio{background:var(--red);border-color:var(--red)}
+html.hd-small .dd-menu a{color:var(--navy)}
 
 @media (min-width:1321px) and (max-width:1560px){
   .hd-in{padding:8px 24px;gap:16px}
@@ -98,45 +111,6 @@ img{max-width:100%}
   .hd-right{gap:6px}
 }
 
-/* Varianti dell'intestazione (scelte da Impostazioni → Aspetto) */
-@media (min-width:1321px){
-  html[data-header="sinistra"] .hd-in,html[data-header="compatto"] .hd-in{display:flex;gap:40px}
-  html[data-header="sinistra"] .hd-center,html[data-header="compatto"] .hd-center{display:contents}
-  html[data-header="sinistra"] .logo,html[data-header="compatto"] .logo{order:1;align-items:flex-start;text-align:left}
-  html[data-header="sinistra"] .nav-l,html[data-header="compatto"] .nav-l{order:2}
-  html[data-header="sinistra"] .nav-r,html[data-header="compatto"] .nav-r{order:3}
-  html[data-header="sinistra"] .hd-left,html[data-header="compatto"] .hd-left{order:4;margin-left:auto}
-  html[data-header="sinistra"] .hd-right,html[data-header="compatto"] .hd-right{order:5}
-  html[data-header="sinistra"] .nav,html[data-header="compatto"] .nav{gap:30px}
-  html[data-header="sinistra"] .nav-r{margin-left:-14px}
-  html[data-header="compatto"] .hd-in{min-height:56px;padding-top:4px;padding-bottom:4px}
-  html[data-header="compatto"] .logo small{display:none}
-  html[data-header="compatto"] .logo b{font-size:26px}
-}
-html[data-header="compatto"] .hd-strip{display:none}
-html[data-header="scuro"] .site-header{background:var(--navy);border-bottom-color:var(--navy-d);box-shadow:none}
-html[data-header="scuro"] .site-header .nav>a,html[data-header="scuro"] .site-header .dd-btn,html[data-header="scuro"] .site-header .logo b,html[data-header="scuro"] .site-header .linkbtn,html[data-header="scuro"] .site-header .burger{color:var(--cream)}
-html[data-header="scuro"] .site-header .logo small{color:rgba(255,255,255,.62)}
-html[data-header="scuro"] .site-header .logo small:last-child{color:#ff9aa0}
-html[data-header="scuro"] .site-header .linkbtn,html[data-header="scuro"] .site-header .ck{border-color:rgba(255,255,255,.28);background:transparent}
-html[data-header="scuro"] .site-header .ck{color:#fff}
-html[data-header="scuro"] .site-header .ck.in-servizio{background:var(--red);border-color:var(--red)}
-html[data-header="scuro"] .site-header .linkbtn:hover{background:var(--cream);color:var(--navy)}
-html[data-header="scuro"] .dd-menu a{color:var(--navy)}
-@media (max-width:1320px){html[data-header="scuro"] .nav>a,html[data-header="scuro"] .dd-btn{border-bottom-color:rgba(255,255,255,.18)}html[data-header="scuro"] .dd-menu a{color:var(--cream)}}
-html[data-header="minimo"] .hd-strip{height:3px}
-html[data-header="minimo"] .hd-in{min-height:60px}
-html[data-header="minimo"] .logo small{display:none}
-html[data-header="minimo"] .logo b{font-size:28px}
-@media (min-width:1321px){
-  html[data-header="minimo"] .hd-center{gap:0}
-  html[data-header="minimo"] .nav{gap:0}
-  html[data-header="minimo"] .nav>a,html[data-header="minimo"] .dd-btn{padding:12px 14px}
-  html[data-header="minimo"] .nav-l{margin-right:22px}
-  html[data-header="minimo"] .nav-r{margin-left:22px}
-}
-
-
 /* Temi: stile del riquadro in cima alla pagina (scelto da Impostazioni → Aspetto) */
 html[data-hero="solid"] .hero{background-image:none}
 html[data-hero="gradient"] .hero{background-size:auto;background-image:linear-gradient(135deg,var(--navy-d),var(--navy) 55%,var(--red-d))}
@@ -147,7 +121,7 @@ html[data-hero="strip"] .hero h1{font-size:clamp(44px,6vw,72px)}
 html[data-hero="strip"] .hero .kicker{color:var(--red)}
 
 /* Pulsanti */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 14.5px var(--body);letter-spacing:.01em;padding:11px 22px;border-radius:var(--rb,999px);border:2px solid var(--red);background:var(--red);color:#fff;cursor:pointer;text-decoration:none;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 14.5px var(--body);letter-spacing:.01em;padding:11px 22px;border-radius:var(--rb,2px);border:2px solid var(--red);background:var(--red);color:#fff;cursor:pointer;text-decoration:none}
 .btn:hover{background:var(--red-d);border-color:var(--red-d);box-shadow:0 8px 18px -8px rgba(211,18,27,.5)}
 .btn:disabled{opacity:.6;cursor:wait}
 .btn.ghost{background:transparent;color:var(--navy);border-color:var(--line)}
@@ -165,13 +139,29 @@ html[data-hero="strip"] .hero .kicker{color:var(--red)}
 .hero h1{font-size:clamp(54px,8vw,96px);font-weight:700;color:var(--hero-ink-h,var(--cream))}
 .hero .lead{margin:18px 0 0;max-width:620px;font-size:18px;opacity:.85}
 main.wrap{padding-top:44px;padding-bottom:90px}
-.site-footer{background:var(--navy-d);color:#fff;font-size:13.5px;padding:24px 0;border-top:4px solid var(--red)}
-.site-footer .wrap{display:flex;gap:16px;flex-wrap:wrap}
+.site-footer{background:#000;background:color-mix(in srgb,var(--navy-d) 40%,#000);color:#fff;font-size:14px;padding:44px 0 26px;margin-top:20px}
+.ft-top{padding-bottom:26px;border-bottom:1px solid rgba(255,255,255,.35)}
+.ft-logo{display:inline-flex;flex-direction:column;gap:6px;text-decoration:none;font:800 30px/.95 var(--head);text-transform:uppercase;letter-spacing:.02em}
+.ft-logo small{font:600 11px var(--body);letter-spacing:.16em;color:rgba(255,255,255,.65)}
+.ft-mid{display:grid;grid-template-columns:1fr 340px;border-bottom:1px solid rgba(255,255,255,.35)}
+.ft-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:28px;padding:34px 32px 34px 0}
+.ft-cols h4,.ft-side h4{font:700 12px var(--body);letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin:0 0 14px}
+.ft-cols a{display:block;color:#fff;text-decoration:none;padding:6px 0;font-size:14.5px}
+.ft-cols a:hover{text-decoration:underline;text-underline-offset:4px}
+.ft-side{border-left:1px solid rgba(255,255,255,.35);padding:34px 0 34px 36px}
+.ft-side p{margin:0 0 18px;color:rgba(255,255,255,.8)}
+.ft-btn{background:transparent;color:#fff;border:1px solid #fff;border-radius:2px;padding:11px 26px;font:600 15px var(--body);cursor:pointer}
+.ft-btn:hover{background:#fff;color:#000}
+.ft-bot{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,.75)}
+@media (max-width:760px){.ft-mid{grid-template-columns:1fr}.ft-side{border-left:0;border-top:1px solid rgba(255,255,255,.35);padding:28px 0}.ft-cols{padding-right:0}}
 .muted-light{opacity:.65}
 
 /* Elementi comuni */
-.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
-.panel h2{font-size:34px;margin-bottom:14px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.panel h2,.group h2{display:inline-block;font:800 20px/1 var(--head);text-transform:uppercase;letter-spacing:.02em;padding-bottom:6px;border-bottom:3px solid var(--navy);margin-bottom:18px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec-head a{font:600 14px var(--body);text-decoration:none;color:var(--navy)}
+.sec-head a:hover{text-decoration:underline;text-underline-offset:4px}
 .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
 .toolbar input[type=search],.toolbar input[type=url],.toolbar input[type=text]{max-width:340px}
 .toolbar select{width:auto}
@@ -229,7 +219,6 @@ dialog.modal::backdrop{background:rgba(10,18,56,.62)}
 
 /* Accessi rapidi */
 .group{margin-bottom:34px}
-.group h2{font-size:32px;margin-bottom:14px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
 .tile{position:relative;display:flex;align-items:center;gap:14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;}
 .tile:hover{border-color:var(--navy);box-shadow:var(--shadow)}
@@ -241,12 +230,11 @@ dialog.modal::backdrop{background:rgba(10,18,56,.62)}
 .tile:hover .edit,.tile:focus-within .edit{opacity:1}
 
 /* Link e giochi: schede */
-.card{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
-.card:hover{box-shadow:0 18px 34px -18px rgba(16,28,77,.38)}
-.card .thumb{aspect-ratio:16/9;background:var(--navy) center/cover;display:grid;place-items:center;color:#fff}
+.card{display:flex;flex-direction:column;background:transparent;border:0;border-radius:0}
+.card .thumb{aspect-ratio:16/10;background:var(--navy) center/cover;display:grid;place-items:center;color:#fff}
 .card .thumb img{width:44px;height:44px;border-radius:8px}
-.card .inner{padding:16px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
-.card h3{font-size:28px;line-height:1}
+.card .inner{padding:14px 0 4px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font:700 22px/1.2 "Source Serif 4",Georgia,"Times New Roman",serif;letter-spacing:0}
 .card h3 a{text-decoration:none}
 .card h3 a:hover{text-decoration:underline}
 .card p{margin:0;color:var(--muted);font-size:14.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -704,3 +692,4 @@ main.wrap.wide{max-width:1500px}
 .st-choice span{font:500 13px var(--body);color:var(--muted)}
 .st-bar{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;justify-content:flex-end;background:var(--hd-bg,var(--cream));border-top:1px solid var(--line);padding:12px 0;margin-top:22px;z-index:6}
 @media (max-width:640px){.st-day{grid-template-columns:1fr;gap:4px}}
+.tb-home h2{border:0;padding:0;margin:0;font-size:28px;text-transform:none}
