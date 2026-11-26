@@ -7,7 +7,7 @@
 }
 
 /* ---------- Badge ---------- */
-.pr-badge{margin-bottom:20px;border-width:2px;transition:border-color .2s}
+.pr-badge{margin-bottom:20px;border-width:2px;}
 .pr-badge.on{border-color:var(--p-red)}
 .pr-badge h2{margin-bottom:12px}
 .pr-big{font-size:20px;padding:14px 34px;letter-spacing:.01em}
@@ -28,7 +28,7 @@
 
 .pr-progress{margin-bottom:16px}
 .pr-progress-bar{height:10px;border-radius:99px;background:var(--p-cream);border:1px solid var(--p-line);overflow:hidden}
-.pr-progress-bar i{display:block;height:100%;width:0;background:var(--p-navy);border-radius:99px;transition:width .6s ease}
+.pr-progress-bar i{display:block;height:100%;width:0;background:var(--p-navy);border-radius:99px;}
 .pr-progress.done .pr-progress-bar i{background:var(--p-ok)}
 .pr-progress p{margin:6px 0 0;font-size:14px;color:var(--p-muted)}
 
@@ -87,8 +87,8 @@
 .pr-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;background:#fff;border:1px solid var(--p-line);border-radius:var(--p-r);padding:12px}
 .pr-cal[hidden],.pr-tablewrap[hidden],.pr-none[hidden]{display:none}
 .pr-cal .h{font:700 12px var(--p-body);color:var(--p-muted);text-align:center;text-transform:uppercase;letter-spacing:.05em;padding:2px 0 4px}
-.pr-cal .d{all:unset;box-sizing:border-box;cursor:pointer;min-height:68px;border:1px solid var(--p-line);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:1px;background:#fff;transition:transform .1s,box-shadow .1s}
-.pr-cal .d:hover{box-shadow:0 2px 8px rgba(0,0,0,.12);transform:translateY(-1px)}
+.pr-cal .d{all:unset;box-sizing:border-box;cursor:pointer;min-height:68px;border:1px solid var(--p-line);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:1px;background:#fff;}
+.pr-cal .d:hover{box-shadow:0 2px 8px rgba(0,0,0,.12);}
 .pr-cal .d:focus-visible{outline:3px solid var(--p-navy);outline-offset:1px}
 .pr-cal .d .n{font:700 12px var(--p-body);color:var(--p-muted)}
 .pr-cal .d b{font:700 16px/1.1 var(--p-head);font-variant-numeric:tabular-nums}
@@ -163,5 +163,5 @@
   .pr-cal .d b{font-size:13px}.pr-cal .d small{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .pr-progress-bar i,.pr-cal .d,.pr-badge{transition:none}
+  .pr-progress-bar i,.pr-cal .d,.pr-badge{}
 }

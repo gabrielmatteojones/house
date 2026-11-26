@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scheda palestra, Uomo I livello</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E8EBEE;--ink:#14181D;--mut:#55606B;--line:#C6CDD4;--ac:#1D4ED8;--tile:#D6E0FA;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1317;--ink:#E8ECF0;--mut:#98A3AE;--line:#29313A;--ac:#7FA8FF;--tile:#1B2638;--on:#0F1317}}
+:root[data-theme="dark"]{--bg:#0F1317;--ink:#E8ECF0;--mut:#98A3AE;--line:#29313A;--ac:#7FA8FF;--tile:#1B2638;--on:#0F1317}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.4 Barlow,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+main{max-width:640px;margin:0 auto}
+h1,h2,.nm,.sr,nav button{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700}
+header{padding:20px 16px 8px}
+h1{font-size:34px;line-height:1;margin:0}
+header p{margin:6px 0 0;color:var(--mut);font-size:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+nav button{flex:1;font-size:20px;padding:10px 0;border:2px solid var(--ink);background:none;color:var(--ink);border-radius:6px}
+nav button[aria-selected="true"]{background:var(--ac);border-color:var(--ac);color:var(--on)}
+nav button:focus-visible,input:focus-visible,.rs:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+h2{font-size:26px;margin:18px 16px 4px}
+.ex{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:start;padding:14px 16px;border-bottom:1px solid var(--line)}
+.ex.done{opacity:.5}.ex.done .nm{text-decoration:line-through}
+.gl{width:72px;height:72px;border-radius:10px;background:var(--tile);color:var(--ac);display:grid;place-items:center}
+.gl svg{width:60px;height:60px}
+.nm{font-size:22px;line-height:1.1}
+.cue{margin:4px 0 8px;color:var(--mut);font-size:14px}
+.wt{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)}
+.wt input[type=number]{width:70px;font:700 18px "Barlow Condensed",sans-serif;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.wt input[type=checkbox]{width:24px;height:24px;accent-color:var(--ac);margin-left:8px}
+.sr{font-size:32px;line-height:1;text-align:right;white-space:nowrap}
+.rs{font:400 13px Barlow,sans-serif;color:var(--mut);text-align:right;margin-top:4px}
+.fine{padding:16px;display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--mut);font-size:13px}
+.fine button{font:inherit;color:var(--ink);background:none;border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.day[hidden]{display:none}
+@media print{nav,.fine button,body::before{display:none}.day[hidden]{display:block}.ex{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Scheda palestra</h1><p>Uomo, I livello, 3 giorni. Segna i kg e spunta quello che hai fatto: restano salvati su questo dispositivo.</p></header>
+<nav role="tablist" id="tabs"></nav>
+<div id="days"></div>
+<div class="fine"><span>I disegni sono pittogrammi schematici dei macchinari.</span><button id="rst">Azzera spunte</button></div>
+</main>
+<script>
+const A='<circle cx="32" cy="10" r="5"/>';
+const G={
+bike:'<circle cx="16" cy="44" r="9"/><circle cx="48" cy="44" r="9"/><path d="M16 44l10-18h14l8 18M26 26l-2-6h-6"/>',
+pec:'<circle cx="28" cy="12" r="5"/><path d="M28 18v22h14M42 40v14M28 24h-12v-10M28 24h12v-10M12 12v14M44 12v14M20 18v26"/>',
+cp:'<circle cx="22" cy="14" r="5"/><path d="M22 20v22h16M38 42v12M22 28h26M48 22v12M14 16v32"/>',
+db:'<path d="M18 32h28M12 24v16M18 20v24M46 20v24M52 24v16"/>',
+cable:A+'<path d="M32 16v24M32 40l-6 16M32 40l6 16M32 24l8 10M44 6v52M44 8h-10M34 8v28"/>',
+crunch:'<circle cx="16" cy="32" r="5"/><path d="M20 36l12 8h18M32 44l8-16M10 52h44"/>',
+lp:'<path d="M8 14v34M14 26v18h14l12-10M40 34v-14h8v30h-8"/><circle cx="14" cy="18" r="5"/>',
+lc:'<circle cx="22" cy="12" r="5"/><path d="M22 18v22h22M44 40v14M16 14v30M50 36h8M44 40l8-4"/>',
+le:'<circle cx="20" cy="12" r="5"/><path d="M20 18v22h18l14-12M14 14v32M52 28h4"/>',
+calf:A+'<path d="M32 16v26M20 18h24M18 18v8M46 18v8M32 42v10M26 58l6-6h8"/>',
+raise:A+'<path d="M32 16v22M32 38l-6 18M32 38l6 18M32 22H12M32 22h20M10 18v8M54 18v8"/>',
+sp:'<circle cx="32" cy="24" r="5"/><path d="M32 30v18h14M46 48v8M32 36l-12-6V14M32 36l12-6V14M14 12h12M38 12h12M26 30v18"/>',
+row:'<circle cx="38" cy="14" r="5"/><path d="M38 20v24H22M22 44v10M38 28l-14 6M8 34h16M8 28v12M46 44v10"/>',
+lat:'<path d="M32 4v14M14 18h36"/><circle cx="32" cy="26" r="5"/><path d="M32 32v14h12v10M18 18l10 14M46 18l-10 14M24 48h8"/>',
+pull:'<circle cx="38" cy="14" r="5"/><path d="M38 20v24H22M22 44v10M38 28l-14 6M6 34h18M6 28v12M10 44h12v10"/>',
+curl:A+'<path d="M32 16v24M32 40l-6 16M32 40l6 16M32 24l10 8-4 6M52 58v-4M52 56l-14-18"/>',
+hyper:'<circle cx="48" cy="30" r="5"/><path d="M43 32L24 26M24 26l-10 12-2 16M20 38h14M16 54h16"/>'
+};
+const D=[
+{t:"Petto e tricipiti",x:[
+["bike","Cardio a scelta","10–15 min","pausa 2’–3’","Tapis roulant, bici o ellittica a ritmo facile."],
+["pec","Pectoral (pec deck)","4×12","1’30”","Schiena appoggiata, gomiti all’altezza del petto, chiudi senza sbattere i pesi."],
+["cp","Chest press","4×10","1’30”","Spingi in avanti senza staccare la schiena dallo schienale."],
+["db","Croci con manubri, panca piana","4×12","1’30”","Gomiti leggermente piegati, apri fino a sentire il petto allungarsi."],
+["db","Spinte con manubri","4×10","1’30”","Manubri sopra il petto, scendi piano e spingi."],
+["cable","Distensioni al cavo alto","3×12","1’","Gomiti attaccati ai fianchi, estendi fino in fondo."],
+["db","French con manubri o cavo","3×15","1’","Gomiti fermi, scendi dietro la testa e risali."],
+["crunch","Crunch a terra","4×15–30","30”","Sali con gli addominali, senza tirare il collo."],
+["bike","Cardio a scelta","5–10 min","","Defaticamento."]]},
+{t:"Gambe e spalle",x:[
+["bike","Cardio a scelta","10–15 min","pausa 2’–3’","Riscaldamento a ritmo facile."],
+["lp","Pressa orizzontale","4×10","1’30”","Piedi a larghezza spalle, non bloccare le ginocchia in alto."],
+["lc","Leg curl","4×12","1’30”","Regola il cuscino sopra le caviglie, scendi piano."],
+["le","Leg extension o affondi frontali","4×12","1’30”","Estendi senza scatto, ginocchio in linea con la punta del piede."],
+["calf","Polpacci alla calf o rialzo","4×25","30”","Sali sulle punte il più in alto possibile e scendi fino a sentire l’allungamento."],
+["raise","Alzate laterali","3×15","1’","Manubri leggeri, sali fino all’altezza delle spalle."],
+["sp","Shoulder press","3×12","1’","Schiena appoggiata, spingi sopra la testa senza inarcare."],
+["crunch","Crunch inverso","4×10–20","30”","Porta le ginocchia al petto staccando il bacino da terra."],
+["bike","Bici","5 min","","Defaticamento."]]},
+{t:"Dorso e bicipiti",x:[
+["bike","Cardio a scelta","10–15 min","pausa 2’–3’","Riscaldamento a ritmo facile."],
+["row","Low row","4×10","1’30”","Petto in fuori, tira i gomiti indietro vicino al busto."],
+["lat","Lat machine avanti","4×12","1’30”","Tira la barra al petto, spalle basse, senza dondolare."],
+["pull","Pulley","4×12","1’30”","Schiena dritta, porta la maniglia all’ombelico."],
+["curl","Curl con bilanciere Z o cavo basso","3×15","1’","Gomiti fermi lungo i fianchi, sali e scendi piano."],
+["db","Bicipiti con manubri alternati","3×20 totali","1’","Un braccio alla volta, senza dondolare il busto."],
+["hyper","Iperestensioni per i lombari","4×10","30”","Sali fino a mettere il corpo in linea, senza inarcarti oltre."],
+["bike","Cardio a scelta","5–10 min","","Defaticamento."]]}];
+let S={};try{S=JSON.parse(localStorage.getItem('scheda-v1')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('scheda-v1',JSON.stringify(S))}catch(e){}};
+const svg=k=>'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+G[k]+'</svg>';
+const tabs=document.getElementById('tabs'),days=document.getElementById('days');
+D.forEach((d,i)=>{
+ const b=document.createElement('button');b.textContent='Giorno '+(i+1);b.setAttribute('role','tab');
+ b.onclick=()=>{location.hash='giorno-'+(i+1)};tabs.appendChild(b);
+ const s=document.createElement('section');s.className='day';
+ s.innerHTML='<h2>Giorno '+(i+1)+': '+d.t+'</h2>'+d.x.map((e,j)=>{
+  const id=i+'-'+j,st=S[id]||{};
+  return '<div class="ex'+(st.f?' done':'')+'" data-id="'+id+'"><div class="gl">'+svg(e[0])+'</div><div><div class="nm">'+e[1]+'</div><p class="cue">'+e[4]+'</p><label class="wt">Peso <input type="number" inputmode="decimal" min="0" step="0.5" value="'+(st.w||'')+'" data-w> kg <input type="checkbox" aria-label="Fatto" data-f'+(st.f?' checked':'')+'></label></div><div><div class="sr">'+e[2]+'</div><div class="rs">'+(e[3]||'')+'</div></div></div>';
+ }).join('');
+ days.appendChild(s);
+});
+days.addEventListener('input',e=>{
+ const r=e.target.closest('.ex');if(!r)return;const id=r.dataset.id;S[id]=S[id]||{};
+ if(e.target.hasAttribute('data-w'))S[id].w=e.target.value;
+ if(e.target.hasAttribute('data-f')){S[id].f=e.target.checked?1:0;r.classList.toggle('done',e.target.checked)}
+ save();
+});
+document.getElementById('rst').onclick=()=>{
+ Object.keys(S).forEach(k=>S[k].f=0);save();
+ document.querySelectorAll('.ex').forEach(r=>{r.classList.remove('done');r.querySelector('[data-f]').checked=false});
+};
+function show(){
+ const m=/^#giorno-([123])$/.exec(location.hash),n=m?+m[1]-1:0;
+ [...days.children].forEach((s,i)=>s.hidden=i!==n);
+ [...tabs.children].forEach((b,i)=>b.setAttribute('aria-selected',i===n));
+}
+addEventListener('hashchange',show);show();
+</script>
+</body>
+</html>

@@ -4,6 +4,11 @@
   const HH = 48; // altezza di un'ora nella griglia, in px (deve coincidere con --hh)
   const COLORI = [["navy", "Blu"], ["red", "Rosso"], ["green", "Verde"], ["amber", "Ambra"], ["violet", "Viola"], ["teal", "Turchese"]];
   const RIPETI = [["no", "Non si ripete"], ["giornaliera", "Ogni giorno"], ["settimanale", "Ogni settimana"], ["mensile", "Ogni mese"], ["annuale", "Ogni anno"]];
+  /* Livelli del calendario: ognuno si accende e si spegne. Lezioni, timbrature e orario arrivano da altre parti del portale e qui si leggono soltanto. */
+  const LIVELLI = [["eventi", "Eventi", "navy"], ["lezioni", "Lezioni", "violet"], ["timbrature", "Timbrature", "teal"], ["orario", "Orario di scuola", "amber"], ["fest", "Festività", "red"]];
+  const FASCE = ["08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40"];   // come in plugins/orario
+  const LS_PCACHE = "gj-presenze:cache", LS_PCODA = "gj-presenze:coda";
+  const leggi = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
   const VISTE = ["giorno", "settimana", "mese", "agenda"];
   const GIORNI = ["lun", "mar", "mer", "gio", "ven", "sab", "dom"];
   const LS = "gj-cal:";
@@ -16,16 +21,76 @@
     vista: VISTE.includes(ls.get("vista")) ? ls.get("vista") : (piccolo() ? "agenda" : "mese"),
     cur: oggi(),
     q: "",
-    fest: ls.get("fest") !== "0"
+    lezioni: [], giochi: [], orario: [], virt: {},
+    presCache: {}, presCoda: {}, presFatti: new Set(),
+    liv: Object.fromEntries(LIVELLI.map(l => [l[0], ls.get("liv-" + l[0]) !== "0"])),
+    get fest() { return this.liv.fest; }
   };
 
   const view = $("#c-view");
   const fmt = (iso, o) => L.D(iso).toLocaleDateString("it-IT", o);
 
   /* ---------- Dati ---------- */
-  const visibili = () => {
+  const mesiDi = (da, a) => { const m = []; for (let d = da.slice(0, 7); d <= a.slice(0, 7);) { m.push(d); d = isoDate(new Date(+d.slice(0, 4), +d.slice(5, 7), 1, 12)).slice(0, 7); } return m; };
+  const presenze = () => {
+    const m = new Map();
+    const metti = r => { const o = m.get(r.id); if (!o || r.modificato >= o.modificato) m.set(r.id, r); };
+    Object.values(S.presCache).forEach(l => l.forEach(metti));
+    Object.values(S.presCoda).forEach(metti);
+    return [...m.values()].filter(r => !r.eliminato && r.entrata);
+  };
+  async function serviMesi(mesi) {   // scarica in silenzio i mesi che mancano, poi ridisegna
+    const mancano = mesi.filter(mo => !S.presFatti.has(mo));
+    if (!mancano.length) return;
+    mancano.forEach(mo => S.presFatti.add(mo));
+    let nuovi = false;
+    await Promise.all(mancano.map(async mo => {
+      try {
+        const r = await fetch(`/api/presenze?mese=${mo}`, { cache: "no-store" });
+        if (!r.ok || !(r.headers.get("content-type") || "").includes("json")) throw 0;
+        S.presCache[mo] = (await r.json()).registrazioni || []; nuovi = true;
+      } catch { /* senza rete restano i dati già in cache */ }
+    }));
+    if (nuovi && S.liv.timbrature) disegna();
+  }
+  const durataTxt = ms => { const m = Math.max(0, Math.round(ms / 60000)); return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`; };
+
+  /* Eventi «virtuali» presi da lezioni, timbrature e orario: stessa forma degli eventi, con ro = da dove vengono */
+  function virtuali(da, a) {
+    S.virt = {};
+    const out = [], add = ev => { S.virt[ev.id] = ev; out.push(ev); };
+    const largo = L.diffDays(da, a) > 120;   // nella ricerca su anni interi niente orario e timbrature
+    if (S.liv.lezioni) S.lezioni.filter(l => l.data >= da && l.data <= a).forEach(l => add({
+      id: "lez:" + l.id, ro: "lezione", rid: l.id, titolo: l.titolo, data: l.data, tutto: !l.inizio, inizio: l.inizio || "", fine: l.fine || "",
+      luogo: l.luogo || "", note: l.descrizione || "", colore: "violet", ripeti: "no" }));
+    if (S.liv.timbrature && !largo) {
+      serviMesi(mesiDi(da, a));
+      presenze().forEach(r => {
+        const e = new Date(r.entrata), d = isoDate(e);
+        if (d < da || d > a) return;
+        const u = r.uscita ? new Date(r.uscita) : null;
+        const fine = u ? (isoDate(u) === d ? hhmm(u) : "23:59") : (d === oggi() ? hhmm(new Date()) : "");
+        add({ id: "tim:" + r.id, ro: "timbrata", titolo: `${r.luogo || "Timbrata"}${u ? "" : " · in corso"}`, data: d, tutto: false, inizio: hhmm(e), fine: fine > hhmm(e) ? fine : "",
+          luogo: "", note: "", colore: "teal", ripeti: "no",
+          dettaglio: `${r.luogo}: ${hhmm(e)}${u ? "–" + hhmm(u) + " · " + durataTxt(u - e) : " · in corso"}${r.note ? " · " + r.note : ""}` });
+      });
+    }
+    if (S.liv.orario && !largo && S.orario.length) {
+      const fest = L.festivita(da, a);
+      for (let d = da; d <= a; d = L.addDays(d, 1)) {
+        const dow = L.D(d).getDay();
+        if (dow < 1 || dow > 5 || fest[d]) continue;
+        S.orario.filter(e => +e.giorno === dow && FASCE[e.riga] && FASCE[e.riga + Math.max(1, +e.ore || 1)]).forEach(e => add({
+          id: `ori:${e.giorno}:${e.riga}:${d}`, ro: "orario", titolo: e.materia || "Lezione", data: d, tutto: false, inizio: FASCE[e.riga], fine: FASCE[e.riga + Math.max(1, +e.ore || 1)],
+          luogo: [e.classe, e.aula && "aula " + e.aula].filter(Boolean).join(" · "), note: "", colore: "amber", ripeti: "no" }));
+      }
+    }
+    return out;
+  }
+  const visibili = (da, a) => {
     const q = S.q.trim().toLowerCase();
-    return q ? S.eventi.filter(e => [e.titolo, e.luogo, e.note].join(" ").toLowerCase().includes(q)) : S.eventi;
+    const tutti = (S.liv.eventi ? S.eventi : []).concat(virtuali(da, a));
+    return q ? tutti.filter(e => [e.titolo, e.luogo, e.note].join(" ").toLowerCase().includes(q)) : tutti;
   };
   const colore = e => (COLORI.some(c => c[0] === e.colore) ? e.colore : "navy");
   const ora = e => (e.tutto || !e.inizio ? "" : e.inizio);
@@ -60,7 +125,7 @@
   /* ---------- Pezzi di HTML ---------- */
   const chip = (o, solido = false) => {
     const e = o.ev, t = ora(e);
-    return `<button type="button" class="jev${solido ? " solid" : ""}" style="--c:var(--c-${colore(e)})" data-id="${esc(e.id)}" data-d="${o.data}" title="${esc(e.titolo)}${t ? " · " + t : ""}${e.luogo ? " · " + esc(e.luogo) : ""}">${t ? `<i>${t}</i>` : ""}<span>${esc(e.titolo)}</span></button>`;
+    return `<button type="button" class="jev${solido ? " solid" : ""}${e.ro ? " ro" : ""}" style="--c:var(--c-${colore(e)})" data-id="${esc(e.id)}" data-d="${o.data}" title="${esc(e.titolo)}${t ? " · " + t : ""}${e.luogo ? " · " + esc(e.luogo) : ""}">${t ? `<i>${t}</i>` : ""}<span>${esc(e.titolo)}</span></button>`;
   };
   const festLabel = (f, d) => (f[d] ? `<em class="fe" title="${esc(f[d])}">${esc(f[d])}</em>` : "");
 
@@ -69,7 +134,7 @@
     const d = L.D(S.cur), y = d.getFullYear(), m = d.getMonth();
     const primo = isoDate(new Date(y, m, 1, 12)), ultimo = isoDate(new Date(y, m + 1, 0, 12));
     const da = L.weekStart(primo), a = L.addDays(L.weekStart(ultimo), 6);
-    const map = L.perGiorno(visibili(), da, a), fest = S.fest ? L.festivita(da, a) : {};
+    const map = L.perGiorno(visibili(da, a), da, a), fest = S.fest ? L.festivita(da, a) : {};
     const MAX = 3, t = oggi();
     let h = `<div class="mg">${GIORNI.map(g => `<div class="wd">${g}</div>`).join("")}`;
     for (let day = da, i = 0; day <= a; day = L.addDays(day, 1), i++) {
@@ -95,7 +160,7 @@
 
   function vistaGriglia(giorni) {
     const da = giorni[0], a = giorni[giorni.length - 1], n = giorni.length, t = oggi();
-    const map = L.perGiorno(visibili(), da, a), fest = S.fest ? L.festivita(da, a) : {};
+    const map = L.perGiorno(visibili(da, a), da, a), fest = S.fest ? L.festivita(da, a) : {};
     const intestaz = giorni.map(d => `<button type="button" class="th${d === t ? " today" : ""}" data-go="${d}" title="Apri il giorno"><span>${GIORNI[(L.D(d).getDay() + 6) % 7]}</span><b>${L.D(d).getDate()}</b></button>`).join("");
     const tuttoGiorno = giorni.map(d => `<div class="ad" data-day="${d}">${festLabel(fest, d)}${(map[d] || []).filter(L.giornaliero).map(o => chip(o, true)).join("")}</div>`).join("");
     const ore = Array.from({ length: 24 }, (_, i) => `<div class="hr">${String(i).padStart(2, "0")}:00</div>`).join("");
@@ -103,7 +168,7 @@
       const eventi = disponi((map[d] || []).filter(o => !L.giornaliero(o)));
       const blocchi = eventi.map(v => {
         const e = v.o.ev, top = v.s / 60 * HH, alt = Math.max((v.e - v.s) / 60 * HH - 2, 18);
-        return `<button type="button" class="te" style="--c:var(--c-${colore(e)});top:${top}px;height:${alt}px;left:calc(${v.col / v.cols * 100}% + 1px);width:calc(${100 / v.cols}% - 3px)" data-id="${esc(e.id)}" data-d="${v.o.data}" title="${esc(e.titolo)}"><b>${esc(e.titolo)}</b><small>${esc(e.inizio || "")}${e.fine ? "–" + esc(e.fine) : ""}${e.luogo ? " · " + esc(e.luogo) : ""}</small></button>`;
+        return `<button type="button" class="te${e.ro ? " ro" : ""}" style="--c:var(--c-${colore(e)});top:${top}px;height:${alt}px;left:calc(${v.col / v.cols * 100}% + 1px);width:calc(${100 / v.cols}% - 3px)" data-id="${esc(e.id)}" data-d="${v.o.data}" title="${esc(e.titolo)}"><b>${esc(e.titolo)}</b><small>${esc(e.inizio || "")}${e.fine ? "–" + esc(e.fine) : ""}${e.luogo ? " · " + esc(e.luogo) : ""}</small></button>`;
       }).join("");
       return `<div class="dc${d === t ? " today" : ""}" data-day="${d}">${blocchi}${d === t ? `<div class="now" style="top:${minutiOra() / 60 * HH}px"></div>` : ""}</div>`;
     }).join("");
@@ -117,14 +182,14 @@
   function vistaAgenda() {
     const cerca = !!S.q.trim();
     const da = cerca ? L.addDays(oggi(), -365) : S.cur, a = cerca ? L.addDays(oggi(), 730) : L.addDays(S.cur, 90);
-    const map = L.perGiorno(visibili(), da, a), fest = S.fest && !cerca ? L.festivita(da, a) : {};
+    const map = L.perGiorno(visibili(da, a), da, a), fest = S.fest && !cerca ? L.festivita(da, a) : {};
     const giorni = [...new Set([...Object.keys(map), ...Object.keys(fest).filter(d => d >= da && d <= a)])].sort();
     if (!giorni.length) return `<div class="cal-empty"><h3>${cerca ? "Nessun risultato" : "Nessun evento"}</h3><p>${cerca ? "Prova con un'altra parola." : "Nei prossimi 90 giorni non c'è niente in programma."}</p><button class="btn" type="button" data-new>Nuovo evento</button></div>`;
     const t = oggi();
     return giorni.map(d => {
       const items = (map[d] || []).map(o => {
         const e = o.ev, quando = e.tutto || !e.inizio ? (o.fine > o.data ? `fino al ${fmt(o.fine, { day: "numeric", month: "short" })}` : "Tutto il giorno") : `${e.inizio}${e.fine ? " – " + e.fine : ""}`;
-        return `<button type="button" class="ag-it" style="--c:var(--c-${colore(e)})" data-id="${esc(e.id)}" data-d="${o.data}"><span class="t">${esc(quando)}${e.ripeti && e.ripeti !== "no" ? " ↻" : ""}</span><span><b>${esc(e.titolo)}</b>${e.luogo ? `<small>${esc(e.luogo)}</small>` : ""}</span></button>`;
+        return `<button type="button" class="ag-it${e.ro ? " ro" : ""}" style="--c:var(--c-${colore(e)})" data-id="${esc(e.id)}" data-d="${o.data}"><span class="t">${esc(quando)}${e.ripeti && e.ripeti !== "no" ? " ↻" : ""}</span><span><b>${esc(e.titolo)}</b>${e.luogo ? `<small>${esc(e.luogo)}</small>` : ""}${e.ro ? `<small class="src">${{ lezione: "Lezione", timbrata: "Timbratura", orario: "Orario di scuola" }[e.ro]}</small>` : ""}</span></button>`;
       }).join("");
       return `<div class="ag-day${d === t ? " today" : ""}"><div class="ag-d">${fmt(d, { weekday: "short", day: "numeric" })}<small>${fmt(d, { month: "long", year: "numeric" })}</small></div><div class="ag-items">${fest[d] ? `<div class="ag-fe">${esc(fest[d])}</div>` : ""}${items}</div></div>`;
     }).join("");
@@ -206,12 +271,53 @@
     return "";
   }
 
-  const trova = id => S.eventi.find(e => e.id === id);
+  const trova = id => S.virt[id] || S.eventi.find(e => e.id === id);
+
+  /* ---------- Elementi che vengono da altre sezioni ---------- */
+  function apri(x) {
+    if (x.ro === "lezione") return modificaLezione(S.lezioni.find(l => l.id === x.rid), false);
+    if (x.ro === "timbrata") return Portal.toast(x.dettaglio);
+    Portal.toast(`${x.titolo} · ${x.inizio}–${x.fine}${x.luogo ? " · " + x.luogo : ""}. Si modifica da «Modifica orario».`);
+  }
+
+  async function modificaLezione(item, isNew) {
+    if (!item) return;
+    const campiL = [
+      { name: "titolo", label: "Titolo", required: true },
+      { name: "data", label: "Data", type: "date", required: true, half: true },
+      { name: "luogo", label: "Luogo", half: true },
+      { name: "inizio", label: "Inizio", type: "time", half: true },
+      { name: "fine", label: "Fine", type: "time", half: true },
+      { name: "gioco", label: "Gioco o attività previsti", list: S.giochi.map(g => g.nome).sort() },
+      { name: "descrizione", label: "Descrizione", type: "textarea", rows: 3 }
+    ];
+    if (isNew) campiL.push({ name: "ripeti", label: "Ripeti ogni settimana per altre", type: "number", min: 0, hint: "Numero di settimane. Lascia 0 per una lezione singola." });
+    const res = await Portal.form({ title: isNew ? "Nuova lezione" : "Modifica lezione", fields: campiL, values: item, onDelete: !isNew, extra: isNew ? [] : [{ label: "Avvia lezione", value: "avvia" }] });
+    if (!res) return;
+    if (res.__delete) { await Portal.remove("lezioni", item.id); Portal.toast("Lezione eliminata"); return disegna(); }
+    const { ripeti = 0, __extra, ...data } = res;
+    if (isNew) {
+      for (let i = 0; i <= (Number(ripeti) || 0); i++) S.lezioni.push({ ...item, ...data, id: i === 0 ? item.id : Portal.uid(), data: L.addDays(data.data, 7 * i) });
+      await Portal.save("lezioni", S.lezioni);
+      Portal.toast(ripeti > 0 ? `Aggiunte ${Number(ripeti) + 1} lezioni` : "Lezione aggiunta");
+    } else await Portal.upsert("lezioni", { ...item, ...data });
+    if (__extra === "avvia") { location.href = `/registro/?avvia=1&lezione=${encodeURIComponent(item.id)}`; return; }
+    S.cur = data.data;
+    if (!S.liv.lezioni) { S.liv.lezioni = true; ls.set("liv-lezioni", "1"); disegnaLivelli(); }
+    disegna();
+  }
+  const nuovaLezione = data => modificaLezione({ id: Portal.uid(), data: data || S.cur, ripeti: 0 }, true);
+
+  /* ---------- Livelli ---------- */
+  function disegnaLivelli() {
+    $("#c-liv").innerHTML = LIVELLI.map(([k, n, c]) => `<label class="liv" style="--c:var(--c-${c})"><input type="checkbox" data-liv="${k}"${S.liv[k] ? " checked" : ""}><i></i>${n}</label>`).join("")
+      + `<span class="sp"></span><a class="liv-link" href="/orario/">Modifica orario</a><a class="liv-link" href="/presenze/">Presenze</a>`;
+  }
 
   /* ---------- Clic sul calendario ---------- */
   view.addEventListener("click", e => {
     const ev = e.target.closest("[data-id]");
-    if (ev) { const x = trova(ev.dataset.id); if (x) modifica(x, { occ: ev.dataset.d }); return; }
+    if (ev) { const x = trova(ev.dataset.id); if (x) { if (x.ro) apri(x); else modifica(x, { occ: ev.dataset.d }); } return; }
     const go = e.target.closest("[data-go]");
     if (go) return vai("giorno", go.dataset.go);
     if (e.target.closest("[data-new]")) return modifica(null);
@@ -231,8 +337,8 @@
   $("#c-next").onclick = () => sposta(1);
   $("#c-views").onclick = e => { const b = e.target.closest("button[data-v]"); if (b) vai(b.dataset.v); };
   $$("[data-new]").forEach(b => b.addEventListener("click", () => modifica(null)));
-  $("#c-fest").checked = S.fest;
-  $("#c-fest").onchange = e => { S.fest = e.target.checked; ls.set("fest", S.fest ? "1" : "0"); disegna(); };
+  $("#c-liv").onchange = e => { const k = e.target.dataset.liv; if (!k) return; S.liv[k] = e.target.checked; ls.set("liv-" + k, S.liv[k] ? "1" : "0"); disegna(); };
+  $("#c-newlez").onclick = () => nuovaLezione();
   let timerRicerca;
   $("#c-q").oninput = e => { clearTimeout(timerRicerca); timerRicerca = setTimeout(() => { S.q = e.target.value; if (S.q.trim() && S.vista !== "agenda") { S.vista = "agenda"; } disegna(); }, 180); };
 
@@ -242,6 +348,7 @@
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable) return;
     const k = e.key.toLowerCase();
     if (k === "n") { e.preventDefault(); modifica(null); }
+    else if (k === "l") nuovaLezione();
     else if (k === "t") { S.cur = oggi(); disegna(); }
     else if (k === "arrowleft") sposta(-1);
     else if (k === "arrowright") sposta(1);
@@ -311,9 +418,15 @@
 
   (async () => {
     view.innerHTML = `<div class="cal-empty"><p>Carico il calendario…</p></div>`;
+    if (!Portal.COLLECTIONS.includes("orario")) Portal.COLLECTIONS.push("orario");
     S.eventi = await Portal.load("calendario", []);
     if (!Array.isArray(S.eventi)) S.eventi = [];
+    S.lezioni = await Portal.load("lezioni", []);
+    S.giochi = await Portal.load("giochi", []);
+    S.orario = await Portal.load("orario", []);
+    S.presCache = leggi(LS_PCACHE, {}); S.presCoda = leggi(LS_PCODA, {});
     await migraAgenda();
+    disegnaLivelli();
     disegna();
   })();
 })();

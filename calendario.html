@@ -24,18 +24,20 @@ script: calendar
       <button type="button" data-v="mese">Mese</button>
       <button type="button" data-v="agenda">Agenda</button>
     </div>
+    <button class="btn ghost sm" id="c-newlez" type="button" title="Nuova lezione (L)">Nuova lezione</button>
     <button class="btn go sm" data-new type="button">Nuovo evento</button>
   </div>
+  <div class="cal-liv" id="c-liv" aria-label="Cosa mostrare"></div>
 
   <div id="c-view" class="cal-view"></div>
 
   <div class="cal-foot">
-    <label class="check"><input type="checkbox" id="c-fest" checked> Mostra le festività italiane</label>
+    <span class="muted" style="font-size:13px">Lezioni, timbrature e orario si leggono dalle rispettive sezioni; l'esportazione .ics contiene solo i tuoi eventi.</span>
     <span class="sp"></span>
     <button class="btn ghost sm" id="c-export" type="button">Esporta .ics</button>
     <button class="btn ghost sm" id="c-import" type="button">Importa .ics</button>
     <input type="file" id="c-file" accept=".ics,text/calendar" hidden>
   </div>
   <button class="fab" data-new type="button" aria-label="Nuovo evento" title="Nuovo evento (N)">+</button>
-  <p class="cal-hint">Tasti: <b>N</b> nuovo · <b>T</b> oggi · <b>←</b> <b>→</b> precedente/successivo · <b>G</b> <b>S</b> <b>M</b> <b>A</b> cambia vista · <b>/</b> cerca</p>
+  <p class="cal-hint">Tasti: <b>N</b> nuovo evento · <b>L</b> nuova lezione · <b>T</b> oggi · <b>←</b> <b>→</b> precedente/successivo · <b>G</b> <b>S</b> <b>M</b> <b>A</b> cambia vista · <b>/</b> cerca</p>
 </section>

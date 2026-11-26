@@ -16,7 +16,6 @@
 - title: Didattica
   side: left
   children:
-    - { title: Lezioni, url: /lezioni/ }
     - { title: Registro, url: /registro/ }
     - { title: Orario di scuola, url: /orario/ }
     - { title: Materiali didattici, url: /materiali/ }
@@ -32,6 +31,7 @@
 - title: Presenze
   side: right
   children:
+    - { title: Palestra, url: /palestra/ }
     - { title: Presenze in rete, url: /presenze/ }
     - { title: Timbra, url: /presenze/timbra/ }
 - title: Strumenti
@@ -39,6 +39,5 @@
   plugins: true
   children:
     - { title: Canvas, url: /drive/canvas/ }
-    - { title: Scheda palestra, url: /scheda.html }
     - { title: Impostazioni, url: /impostazioni/ }
     - { title: Plugin installati, url: /plugin/ }

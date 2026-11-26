@@ -7,7 +7,7 @@ main.wrap{padding-top:26px}
 .cal-nav{display:flex;align-items:center;gap:6px}
 .cal-nav .icon-btn{font-size:26px;padding:0 10px;height:34px}
 .cal-title{font:700 clamp(30px,4vw,44px)/1 var(--head);text-transform:capitalize;margin:0}
-.cal-bar input[type=search]{width:200px}
+.cal-bar input[type=search]{width:150px}
 .jseg{display:inline-flex;border:1.5px solid var(--line);border-radius:4px;overflow:hidden;background:#fff}
 .jseg button{font:700 14px var(--body);color:var(--navy);background:none;border:0;padding:9px 14px;cursor:pointer;border-left:1px solid var(--line)}
 .jseg button:first-child{border-left:0}
@@ -116,3 +116,16 @@ main.wrap{padding-top:26px}
   .fab{display:block}
   .cn .mo{display:none}
 }
+
+/* Livelli del calendario */
+.cal-liv{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:-4px 0 16px}
+.liv{position:relative;display:inline-flex;align-items:center;gap:8px;font:600 13.5px var(--body);padding:5px 12px 5px 8px;border:1.5px solid var(--line);border-radius:999px;background:var(--paper);cursor:pointer;user-select:none}
+.liv input{position:absolute;opacity:0;pointer-events:none}
+.liv i{width:14px;height:14px;border-radius:50%;border:2px solid var(--c);background:transparent}
+.liv:has(input:checked) i{background:var(--c)}
+.liv:has(input:checked){border-color:var(--c)}
+.liv:has(input:focus-visible){outline:3px solid var(--red);outline-offset:2px}
+.liv-link{font:600 13px var(--body);color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.liv-link:hover{color:var(--navy)}
+.ro{border-left-style:dashed!important}
+.ag-it .src{text-transform:uppercase;letter-spacing:.08em;font-size:11px}

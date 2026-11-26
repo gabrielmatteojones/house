@@ -354,6 +354,21 @@ const Orari = (() => {
 (() => {
   const today = $("#today");
   if (today) today.textContent = new Date().toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  /* Uscita dalla pagina: dissolvenza prima di aprire un altro link del portale (l'entrata è in portal.css) */
+  document.addEventListener("click", e => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+    const u = new URL(a.href, location.href);
+    if (u.origin !== location.origin || !/^https?:$/.test(u.protocol)) return;
+    if (u.pathname === location.pathname && u.search === location.search) return;
+    if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+    e.preventDefault();
+    document.documentElement.classList.add("leaving");
+    setTimeout(() => { location.href = u.href; }, 200);
+  });
+  window.addEventListener("pageshow", e => { if (e.persisted) document.documentElement.classList.remove("leaving"); });
+
   const burger = $("#burger");
   if (burger) burger.addEventListener("click", () => {
     const open = document.body.classList.toggle("nav-open");

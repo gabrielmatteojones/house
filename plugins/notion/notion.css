@@ -68,9 +68,9 @@
 .nt-home h3.sec{font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
 .nt-hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
 .nt-hc{display:block;border:1px solid var(--line);border-radius:6px;padding:12px;color:var(--navy);text-decoration:none;background:#fff;cursor:pointer;text-align:left;font:inherit}
-.nt-hc:hover{border-color:var(--navy);transform:translateY(-2px);transition:.15s}.nt-hc .hi{font-size:28px}.nt-hc b{display:block}.nt-hc small{color:var(--muted)}
+.nt-hc:hover{border-color:var(--navy);}.nt-hc .hi{font-size:28px}.nt-hc b{display:block}.nt-hc small{color:var(--muted)}
 .nt-dbt{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-.nt-dbt .sp{flex:1}.nt-prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:12px}.nt-prog div{height:100%;background:var(--red);transition:width .3s}
+.nt-dbt .sp{flex:1}.nt-prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:12px}.nt-prog div{height:100%;background:var(--red);}
 .nt-tb{width:100%;border-collapse:collapse;font-size:14px}
 .nt-tb th{text-align:left;font:700 12px var(--body);color:var(--muted);text-transform:uppercase;padding:6px;border-bottom:2px solid var(--line)}
 .nt-tb td{border-bottom:1px solid var(--line);padding:2px}.nt-tb input,.nt-tb select{width:100%;border:0;background:none;font:inherit;color:var(--navy);padding:6px}

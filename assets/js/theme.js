@@ -19,8 +19,9 @@ const Tema = (() => {
     tecnico:  { nome: "Tecnico", esempio: "JetBrains Mono", head: '"JetBrains Mono",ui-monospace,Consolas,monospace', body: '"IBM Plex Sans",system-ui,sans-serif', url: G + "family=JetBrains+Mono:wght@700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" }
   };
   const RAGGI = { netto: { nome: "Netti", r: "2px", rb: "2px" }, medio: { nome: "Medi", r: "6px", rb: "4px" }, morbido: { nome: "Morbidi", r: "16px", rb: "999px" } };
+  const HEADERS = { classico: "Classico", sinistra: "Logo a sinistra", compatto: "Compatto", scuro: "Scuro", minimo: "Minimo" };
   const HEROS = { dots: "Punteggiato", solid: "Pieno", gradient: "Sfumato", light: "Chiaro", strip: "Sottile" };
-  const BASE = { preset: "classico", colori: { primario: PRESETS.classico.primario, accento: PRESETS.classico.accento, sfondo: PRESETS.classico.sfondo }, font: "classico", raggio: "medio", hero: "dots" };
+  const BASE = { preset: "classico", colori: { primario: PRESETS.classico.primario, accento: PRESETS.classico.accento, sfondo: PRESETS.classico.sfondo }, font: "classico", raggio: "medio", hero: "dots", header: "classico" };
 
   /* ---- colori ---- */
   const rgb = h => { h = h.replace("#", ""); if (h.length === 3) h = [...h].map(c => c + c).join(""); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
@@ -39,13 +40,14 @@ const Tema = (() => {
       "--muted": mix(p, s, .36), "--line": `rgba(${rgb(p).join(",")},.15)`,
       "--r": r.r, "--rb": r.rb, "--head": f.head, "--body": f.body
     };
-    return { vars, fonts: f.url, hero: t.hero, contrastoAccento: buio(a) };
+    return { vars, fonts: f.url, hero: t.hero, header: HEADERS[t.header] ? t.header : "classico", contrastoAccento: buio(a) };
   };
 
   const applica = t => {
     const c = calcola(t), root = document.documentElement;
     for (const k in c.vars) root.style.setProperty(k, c.vars[k]);
     root.setAttribute("data-hero", c.hero);
+    root.setAttribute("data-header", c.header);
     let l = document.getElementById("tema-font");
     if (c.fonts) {
       if (!l) { l = document.createElement("link"); l.id = "tema-font"; l.rel = "stylesheet"; document.head.append(l); }
@@ -77,5 +79,5 @@ const Tema = (() => {
   };
   if (document.body && !document.body.hasAttribute("data-nosync-tema")) sincronizza();
 
-  return { PRESETS, FONTS, RAGGI, HEROS, BASE, calcola, applica, salva, mix, buio };
+  return { PRESETS, FONTS, RAGGI, HEROS, HEADERS, BASE, calcola, applica, salva, mix, buio };
 })();

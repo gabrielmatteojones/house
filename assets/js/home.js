@@ -24,13 +24,13 @@
     ["Libri", libri.length, "/libri/", "in catalogo"],
     ["Giochi", giochi.length, "/giochi/", "nella raccolta"],
     ["Link", link.length, "/link/", "salvati"],
-    ["Lezioni", next.length, "/lezioni/", "in programma"],
+    ["Lezioni", next.length, "/calendario/", "in programma"],
     ["Registro", reg.length, "/registro/", "lezioni registrate"]
   ];
   $("#stats").innerHTML = stats.map(([n, v, u, s]) => `<a class="stat" href="${u}"><b>${v}</b><span>${n}</span><small>${s}</small></a>`).join("");
 
-  $("#next").innerHTML = next.slice(0, 5).map(l => `<li><time>${fmtDate(l.data, { day: "numeric", month: "short" })}</time><span><a href="/lezioni/">${esc(l.titolo)}</a><br><small class="muted">${esc(l.inizio || "")}${l.luogo ? ", " + esc(l.luogo) : ""}</small></span></li>`).join("")
-    || `<li class="muted">Nessuna lezione in programma. <a href="/lezioni/">Apri il calendario</a></li>`;
+  $("#next").innerHTML = next.slice(0, 5).map(l => `<li><time>${fmtDate(l.data, { day: "numeric", month: "short" })}</time><span><a href="/calendario/">${esc(l.titolo)}</a><br><small class="muted">${esc(l.inizio || "")}${l.luogo ? ", " + esc(l.luogo) : ""}</small></span></li>`).join("")
+    || `<li class="muted">Nessuna lezione in programma. <a href="/calendario/">Apri il calendario</a></li>`;
 
   const recent = [...reg].sort((a, b) => (b.data + (b.inizio || "")).localeCompare(a.data + (a.inizio || ""))).slice(0, 5);
   $("#recent").innerHTML = recent.map(r => `<li><time>${fmtDate(r.data, { day: "numeric", month: "short" })}</time><span><a href="/registro/">${esc(r.titolo)}</a><br><small class="muted">${r.durata || 0} min, ${r.presenti || 0} presenti</small></span></li>`).join("")

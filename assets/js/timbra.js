@@ -95,15 +95,12 @@ const Timbra = (() => {
     if (!b) return;
     const n = new Date(), o = aperto();
     const hm = `${pad(n.getHours())}:${pad(n.getMinutes())}`;
-    const sub = document.getElementById("ck-sub");
     b.classList.toggle("in-servizio", !!o);
     if (o) {
       const ms = Math.max(0, n - Date.parse(o.entrata));
-      if (sub) sub.textContent = `${o.luogo} · ${durata(ms)}`;
       b.title = `In servizio: ${o.luogo}, dalle ${hhmm(new Date(o.entrata))}. Premi per uscire`;
       b.setAttribute("aria-label", `In servizio in ${o.luogo} da ${durata(ms)}. Premi per uscire o cambiare luogo`);
     } else {
-      if (sub) sub.textContent = "Timbra";
       b.title = `${n.toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}, ${hm}. Premi per timbrare entrata o uscita`;
       b.setAttribute("aria-label", "Timbra entrata o uscita");
     }

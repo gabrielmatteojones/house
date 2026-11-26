@@ -10,6 +10,14 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 | «Calendario» del portale (le lezioni) | **/lezioni/** |
 | «Agenda personale» | assorbita dal Calendario (vedi sotto) |
 
+## Novità: calendario unico, header a scelta, Palestra
+
+- **Calendario unico** (`/calendario/`): oltre agli eventi mostra, come livelli che si accendono e spengono (le caselline sotto la barra), le **Lezioni** (prima in `/lezioni/`, che ora rimanda qui; «Nuova lezione» o tasto L, con «Avvia lezione» e ripetizione settimanale), le **Timbrature** (lette dalle presenze, anche quelle ancora in coda offline) e l'**Orario di scuola** (la griglia di `/orario/` ripetuta ogni settimana, senza festività). Lezioni si modificano dal calendario; timbrature e orario si leggono qui e si modificano da Presenze e «Modifica orario». Codice: `assets/js/calendar.js` (`virtuali()`). Il vecchio `lezioni.js` è in `_archivio/js/`.
+- **Header a scelta**: Impostazioni → Aspetto → «Intestazione»: Classico, Logo a sinistra, Compatto, Scuro, Minimo. Si salva con il resto del tema (`header` in `tema`, attributo `data-header` su `<html>`). Codice: `theme.js`, `theme-boot.js`, sezione «Varianti dell'intestazione» di `portal.css`.
+- **Timbra** nell'header è solo un'icona (tondo pieno quando sei in servizio).
+- **Animazioni**: tolte tutte (transizioni, hover che si muovono, pulsazioni). Restano solo la dissolvenza d'entrata della pagina (`page-in` in `portal.css`) e quella d'uscita quando clicchi un link (`core.js`), più il cerchietto di caricamento.
+- **Palestra** (`/palestra/`): la scheda palestra ora è una pagina del portale (stessi dati di prima, salvati in questo browser). `/scheda.html` rimanda qui; l'originale è in `_archivio/scheda.html`.
+
 ## Novità: Impostazioni, temi e People
 
 - **Impostazioni** (`/impostazioni/`, ingranaggio nell'header e voce in «Strumenti»), due schede:

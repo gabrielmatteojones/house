@@ -93,7 +93,7 @@
     if (conf.luoghi.some(x => x.toLowerCase() === n.toLowerCase())) return Portal.toast("Questo luogo c'è già");
     conf.luoghi.push(n); Orari.assicura(conf); $("#st-new").value = "";
     segna(true); disegna();
-    lista.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+    lista.lastElementChild.scrollIntoView({ block: "center" });
   });
   $("#st-orari-save").addEventListener("click", async () => {
     for (const l of conf.luoghi) {
@@ -130,6 +130,8 @@
         `<button type="button" data-font="${k}" aria-pressed="${sel(tema.font, k)}"><b style="font-family:${f.head.replace(/"/g, "'")}">${esc(f.nome)}</b><span>${esc(f.esempio)}</span></button>`).join("")}</div></div>
       <div class="st-group"><h3>Forma di schede e pulsanti</h3><div class="st-choice">${Object.entries(Tema.RAGGI).map(([k, r]) =>
         `<button type="button" data-raggio="${k}" aria-pressed="${sel(tema.raggio, k)}"><b>${r.nome}</b><span>angoli ${k === "netto" ? "quasi vivi" : k === "medio" ? "leggeri" : "molto arrotondati"}</span></button>`).join("")}</div></div>
+      <div class="st-group"><h3>Intestazione (la barra in alto)</h3><div class="st-choice">${Object.entries(Tema.HEADERS).map(([k, n]) =>
+        `<button type="button" data-header="${k}" aria-pressed="${sel(tema.header, k)}"><b>${n}</b><span>${{ classico: "logo al centro, menu ai lati", sinistra: "logo e menu a sinistra", compatto: "una riga bassa, senza fascia", scuro: "fondo del colore principale", minimo: "barra sottile, logo semplice" }[k]}</span></button>`).join("")}</div></div>
       <div class="st-group"><h3>Riquadro in cima alla pagina</h3><div class="st-choice">${Object.entries(Tema.HEROS).map(([k, n]) =>
         `<button type="button" data-hero="${k}" aria-pressed="${sel(tema.hero, k)}"><b>${n}</b></button>`).join("")}</div></div>`;
   }
@@ -142,6 +144,7 @@
     else if (b.dataset.font) tema.font = b.dataset.font;
     else if (b.dataset.raggio) tema.raggio = b.dataset.raggio;
     else if (b.dataset.hero) tema.hero = b.dataset.hero;
+    else if (b.dataset.header) tema.header = b.dataset.header;
     else return;
     anteprima(); disegnaTema();
   });
