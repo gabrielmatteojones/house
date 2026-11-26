@@ -1,0 +1,31 @@
+---
+layout: default
+title: Impostazioni
+kicker: Jones House
+lead: Gli orari previsti di ogni luogo di lavoro e l'aspetto del portale.
+permalink: /impostazioni/
+script: impostazioni
+---
+<div class="st-tabs" role="tablist" aria-label="Sezioni">
+  <button type="button" role="tab" id="tab-orari" data-tab="orari" aria-selected="true">Orari e luoghi</button>
+  <button type="button" role="tab" id="tab-aspetto" data-tab="aspetto" aria-selected="false">Aspetto</button>
+</div>
+
+<section id="pane-orari" role="tabpanel" aria-labelledby="tab-orari">
+  <p class="muted st-intro">Ogni luogo ha i suoi orari: la scuola non è l'oratorio, né la palestra. Per ciascuno scegli se ha <b>orari previsti</b> e, se sì, quali per ogni giorno (anche due fasce, mattina e pomeriggio). Quando timbri, il portale ti mostra l'orario previsto e ti dice quanto manca alla fine del turno. Un luogo senza orari previsti si timbra come sempre, libero.</p>
+  <div class="st-places" id="st-places"></div>
+  <form class="st-add" id="st-add">
+    <input type="text" id="st-new" placeholder="Nuovo luogo (es. Palestra)" aria-label="Nome del nuovo luogo" autocomplete="off">
+    <button class="btn ghost" type="submit">Aggiungi luogo</button>
+  </form>
+  <div class="st-bar"><span class="muted" id="st-orari-state"></span><button class="btn" id="st-orari-save" type="button">Salva orari</button></div>
+</section>
+
+<section id="pane-aspetto" role="tabpanel" aria-labelledby="tab-aspetto" hidden>
+  <p class="muted st-intro">Colori, caratteri e forma delle schede. Ogni scelta si vede subito; premi «Salva aspetto» per tenerla (vale su tutti i tuoi dispositivi).</p>
+  <div class="st-theme" id="st-theme"></div>
+  <div class="st-bar">
+    <button class="btn ghost" id="st-reset" type="button">Torna al Classico</button>
+    <button class="btn" id="st-theme-save" type="button">Salva aspetto</button>
+  </div>
+</section>

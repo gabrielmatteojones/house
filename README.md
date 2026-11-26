@@ -10,6 +10,14 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 | «Calendario» del portale (le lezioni) | **/lezioni/** |
 | «Agenda personale» | assorbita dal Calendario (vedi sotto) |
 
+## Novità: Impostazioni, temi e People
+
+- **Impostazioni** (`/impostazioni/`, ingranaggio nell'header e voce in «Strumenti»), due schede:
+  - *Orari e luoghi*: per ogni luogo (Scuola, Oratorio, Palestra…) un interruttore «Ha orari previsti» e, se acceso, le fasce per ogni giorno (anche due al giorno). Si possono aggiungere e togliere luoghi. Partenza: Scuola lun–gio 08:40–16:40, ven 08:40–13:40; gli altri senza orari. Dati in `presenze-config` → `orari` (gli stessi luoghi di Timbra e Presenze). Codice: `assets/js/impostazioni.js`, helper `Orari` in `core.js`.
+  - *Aspetto*: 7 tavolozze, colori su misura (principale, accento, sfondo), 4 coppie di caratteri, 3 forme dei bordi, 5 stili del riquadro in cima. Anteprima immediata; «Salva aspetto» lo tiene su tutti i dispositivi (collezione `tema`). Codice: `theme.js` (calcolo), `theme-boot.js` (applicazione all'avvio, senza lampi).
+- **Timbra con gli orari**: nella finestra ogni luogo mostra «oggi 08:40–16:40» (o «oggi non previsto»), e quello il cui orario è in corso è evidenziato. Quando sei in servizio la finestra dice l'orario previsto e quanto manca alla fine (o di quanto l'hai superato). I luoghi senza orari si timbrano come prima.
+- **People** (`/people/`): sottosito con layout (`_layouts/people.html`), stile (`assets/css/people.css`) e menu laterale (`_data/people-nav.yml`) tutti suoi; non usa il tema del portale. Contiene Panoramica, Persone, Gruppi, Note come pagine vuote pronte. Dati: collezione `people` (un elenco, con campo `tipo`), con le funzioni `People.tutti/salva/togli` in `assets/js/people.js`. Per una sezione nuova: una riga in `people-nav.yml` e un file in `people/`.
+
 ## Novità: intestazione e menu unico
 
 - **Intestazione come nel riferimento**: fascia rossa sottile in alto, tre voci a sinistra, logo al centro, tre voci a destra, lente di ricerca e «Esci» all'estremità. Codice: `_includes/header.html`, `_includes/nav-item.html`, stili in `portal.css` (sezione «Intestazione»).

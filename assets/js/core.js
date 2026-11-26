@@ -12,7 +12,8 @@ const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
 
 const Portal = (() => {
   const LS = "gj-portale:";
-  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro", "note", "calendario", "mail-impostazioni"];
+  const OGGETTI = ["impostazioni", "mail-impostazioni", "presenze-config", "tema"];   // collezioni fatte da un oggetto, non da un elenco
+  const COLLECTIONS = ["documenti", "cartelle", "file", "impostazioni", "siti", "utili", "link", "libri", "giochi", "lezioni", "registro", "note", "calendario", "mail-impostazioni", "presenze-config", "tema", "people"];
   const SEED_UTILI = [
     { id: "seed-zoho", nome: "Zoho Mail", url: "https://mail.zoho.eu", categoria: "Posta" },
     { id: "seed-outlook", nome: "Outlook", url: "https://outlook.office.com", categoria: "Posta" },
@@ -298,7 +299,7 @@ const Portal = (() => {
   /* Backup completo */
   async function exportAll() {
     const out = { versione: 1, esportato: new Date().toISOString(), dati: {} };
-    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : (n === "impostazioni" || n === "mail-impostazioni") ? {} : []);
+    for (const n of COLLECTIONS) out.dati[n] = await load(n, n === "utili" ? SEED_UTILI : OGGETTI.includes(n) ? {} : []);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
     a.download = `portale-backup-${isoDate(new Date())}.json`;
@@ -313,6 +314,40 @@ const Portal = (() => {
   }
 
   return { load, save, upsert, remove, meta, form, chips, toast, uid, exportAll, importAll, SEED_UTILI, COLLECTIONS, script, sanitize, download, fmtSize, slug, blobs };
+})();
+
+/* Orari previsti per luogo (Scuola, Oratorio, Palestra…). Stanno dentro «presenze-config» -> orari.
+   conf.orari[luogo] = { previsto: true|false, giorni: { "1": [{da:"08:40", a:"16:40"}], … } }   (0 = domenica … 6 = sabato)
+   Se «previsto» è false il luogo non ha orari: Timbra non mostra nulla. Se è true ma il giorno è vuoto, quel giorno non è previsto. */
+const Orari = (() => {
+  const GIORNI = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+  const ORDINE = [1, 2, 3, 4, 5, 6, 0];   // la settimana parte dal lunedì
+  const feriali = (...f) => { const g = {}; [1, 2, 3, 4].forEach(d => g[d] = [{ da: f[0], a: f[1] }]); g[5] = [{ da: f[0], a: f[2] || f[1] }]; return g; };
+  const BASE = () => ({
+    "Scuola": { previsto: true, giorni: feriali("08:40", "16:40", "13:40") },
+    "Oratorio": { previsto: false, giorni: {} },
+    "Attività extrascolastica": { previsto: false, giorni: {} }
+  });
+  const min = h => { const [H, M] = String(h || "0:0").split(":").map(Number); return (H || 0) * 60 + (M || 0); };
+  /** Completa conf.orari: ogni luogo ha una voce, i luoghi nuovi partono «senza orari». Ritorna conf. */
+  const assicura = conf => {
+    if (!conf.orari || typeof conf.orari !== "object") conf.orari = BASE();
+    (conf.luoghi || []).forEach(l => { if (!conf.orari[l]) conf.orari[l] = { previsto: false, giorni: {} }; });
+    return conf;
+  };
+  /** Fasce previste per un luogo in una data: null = il luogo non ha orari; [] = oggi non previsto */
+  const fasce = (conf, luogo, data = new Date()) => {
+    const o = conf && conf.orari && conf.orari[luogo];
+    if (!o || !o.previsto) return null;
+    return ((o.giorni || {})[data.getDay()] || []).filter(f => f.da && f.a && min(f.a) > min(f.da)).sort((a, b) => min(a.da) - min(b.da));
+  };
+  const testo = f => f.map(x => `${x.da}–${x.a}`).join(", ");
+  /** La fascia in corso adesso (se c'è) */
+  const inCorso = (conf, luogo, data = new Date()) => {
+    const f = fasce(conf, luogo, data), t = data.getHours() * 60 + data.getMinutes();
+    return f && f.find(x => t >= min(x.da) && t < min(x.a)) || null;
+  };
+  return { GIORNI, ORDINE, BASE, assicura, fasce, testo, inCorso, min };
 })();
 
 /* Intestazione: data, menu mobile, menu a tendina */

@@ -13,6 +13,7 @@
   {% for s in page.styles %}<link rel="stylesheet" href="/assets/css/{{ s }}.css">{% endfor %}
   <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
   <meta name="theme-color" content="#101c4d">
+  <script src="/assets/js/theme-boot.js"></script>
   {% include plugins-head.html %}
 </head>
 <body data-page="{{ page.url }}">
@@ -37,6 +38,7 @@
     </div>
   </footer>
   <script src="/assets/js/core.js"></script>
+  <script src="/assets/js/theme.js"></script>
   <script src="/assets/js/timbra.js"></script>
   <script src="/assets/js/header.js"></script>
   {% for s in page.scripts %}<script src="/assets/js/{{ s }}.js"></script>{% endfor %}

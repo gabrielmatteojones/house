@@ -29,6 +29,7 @@ const Timbra = (() => {
     if (!conf) {
       conf = await Portal.load("presenze-config", { luoghi: LUOGHI_BASE });
       if (!Array.isArray(conf.luoghi) || !conf.luoghi.length) conf.luoghi = [...LUOGHI_BASE];
+      Orari.assicura(conf);
     }
     return conf.luoghi;
   };
@@ -135,19 +136,37 @@ const Timbra = (() => {
         </div>
         <div class="field" style="padding:6px 26px 0"><label for="tb-nota">Nota (facoltativa)</label><input id="tb-nota" value="${esc(o.note || "")}" placeholder="Es. uscita anticipata, sostituzione…" autocomplete="off"></div>
         <div class="tb-actions"><button class="btn" type="button" data-esci>Esci</button><button class="btn ghost" type="button" data-cambia>Esci ed entra altrove</button></div>
+        <p class="tb-prev" data-prev></p>
         <p class="tb-more"><a href="/presenze/">Vai all'elenco delle presenze</a></p>`;
+      luoghi().then(() => { const p = dlg && dlg.querySelector("[data-prev]"); if (p) p.textContent = notaPrevista(o); });
       tick = setInterval(() => { const t = dlg.querySelector("[data-timer]"); if (t && !document.hidden) t.textContent = clock(Date.now() - Date.parse(o.entrata)); }, 1000);
     } else {
       sub.textContent = "In cosa entri?";
       const ultimo = (tutte()[0] || {}).luogo;
       luoghi().then(lista => {
         if (aperto() || !dlg) return;
-        body.innerHTML = `<div class="tb-grid" role="group" aria-label="Luogo">${lista.map(l => `<button type="button" data-luogo="${esc(l)}"${l === ultimo ? ' class="tb-last"' : ""}>${esc(l)}${l === ultimo ? "<small>l'ultimo usato</small>" : ""}</button>`).join("")}</div>
+        body.innerHTML = `<div class="tb-grid" role="group" aria-label="Luogo">${lista.map(l => {
+            const f = Orari.fasce(conf, l), ora = Orari.inCorso(conf, l);
+            const righe = [ora ? "è il suo orario" : "", f === null ? "" : f.length ? `oggi ${Orari.testo(f)}` : "oggi non previsto", l === ultimo ? "l'ultimo usato" : ""].filter(Boolean);
+            const cls = [l === ultimo ? "tb-last" : "", ora ? "tb-now" : ""].filter(Boolean).join(" ");
+            return `<button type="button" data-luogo="${esc(l)}"${cls ? ` class="${cls}"` : ""}>${esc(l)}${righe.map(r => `<small>${esc(r)}</small>`).join("")}</button>`;
+          }).join("")}</div>
           <p class="tb-more"><a href="/registro/?avvia=1">Avvia una lezione nel registro</a> · <a href="/presenze/">Presenze</a></p>`;
         const first = body.querySelector(".tb-last") || body.querySelector("[data-luogo]");
         if (first && document.activeElement === document.body) first.focus();
       });
     }
+  }
+
+  /** Frase sugli orari previsti del luogo in cui sei in servizio */
+  function notaPrevista(o) {
+    const f = Orari.fasce(conf, o.luogo);
+    if (f === null) return "";
+    if (!f.length) return `Oggi non è un giorno con orari previsti in ${o.luogo}.`;
+    const fine = Orari.min(f[f.length - 1].a), ora = new Date(), t = ora.getHours() * 60 + ora.getMinutes();
+    const resto = fine - t;
+    const extra = resto > 0 ? `, finisci alle ${f[f.length - 1].a} (tra ${Math.floor(resto / 60)}h ${pad(resto % 60)}m)` : `, sei oltre l'orario di ${-resto} min`;
+    return `Orario previsto oggi: ${Orari.testo(f)}${extra}.`;
   }
 
   function make() {

@@ -1,0 +1,5 @@
+# Menu laterale del sottosito People. Per aggiungere una sezione: una riga qui + un file in people/.
+- { title: Panoramica, url: /people/, icon: "◐" }
+- { title: Persone, url: /people/persone/, icon: "☺" }
+- { title: Gruppi, url: /people/gruppi/, icon: "◍" }
+- { title: Note, url: /people/note/, icon: "✎" }
