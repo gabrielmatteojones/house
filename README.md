@@ -21,9 +21,9 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 ## Novità: intestazione e menu unico
 
 - **Intestazione come nel riferimento**: fascia rossa sottile in alto, tre voci a sinistra, logo al centro, tre voci a destra, lente di ricerca e «Esci» all'estremità. Codice: `_includes/header.html`, `_includes/nav-item.html`, stili in `portal.css` (sezione «Intestazione»).
-- **Orologio e Timbra fusi in un solo elemento** (in alto a sinistra): quadrante con lancette, ora con secondi e pulsante sono la stessa cosa. L'anello esterno conta i secondi; quando sei in servizio diventa blu scuro, compare un secondo anello rosso interno che conta i minuti del turno intrecciandosi al primo, e la scritta passa da «Timbra» a «luogo · durata». Si preme per timbrare (Alt+T come prima). Codice: `paintButton()` in `assets/js/timbra.js`.
+- **Timbra**: in alto a sinistra c'è un piccolo pulsante a pillola (niente più orologio). Fuori servizio dice «Timbra»; quando sei in servizio diventa blu e mostra «luogo · durata». Si preme per timbrare (Alt+T come prima). Codice: `paintButton()` in `assets/js/timbra.js`.
+- **A destra** restano solo «Esci» (e il menu hamburger su mobile): tolti pallino di connessione, ricerca e ingranaggio. Le Impostazioni si raggiungono da «Strumenti».
 - **Un solo menu per tutto il sito** (`_data/nav.yml`, con `side: left|right`): Home · Suite · Didattica | logo | Raccolte · Presenze · Strumenti. Tolti i doppioni (Accessi rapidi e Note comparivano in due tendine, Posta/Drive/Calendario due volte) e rese raggiungibili le pagine che prima non avevano una voce: Orario, Materiali, Spazio di lavoro, FOSF, Canvas, Scheda palestra, Plugin. Le pagine in `plugins/` nuove finiscono da sole in «Strumenti» (come prima in «Funzioni»); quelle già nel menu hanno `menu: false`.
-- **Ricerca**: la lente (o il tasto `/`) cerca tra tutte le pagine del menu. Codice: `assets/js/header.js`.
 - Corretto il link «Timbra FOSF» (puntava a `/timbra/`, ora `/presenze/timbra/`).
 
 ## Novità dell'ultima unificazione

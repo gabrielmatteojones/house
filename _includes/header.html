@@ -3,27 +3,12 @@
   <div class="hd-in">
 
     <div class="hd-left">
-      {%- comment -%} Orologio e «Timbra» in un solo elemento: quadrante, ora e pulsante sono la stessa cosa. Lo anima assets/js/timbra.js. {%- endcomment -%}
+      {%- comment -%} Piccolo pulsante «Timbra»: lo anima assets/js/timbra.js (diventa «luogo · durata» quando sei in servizio). {%- endcomment -%}
       <button class="ck" id="timbra-btn" type="button" aria-haspopup="dialog" title="Timbra entrata o uscita">
-        <svg class="ck-face" viewBox="0 0 44 44" aria-hidden="true">
-          <g transform="rotate(-90 22 22)">
-            <circle class="ck-track" cx="22" cy="22" r="19"/>
-            <circle class="ck-sec" id="ck-sec" cx="22" cy="22" r="19" pathLength="60"/>
-            <circle class="ck-track in" cx="22" cy="22" r="14.2"/>
-            <circle class="ck-shift" id="ck-shift" cx="22" cy="22" r="14.2" pathLength="60"/>
-          </g>
-          <g class="ck-hands">
-            <line class="h" id="ck-h" x1="22" y1="22" x2="22" y2="15.5"/>
-            <line class="m" id="ck-m" x1="22" y1="22" x2="22" y2="11.5"/>
-          </g>
-          <circle class="ck-pin" cx="22" cy="22" r="1.9"/>
-        </svg>
-        <span class="ck-txt">
-          <b><span id="ck-hm">--:--</span><i id="ck-s">:--</i></b>
-          <small id="ck-sub">Timbra</small>
-        </span>
+        <svg class="ck-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="ck-txt" id="ck-sub">Timbra</span>
       </button>
-    </div> 
+    </div>
 
     <div class="hd-center">
       <nav class="nav nav-l" id="nav" aria-label="Principale">
@@ -40,13 +25,6 @@
     </div>
 
     <div class="hd-right">
-      <span id="sync" class="sync" data-ok="" role="status">Connessione…</span>
-      <button class="hd-icon" id="hd-search" type="button" aria-label="Cerca nel portale" title="Cerca nel portale ( / )">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-      </button>
-      <a class="hd-icon" href="/impostazioni/" aria-label="Impostazioni" title="Impostazioni">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </a>
       <button class="linkbtn" id="logout" type="button">Esci</button>
       <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>
