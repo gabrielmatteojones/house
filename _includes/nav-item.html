@@ -1,0 +1,21 @@
+{%- comment -%} Una voce del menu: link semplice oppure tendina. Uso: {% include nav-item.html item=voce %} {%- endcomment -%}
+{%- assign it = include.item -%}
+{%- if it.children -%}
+  {%- assign on = "" -%}
+  {%- for c in it.children -%}{%- if page.url == c.url -%}{%- assign on = "active" -%}{%- endif -%}{%- endfor -%}
+  {%- if it.plugins -%}
+    {%- assign funz = site.pages | where_exp: "p", "p.path contains 'plugins/'" | where_exp: "p", "p.menu != false" | sort: "title" -%}
+    {%- for p in funz -%}{%- if page.url == p.url -%}{%- assign on = "active" -%}{%- endif -%}{%- endfor -%}
+  {%- endif -%}
+  <div class="dd {{ on }}">
+    <button class="dd-btn" type="button" aria-haspopup="true">{{ it.title }}
+      <svg width="10" height="10" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <div class="dd-menu">
+      {%- for c in it.children -%}<a href="{{ c.url }}" class="{% if page.url == c.url %}on{% endif %}">{{ c.title }}</a>{%- endfor -%}
+      {%- if it.plugins -%}{%- for p in funz -%}<a href="{{ p.url }}" class="{% if page.url == p.url %}on{% endif %}">{{ p.menu_title | default: p.title }}</a>{%- endfor -%}{%- endif -%}
+    </div>
+  </div>
+{%- else -%}
+  <a href="{{ it.url }}" class="{% if page.url == it.url %}active{% endif %}">{{ it.title }}</a>
+{%- endif -%}

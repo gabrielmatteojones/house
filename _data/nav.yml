@@ -1,21 +1,42 @@
+# Menu unico del portale: tre voci a sinistra del logo, tre a destra (come nel layout di riferimento).
+# side: left | right  ·  una voce con "children" diventa una tendina.
+# "plugins: true" aggiunge in coda le pagine di plugins/ (quelle senza "menu: false").
 - title: Home
   url: /
-- title: Presenze in rete
-  url: /presenze/
+  side: left
 - title: Suite
+  side: left
   children:
     - { title: Posta, url: /posta/ }
     - { title: Drive, url: /drive/ }
     - { title: Calendario, url: /calendario/ }
-    - { title: Accessi rapidi, url: /accessi/ }
     - { title: Note e mappe, url: /note/ }
+    - { title: Spazio di lavoro, url: /notion/ }
+- title: Didattica
+  side: left
+  children:
+    - { title: Lezioni, url: /lezioni/ }
+    - { title: Registro, url: /registro/ }
+    - { title: Orario di scuola, url: /orario/ }
+    - { title: Materiali didattici, url: /materiali/ }
 - title: Raccolte
+  side: right
   children:
     - { title: Libri, url: /libri/ }
     - { title: Giochi, url: /giochi/ }
     - { title: Link, url: /link/ }
     - { title: Siti, url: /siti/ }
     - { title: Accessi rapidi, url: /accessi/ }
-    - { title: Note e mappe, url: /note/ }
-    - { title: Lezioni, url: /lezioni/ }
-    - { title: Registro, url: /registro/ }
+    - { title: FOSF, url: /tematiche/fosf/ }
+- title: Presenze
+  side: right
+  children:
+    - { title: Presenze in rete, url: /presenze/ }
+    - { title: Timbra, url: /presenze/timbra/ }
+- title: Strumenti
+  side: right
+  plugins: true
+  children:
+    - { title: Canvas, url: /drive/canvas/ }
+    - { title: Scheda palestra, url: /scheda.html }
+    - { title: Plugin installati, url: /plugin/ }

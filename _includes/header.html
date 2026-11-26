@@ -1,49 +1,54 @@
-<div class="topbar">
-  <div class="wrap">
-    <span id="today"></span>
-    <span class="sp"></span>
-    <span id="sync" class="sync" data-ok="">Connessione…</span>
-    <button class="linkbtn" id="logout" type="button">Esci</button>
-  </div>
-</div>
+<div class="hd-strip" aria-hidden="true"></div>
 <header class="site-header">
-  <div class="wrap">
-    <a class="logo" href="/"><b>Jones House</b><span class="mini">portale<br>privato</span></a>
-    <nav class="nav" id="nav" aria-label="Principale">
-      {% for item in site.data.nav %}
-        {% if item.children %}
-          {% assign on = "" %}
-          {% for c in item.children %}{% if page.url == c.url %}{% assign on = "active" %}{% endif %}{% endfor %}
-          <div class="dd {{ on }}">
-            <button class="dd-btn" type="button" aria-haspopup="true">{{ item.title }}
-              <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-            </button>
-            <div class="dd-menu">
-              {% for c in item.children %}<a href="{{ c.url }}" class="{% if page.url == c.url %}on{% endif %}">{{ c.title }}</a>{% endfor %}
-            </div>
-          </div>
-        {% else %}
-          <a href="{{ item.url }}" class="{% if page.url == item.url %}active{% endif %}">{{ item.title }}</a>
-        {% endif %}
-      {% endfor %}
-      {%- comment -%} Menu «Funzioni»: una voce per ogni pagina dentro plugins/ (esclude con "menu: false" nell'intestazione della pagina). {%- endcomment -%}
-      {% assign funz = site.pages | where_exp: "p", "p.path contains 'plugins/'" | where_exp: "p", "p.menu != false" | sort: "title" %}
-      {% if funz.size > 0 %}
-        {% assign on = "" %}
-        {% for p in funz %}{% if page.url == p.url %}{% assign on = "active" %}{% endif %}{% endfor %}
-        <div class="dd {{ on }}">
-          <button class="dd-btn" type="button" aria-haspopup="true">Funzioni
-            <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-          </button>
-          <div class="dd-menu">
-            {% for p in funz %}<a href="{{ p.url }}" class="{% if page.url == p.url %}on{% endif %}">{{ p.menu_title | default: p.title }}</a>{% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    </nav>
-    <button class="btn go" id="timbra-btn" type="button" aria-haspopup="dialog" title="Timbra entrata o uscita"><span class="tb-dot" aria-hidden="true"></span>Timbra</button>
-    <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
-      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>
-    </button>
+  <div class="hd-in">
+
+    <div class="hd-left">
+      {%- comment -%} Orologio e «Timbra» in un solo elemento: quadrante, ora e pulsante sono la stessa cosa. Lo anima assets/js/timbra.js. {%- endcomment -%}
+      <button class="ck" id="timbra-btn" type="button" aria-haspopup="dialog" title="Timbra entrata o uscita">
+        <svg class="ck-face" viewBox="0 0 44 44" aria-hidden="true">
+          <g transform="rotate(-90 22 22)">
+            <circle class="ck-track" cx="22" cy="22" r="19"/>
+            <circle class="ck-sec" id="ck-sec" cx="22" cy="22" r="19" pathLength="60"/>
+            <circle class="ck-track in" cx="22" cy="22" r="14.2"/>
+            <circle class="ck-shift" id="ck-shift" cx="22" cy="22" r="14.2" pathLength="60"/>
+          </g>
+          <g class="ck-hands">
+            <line class="h" id="ck-h" x1="22" y1="22" x2="22" y2="15.5"/>
+            <line class="m" id="ck-m" x1="22" y1="22" x2="22" y2="11.5"/>
+          </g>
+          <circle class="ck-pin" cx="22" cy="22" r="1.9"/>
+        </svg>
+        <span class="ck-txt">
+          <b><span id="ck-hm">--:--</span><i id="ck-s">:--</i></b>
+          <small id="ck-sub">Timbra</small>
+        </span>
+      </button>
+    </div>
+
+    <div class="hd-center">
+      <nav class="nav nav-l" id="nav" aria-label="Principale">
+        {%- for item in site.data.nav -%}{%- if item.side == "left" -%}{% include nav-item.html item=item %}{%- endif -%}{%- endfor -%}
+      </nav>
+      <a class="logo" href="/" aria-label="Jones House, home">
+        <small>Gabriel</small>
+        <b>Jones House</b>
+        <small>Dal 2022 ad oggi</small>
+      </a>
+      <nav class="nav nav-r" id="nav-r" aria-label="Secondario">
+        {%- for item in site.data.nav -%}{%- if item.side == "right" -%}{% include nav-item.html item=item %}{%- endif -%}{%- endfor -%}
+      </nav>
+    </div>
+
+    <div class="hd-right">
+      <span id="sync" class="sync" data-ok="" role="status">Connessione…</span>
+      <button class="hd-icon" id="hd-search" type="button" aria-label="Cerca nel portale" title="Cerca nel portale ( / )">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="linkbtn" id="logout" type="button">Esci</button>
+      <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>
+      </button>
+    </div>
+
   </div>
 </header>

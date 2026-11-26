@@ -18,27 +18,116 @@ img{max-width:100%}
 .pad{padding:12px}
 :focus-visible{outline:3px solid var(--red);outline-offset:2px}
 
-/* Barra alta e intestazione */
-.topbar{background:var(--navy-d);color:#fff;font-size:13px}
-.topbar .wrap{display:flex;align-items:center;gap:16px;height:38px}
-.sync{display:inline-flex;align-items:center;gap:7px;opacity:.9}
-.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:#8a93b8}
-.sync[data-ok="1"]::before{background:#3ddc84}
-.sync[data-ok="0"]::before{background:#ffb020}
-.site-header{background:var(--cream);position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line)}
-.site-header .wrap{display:flex;align-items:center;gap:28px;min-height:84px}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo b{font:800 36px/.9 var(--head);text-transform:uppercase;letter-spacing:.01em}
-.logo .mini{font:700 11px/1.05 var(--head);color:var(--red);letter-spacing:.05em;text-transform:uppercase}
-.nav{display:flex;align-items:center;gap:26px;margin-left:auto}
-.nav>a,.dd-btn{font:700 17px var(--body);color:var(--navy);text-decoration:none;background:none;border:0;padding:8px 0;cursor:pointer;border-bottom:3px solid transparent;display:inline-flex;align-items:center;gap:6px}
-.nav>a:hover,.nav>a.active,.dd.active>.dd-btn,.dd-btn:hover{border-bottom-color:var(--red)}
+/* Intestazione: fascia rossa, orologio+Timbra a sinistra, menu 3 + logo + 3, ricerca e «Esci» a destra */
+.hd-strip{height:12px;background:linear-gradient(90deg,#3b000a 0%,#a8001f 38%,#c4001f 50%,#a8001f 62%,#3b000a 100%)}
+.site-header{background:#faf8f4;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line)}
+.hd-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;max-width:1560px;margin:0 auto;padding:10px 32px;min-height:88px}
+.hd-left{justify-self:start;min-width:0}
+.hd-center{display:flex;align-items:center;gap:44px}
+.hd-right{justify-self:end;display:flex;align-items:center;gap:20px}
+
+.logo{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;line-height:1;gap:4px;padding:0 4px}
+.logo b{font:800 34px/.9 var(--head);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
+.logo small{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.logo small:last-child{color:var(--red)}
+
+.nav{display:flex;align-items:center;gap:44px}
+.nav>a,.dd-btn{font:700 13.5px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--navy);text-decoration:none;background:none;border:0;padding:10px 0;cursor:pointer;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.nav>a:hover,.nav>a.active,.dd.active>.dd-btn,.dd-btn:hover,.dd:hover>.dd-btn{border-bottom-color:var(--red)}
 .dd{position:relative}
-.dd-menu{position:absolute;top:100%;left:-14px;min-width:210px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 14px 34px rgba(16,28,77,.16);padding:8px;display:none}
+.dd-menu{position:absolute;top:100%;left:-14px;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 14px 34px rgba(16,28,77,.16);padding:8px;display:none;z-index:5}
+.nav-r .dd:last-child .dd-menu{left:auto;right:-14px}
 .dd:hover .dd-menu,.dd:focus-within .dd-menu,.dd.open .dd-menu{display:block}
-.dd-menu a{display:block;padding:10px 12px;border-radius:4px;text-decoration:none;font-weight:600}
+.dd-menu a{display:block;padding:10px 12px;border-radius:4px;text-decoration:none;font:600 15px var(--body);letter-spacing:0;text-transform:none;white-space:nowrap}
 .dd-menu a:hover,.dd-menu a.on{background:var(--cream)}
+
+.hd-icon{background:none;border:0;color:var(--navy);cursor:pointer;padding:6px;border-radius:50%;display:inline-flex}
+.hd-icon:hover{color:var(--red)}
+.sync{display:inline-block;width:9px;height:9px;border-radius:50%;background:#8a93b8;font-size:0;overflow:hidden}
+.sync[data-ok="1"]{background:#2bb673}
+.sync[data-ok="0"]{background:#ffb020}
+.linkbtn{background:none;border:0;color:var(--navy);font:700 13.5px var(--body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:6px 0;border-bottom:2px solid transparent}
+.linkbtn:hover{border-bottom-color:var(--red)}
 .burger{display:none;background:none;border:0;color:var(--navy);cursor:pointer;padding:6px}
+
+/* Orologio + Timbra: un solo oggetto.
+   Anello esterno = secondi dell'orologio; anello interno rosso = minuti del turno (solo se sei in servizio);
+   le lancette stanno al centro di entrambi. Premendolo si timbra. */
+.ck{display:inline-flex;align-items:center;gap:12px;padding:5px 20px 5px 6px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-family:var(--body);text-align:left;max-width:100%;transition:background .2s,border-color .2s,color .2s,box-shadow .2s}
+.ck:hover{border-color:var(--red);box-shadow:0 6px 18px rgba(16,28,77,.12)}
+.ck-face{width:48px;height:48px;flex:none}
+.ck-track{fill:none;stroke:rgba(16,28,77,.12);stroke-width:2.6}
+.ck-track.in{opacity:0;transition:opacity .3s}
+.ck-sec,.ck-shift{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:0 60;transition:stroke-dasharray .95s linear,opacity .3s}
+.ck-sec{stroke:var(--navy)}
+.ck-shift{stroke:var(--red);opacity:0}
+.ck-hands line{stroke:var(--navy);stroke-linecap:round}
+.ck-hands .h{stroke-width:2.4}
+.ck-hands .m{stroke-width:1.7}
+.ck-pin{fill:var(--red)}
+.ck-txt{display:flex;flex-direction:column;min-width:0;line-height:1}
+.ck-txt b{font:800 25px/1 var(--head);letter-spacing:.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ck-txt b i{font-style:normal;font-weight:600;font-size:.7em;opacity:.55}
+.ck-txt small{margin-top:5px;font:700 10.5px/1 var(--body);letter-spacing:.11em;text-transform:uppercase;color:var(--red);max-width:118px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck.in-servizio{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+.ck.in-servizio .ck-track{stroke:rgba(255,255,255,.18)}
+.ck.in-servizio .ck-track.in{opacity:1}
+.ck.in-servizio .ck-sec{stroke:var(--cream)}
+.ck.in-servizio .ck-shift{opacity:1;stroke:#ff5a63}
+.ck.in-servizio .ck-hands line{stroke:var(--cream)}
+.ck.in-servizio .ck-pin{animation:pulse 1.6s infinite}
+.ck.in-servizio .ck-txt small{color:#ff9aa0}
+.ck.in-servizio:hover{border-color:#ff5a63}
+
+/* Ricerca nel portale */
+.hd-search{width:min(560px,calc(100vw - 24px))}
+.hd-search form{padding:18px 20px 12px}
+.hd-search input{width:100%;font:600 18px var(--body);padding:12px 14px;border:2px solid var(--line);border-radius:6px;background:#fff;color:var(--navy)}
+.hd-search input:focus{outline:0;border-color:var(--red)}
+.hd-results{list-style:none;margin:10px 0 0;padding:0;max-height:52vh;overflow:auto}
+.hd-results a{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:4px;text-decoration:none;font-weight:600}
+.hd-results a small{color:var(--muted);font-weight:500}
+.hd-results a:hover,.hd-results a.sel{background:var(--cream)}
+
+@media (min-width:1321px) and (max-width:1560px){
+  .hd-in{padding:10px 24px;gap:16px}
+  .hd-center{gap:30px}
+  .nav{gap:26px}
+  .nav>a,.dd-btn,.linkbtn{font-size:12.5px;letter-spacing:.08em}
+  .logo b{font-size:30px}
+  .hd-right{gap:14px}
+}
+@media (max-width:1320px){
+  .hd-in{grid-template-columns:auto 1fr auto;grid-template-areas:"l c r" "nl nl nl" "nr nr nr";gap:0 16px;padding:8px 20px}
+  .hd-left{grid-area:l}
+  .hd-center{display:contents}
+  .hd-right{grid-area:r;gap:14px}
+  .logo{grid-area:c;justify-self:center}
+  .burger{display:inline-flex}
+  .nav{display:none;flex-direction:column;align-items:stretch;gap:0}
+  .nav-l{grid-area:nl;margin-top:10px;border-top:1px solid var(--line)}
+  .nav-r{grid-area:nr;margin-bottom:6px}
+  body.nav-open .nav{display:flex}
+  .nav>a,.dd-btn{padding:13px 0;width:100%;justify-content:space-between;border-bottom:1px solid var(--line)}
+  .dd-menu,.nav-r .dd:last-child .dd-menu{position:static;box-shadow:none;border:0;padding:0 0 0 12px;display:none;min-width:0}
+  .dd:hover .dd-menu,.dd:focus-within .dd-menu{display:none}
+  .dd.open .dd-menu{display:block}
+  .linkbtn{display:none}
+  body.nav-open .linkbtn{display:inline-block}
+}
+@media (max-width:640px){
+  .hd-in{padding:6px 12px}
+  .hd-in{gap:0 8px}
+  .logo{min-width:0}
+  .logo b{font-size:22px}
+  .logo small{display:none}
+  .ck{padding:4px 12px 4px 4px;gap:7px}
+  .ck-face{width:38px;height:38px}
+  .ck-txt b{font-size:20px}
+  .ck-txt b i,.ck-txt small{display:none}
+  .hd-right{gap:6px}
+  .sync{display:none}
+}
 
 /* Pulsanti */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 15px var(--body);padding:11px 20px;border-radius:4px;border:2px solid var(--red);background:var(--red);color:#fff;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s,color .15s}
@@ -167,7 +256,7 @@ dialog.modal::backdrop{background:rgba(10,18,56,.62)}
 .doclist button.on{background:var(--cream);border-left-color:var(--red)}
 .doclist small{color:var(--muted)}
 .doc-title{font:700 46px/1.05 var(--head);border:0;border-bottom:2px solid var(--line);border-radius:0;padding:4px 0 8px;margin-bottom:14px}
-.rte-bar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:8px;background:var(--cream);border:1px solid var(--line);border-radius:4px 4px 0 0;position:sticky;top:84px;z-index:5}
+.rte-bar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:8px;background:var(--cream);border:1px solid var(--line);border-radius:4px 4px 0 0;position:sticky;top:92px;z-index:5}
 .rte-bar button{min-width:34px;height:34px;padding:0 9px;background:#fff;border:1px solid var(--line);border-radius:4px;cursor:pointer;font:600 14px var(--body);color:var(--navy)}
 .rte-bar button:hover{border-color:var(--navy)}
 .rte-bar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
@@ -237,21 +326,10 @@ dialog.modal::backdrop{background:rgba(10,18,56,.62)}
 .entry .row-chips{display:flex;flex-wrap:wrap;gap:6px}
 
 @media (max-width:980px){
-  .burger{display:block;margin-left:auto}
-  .nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 24px 16px;margin:0}
-  body.nav-open .nav{display:flex}
-  .nav>a,.dd-btn{padding:12px 0;width:100%;justify-content:space-between;border-bottom:1px solid var(--line)}
-  .dd-menu{position:static;box-shadow:none;border:0;padding:0 0 0 12px;display:none}
-  .dd:hover .dd-menu{display:none}
-  .dd.open .dd-menu{display:block}
-  .site-header .wrap{gap:14px}
-  .site-header .go{padding:9px 14px}
   .split,.two{grid-template-columns:1fr}
   .mosaic{grid-template-columns:1fr}
 }
 @media (max-width:640px){
-  .logo b{font-size:28px}
-  .logo .mini{display:none}
   .hero{padding:44px 0 40px}
   .field.half{flex-basis:100%}
   .day{min-height:78px;padding:3px}
@@ -281,7 +359,7 @@ main.wrap.wide{max-width:1500px}
 
 /* Struttura del Drive */
 .drive{display:grid;grid-template-columns:238px minmax(0,1fr);gap:30px;align-items:start}
-.d-side{position:sticky;top:104px;display:flex;flex-direction:column;gap:16px}
+.d-side{position:sticky;top:112px;display:flex;flex-direction:column;gap:16px}
 .new-wrap{position:relative}
 .new-btn{width:100%;justify-content:flex-start;padding:14px 20px;font-size:17px}
 .new-btn span{font:700 24px/1 var(--body);margin-top:-2px}
@@ -476,10 +554,6 @@ main.wrap.wide{max-width:1500px}
 .ed-body .sheet{transform-origin:top center}
 
 /* «Timbra»: pulsante nell'intestazione e finestra */
-.site-header .go{white-space:nowrap}
-.btn.go .tb-dot{display:none;width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
-.btn.go.in-servizio .tb-dot{display:inline-block}
-.btn.go.in-servizio{background:var(--navy);border-color:var(--navy)}
 .tb-home{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
 .tb-home h2{font-size:30px}
 .tb-modal{width:min(520px,calc(100vw - 24px))}
@@ -554,8 +628,6 @@ main.wrap.wide{max-width:1500px}
 @media(max-width:800px){.nt-cols{grid-template-columns:1fr}}
 
 /* Esci (barra in alto) e schermata di uscita */
-.topbar .linkbtn{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;opacity:.85}
-.topbar .linkbtn:hover{opacity:1}
 .bye{position:fixed;inset:0;z-index:200;background:var(--cream);display:grid;place-items:center;text-align:center;padding:24px}
 .bye h2{font-size:48px;margin:0 0 10px}
 .bye .btn{margin-top:18px}

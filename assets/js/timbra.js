@@ -84,13 +84,36 @@ const Timbra = (() => {
     return o;
   };
 
-  /* ---------- Pulsante nell'intestazione ---------- */
+  /* ---------- Orologio + pulsante nell'intestazione (un solo oggetto) ---------- */
+  // Fuori servizio: quadrante e ora, scritta «Timbra». In servizio: l'anello interno rosso conta i minuti del turno
+  // e la scritta diventa luogo + durata. Un solo timer a 1 s aggiorna tutto.
+  const GIORNO = d => d.toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short" }).replace(".", "");
+  const durata = ms => { const m = Math.max(0, Math.floor(ms / 60000)); return `${Math.floor(m / 60)}h ${pad(m % 60)}m`; };
   function paintButton() {
     const b = $("#timbra-btn");
     if (!b) return;
-    const o = aperto();
+    const n = new Date(), o = aperto();
+    const h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
+    const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
     b.classList.toggle("in-servizio", !!o);
-    b.title = o ? `In servizio: ${o.luogo}, dalle ${hhmm(new Date(o.entrata))}` : "Timbra entrata o uscita";
+    set("ck-hm", el => { el.textContent = `${pad(h)}:${pad(m)}`; });
+    set("ck-s", el => { el.textContent = `:${pad(s)}`; });
+    set("ck-h", el => el.setAttribute("transform", `rotate(${(h % 12) * 30 + m * 0.5} 22 22)`));
+    set("ck-m", el => el.setAttribute("transform", `rotate(${m * 6 + s * 0.1} 22 22)`));
+    set("ck-sec", el => { el.style.transition = s === 0 ? "none" : ""; el.style.strokeDasharray = `${Math.max(s, 0.01)} 60`; });
+    if (o) {
+      const ms = Math.max(0, n - Date.parse(o.entrata));
+      const turno = (ms / 60000) % 60;
+      set("ck-shift", el => { el.style.transition = turno < 0.05 ? "none" : ""; el.style.strokeDasharray = `${Math.max(turno, 0.01)} 60`; });
+      set("ck-sub", el => { el.textContent = `${o.luogo} · ${durata(ms)}`; });
+      b.title = `In servizio: ${o.luogo}, dalle ${hhmm(new Date(o.entrata))}. Premi per uscire`;
+      b.setAttribute("aria-label", `Sono le ${pad(h)}:${pad(m)}. In servizio in ${o.luogo} da ${durata(ms)}. Premi per uscire o cambiare luogo`);
+    } else {
+      set("ck-shift", el => { el.style.strokeDasharray = "0 60"; });
+      set("ck-sub", el => { el.textContent = "Timbra"; });
+      b.title = `${n.toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}. Premi per timbrare entrata o uscita`;
+      b.setAttribute("aria-label", `Sono le ${pad(h)}:${pad(m)}. Premi per timbrare`);
+    }
   }
 
   /* ---------- Finestra ---------- */
@@ -180,6 +203,8 @@ const Timbra = (() => {
   // Stato del pulsante già al primo disegno, e dati recenti in silenzio (solo se c'è qualcosa in coda o già in cache)
   if (document.readyState !== "loading") paintButton();
   setInterval(() => { if (Object.keys(coda).length && !document.hidden) invia(); }, 60000);
+  setInterval(() => { if (!document.hidden) paintButton(); }, 1000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) paintButton(); });
 
   return { open, entra, esci, aperto, tutte };
 })();

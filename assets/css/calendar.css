@@ -93,7 +93,6 @@ main.wrap{padding-top:26px}
   .cal-title{font-size:32px}
 }
 @media (max-width:760px){
-  .site-header .wrap .btn.go{display:none}
   .cell{min-height:64px;padding:2px}
   .cell .cn .fe{display:none}
   .cn b{font-size:13px;min-width:22px;height:22px}

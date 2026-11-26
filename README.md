@@ -10,6 +10,14 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 | «Calendario» del portale (le lezioni) | **/lezioni/** |
 | «Agenda personale» | assorbita dal Calendario (vedi sotto) |
 
+## Novità: intestazione e menu unico
+
+- **Intestazione come nel riferimento**: fascia rossa sottile in alto, tre voci a sinistra, logo al centro, tre voci a destra, lente di ricerca e «Esci» all'estremità. Codice: `_includes/header.html`, `_includes/nav-item.html`, stili in `portal.css` (sezione «Intestazione»).
+- **Orologio e Timbra fusi in un solo elemento** (in alto a sinistra): quadrante con lancette, ora con secondi e pulsante sono la stessa cosa. L'anello esterno conta i secondi; quando sei in servizio diventa blu scuro, compare un secondo anello rosso interno che conta i minuti del turno intrecciandosi al primo, e la scritta passa da «Timbra» a «luogo · durata». Si preme per timbrare (Alt+T come prima). Codice: `paintButton()` in `assets/js/timbra.js`.
+- **Un solo menu per tutto il sito** (`_data/nav.yml`, con `side: left|right`): Home · Suite · Didattica | logo | Raccolte · Presenze · Strumenti. Tolti i doppioni (Accessi rapidi e Note comparivano in due tendine, Posta/Drive/Calendario due volte) e rese raggiungibili le pagine che prima non avevano una voce: Orario, Materiali, Spazio di lavoro, FOSF, Canvas, Scheda palestra, Plugin. Le pagine in `plugins/` nuove finiscono da sole in «Strumenti» (come prima in «Funzioni»); quelle già nel menu hanno `menu: false`.
+- **Ricerca**: la lente (o il tasto `/`) cerca tra tutte le pagine del menu. Codice: `assets/js/header.js`.
+- Corretto il link «Timbra FOSF» (puntava a `/timbra/`, ora `/presenze/timbra/`).
+
 ## Novità dell'ultima unificazione
 
 - **Timbra**: il pulsante «Avvia lezione» in alto è diventato **Timbra** (scorciatoia Alt+T). Apre una finestra che chiede in cosa entri (Scuola, Oratorio…) oppure, se sei in servizio, permette di uscire (anche «Esci ed entra altrove»). Stessi dati della pagina Presenze; la Home mostra lo stato. «Avvia una lezione» resta nella finestra e nel Registro. Codice: `assets/js/timbra.js`.
@@ -28,19 +36,6 @@ Un solo sito Jekyll su Netlify, con una sola password e un solo archivio dati. R
 - Il backup della Home ora include anche calendario e impostazioni della posta.
 - Un solo `/documenti/` (era definito due volte): è un redirect al Drive.
 - I file doppi, vecchi o non usati sono in `_archivio/` (non pubblicato; vedi `_archivio/LEGGIMI.txt`).
-
-## Pubblicazione su Netlify
-
-Variabili d'ambiente (ambito **Functions**):
-
-| Variabile | A cosa serve |
-|---|---|
-| `PORTAL_USER`, `PORTAL_PASSWORD` | accesso al portale. Senza, il sito resta chiuso (503) |
-| `ZOHO_CLIENT_ID`, `ZOHO_CLIENT_SECRET`, `ZOHO_DC` | la Posta (`ZOHO_DC` = `eu`, `com`, `in`…) |
-| `PRESENZE_TOKEN` | facoltativa: token del file offline «Presenze in rete» |
-| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | facoltative: notifiche push (se mancano si creano da sole) |
-
-Impostazioni di build in `netlify.toml` (`bundle exec jekyll build`, cartella `_site`).
 
 ### Zoho
 In **api-console.zoho.eu**, tra gli *Authorized Redirect URIs* del client aggiungi
@@ -68,7 +63,7 @@ In **api-console.zoho.eu**, tra gli *Authorized Redirect URIs* del client aggiun
 
 ## Dove mettere le mani
 
-- Menu: `_data/nav.yml` · layout: `_layouts/default.html` · intestazione: `_includes/header.html`
+- Menu: `_data/nav.yml` · layout: `_layouts/default.html` · intestazione: `_includes/header.html` + `nav-item.html`
 - Un `assets/js/<pagina>.js` per pagina; funzioni comuni in `assets/js/core.js`
 - Colori e caratteri: variabili all'inizio di `assets/css/portal.css`
 - Calendario: logica in `calendar-lib.js` (senza DOM), interfaccia in `calendar.js`; festività in `festivitaAnno()`
